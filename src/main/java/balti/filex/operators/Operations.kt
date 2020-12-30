@@ -1,9 +1,41 @@
 package balti.filex.operators
 
+import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import balti.filex.FileX
+import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.fContext
-//import balti.filex.operators.info.*
+import balti.filex.FileXServer
+import balti.filex.utils.Tools.buildTreeDocumentUriFromId
+import balti.filex.utils.Tools.getChildrenUri
+
+fun FileX.refreshFile(){
+    val dirs = path.substring(1).split("/")
+    val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+    var childrenUri = getChildrenUri(rootUri!!)
+    for (i in dirs.indices) {
+        val dir = dirs[i]
+        var nextDocId = ""
+        try {
+            fCResolver.query(childrenUri, projection, null, null, null)?.run {
+                while (moveToNext()) {
+                    if (getString(0) == dir) {
+                        nextDocId = getString(1)
+                        break
+                    }
+                }
+                close()
+            }
+        }
+        catch (_: Exception){
+            break
+        }
+        if (i < dirs.indices.last) childrenUri = getChildrenUri(nextDocId)
+        else if (nextDocId != "") {
+            FileXServer.setPathAndUri(rootUri!!, path, buildTreeDocumentUriFromId(nextDocId))
+        }
+    }
+}
 
 /*
 private var copyError: Exception? = null

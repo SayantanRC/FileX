@@ -7,10 +7,12 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import androidx.lifecycle.*
 import balti.filex.FileXInit.Companion.DEBUG_TAG
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.RootNotInitializedException
+import balti.filex.operators.refreshFile
 import balti.filex.utils.Constants
 import balti.filex.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.utils.Tools.checkUriExists
@@ -18,10 +20,9 @@ import balti.filex.utils.Tools.removeLeadingTrailingSlashOrColon
 import balti.filex.utils.Tools.removeRearSlash
 
 
-class FileX(path: String) {
+class FileX(path: String): LifecycleOwner {
 
     constructor(parent: String, child: String): this("$parent/$child")
-    //constructor(documentFile: DocumentFile): this(documentFile.uri)
     constructor(uri: Uri, currentRootUri: Uri) : this(
         currentRootUri.let {
             val docId = DocumentsContract.getDocumentId(uri)
@@ -52,34 +53,58 @@ class FileX(path: String) {
                 data.data?.let {
                     context.contentResolver.takePersistableUriPermission(it, takeFlags)
                     rootUri = it
+                    init()
                     afterJob?.invoke(resultCode, data)
                 }
             }
         }
-
     }
 
-    var documentId: String = ""
+    var documentId: String? = null
     private set
 
-    var uri: Uri = Uri.EMPTY
-    private set
+    var uri: Uri? = null
+    private set(value) {
+        if (value != null) {
+            documentId =
+                if (value != rootUri) DocumentsContract.getDocumentId(value)
+                else DocumentsContract.getTreeDocumentId(value)
+            field = value
+        }
+    }
 
     var mimeType: String = "*/*"
     internal set
 
-    val path: String
+    var path: String = ""
+    private set
 
-    init {
+    private val lifecycleRegistry: LifecycleRegistry
+
+    private fun init(initPath: String = ""){
         if (rootUri == null) rootUri = FileXInit.getGlobalRootUri().apply {
             if (this == null) throw RootNotInitializedException("Global root uri not set")
         }
-        this.path = removeLeadingTrailingSlashOrColon(path)
-        if (documentId == "") documentId = removeRearSlash("$rootDocumentId/${this.path}")
-        if (uri == Uri.EMPTY) uri = buildTreeDocumentUriFromId(documentId)
+        if (initPath.isNotBlank()) this.path = removeLeadingTrailingSlashOrColon(initPath)
+    }
+
+    init {
+        init(path)
+        lifecycleRegistry = LifecycleRegistry(this)
+        FileXServer.pathAndUri.observe(this) {
+            if (it.first == rootUri && it.second == this.path && it.third != null) {
+                uri = it.third
+            }
+        }
+        if (FileXInit.refreshFileOnCreation) refreshFile()
+        lifecycleRegistry.currentState = Lifecycle.State.STARTED
     }
 
     enum class FileXCodes {
         OK, OVERWRITE, SKIP, TERMINATE, MERGE, NEW_IF_EXISTS
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        return lifecycleRegistry
     }
 }

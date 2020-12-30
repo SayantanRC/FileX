@@ -10,12 +10,14 @@ import balti.filex.FileXInit.Companion.DEBUG_TAG
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.fContext
 import balti.filex.FileXInit.Companion.tryIt
+import balti.filex.FileXServer
 import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.DirectoryHierarchyBroken
 import balti.filex.exceptions.RootNotInitializedException
 import balti.filex.utils.Tools
 import balti.filex.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.utils.Tools.checkUriExists
+import balti.filex.utils.Tools.getChildrenUri
 import balti.filex.utils.Tools.getStringQuery
 import java.io.IOException
 
@@ -31,16 +33,19 @@ fun FileX.createFileUsingPicker(optionalMimeType: String = "*/*", afterJob: ((re
         mimeType = optionalMimeType
         putExtra(Intent.EXTRA_TITLE, this@createFileUsingPicker.name)
     }) { _, _, resultCode, data ->
+        FileXServer.setPathAndUri(rootUri!!, path, data?.data)
         afterJob?.invoke(resultCode, data)
     }
 }
 
 fun FileX.createNewFile(optionalMimeType: String = "*/*", makeDirectories: Boolean = false, overwriteIfExists: Boolean = false) : Boolean {
-    if (!makeDirectories){
-        if (overwriteIfExists && checkUriExists(uri)){
-            tryIt { DocumentsContract.deleteDocument(cResolver, uri) }
-        }
-        return createBlankDoc(parentUri, name, optionalMimeType)
+    if (!makeDirectories && uri != null){
+        return uri?.let {
+            if (overwriteIfExists && checkUriExists(it)) {
+                tryIt { DocumentsContract.deleteDocument(cResolver, it) }
+            }
+            createBlankDoc(parentUri ?: rootUri!!, name, optionalMimeType)
+        }?: false
     }
     else return traverse({dir, nextDocId, childrenUri ->
         if (nextDocId == "") {
@@ -48,13 +53,19 @@ fun FileX.createNewFile(optionalMimeType: String = "*/*", makeDirectories: Boole
             else throw DirectoryHierarchyBroken("No such file or directory")
         } else getChildrenUri(nextDocId)
     }, {fileName, nextDocId, childrenUri ->
-        when {
-            nextDocId == "" -> createBlankDoc(childrenUri, fileName)
-            overwriteIfExists -> {
-                DocumentsContract.deleteDocument(cResolver, uri)
+        return@traverse if (nextDocId != ""){
+            val existingUri = buildTreeDocumentUriFromId(nextDocId)
+            if (overwriteIfExists) {
+                DocumentsContract.deleteDocument(cResolver, existingUri)
                 createBlankDoc(childrenUri, fileName)
             }
-            else -> false
+            else {
+                FileXServer.setPathAndUri(rootUri!!, path, existingUri)
+                false
+            }
+        }
+        else {
+            createBlankDoc(childrenUri, fileName)
         }
     })
 }
@@ -82,34 +93,24 @@ fun FileX.mkdir(): Boolean = traverse({_, nextDocId, _ ->
 // private methods
 // *****************************************
 
-private fun FileX.uriCheck(f: () -> Boolean): Boolean {
-    if (rootUri == null) throw RootNotInitializedException("Root not initialised")
-    else return f()
-}
-
-private fun FileX.getChildrenUri(docId: Uri): Uri {
-    return DocumentsContract.buildChildDocumentsUriUsingTree(
-        rootUri,
-        if (docId == rootUri) DocumentsContract.getTreeDocumentId(rootUri)
-        else DocumentsContract.getDocumentId(docId)
-    )
-}
-private fun FileX.getChildrenUri(docId: String): Uri {
-    return DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, docId)
-}
-
 private val cResolver = fCResolver
 
-private fun createBlankDoc(parentUri: Uri, fileName: String, optionalMimeType: String = "*/*"): Boolean {
+private fun FileX.createBlankDoc(parentUri: Uri, fileName: String, optionalMimeType: String = "*/*"): Boolean {
     if (!parentUri.toString().endsWith("/children") && !checkUriExists(parentUri)) throw DirectoryHierarchyBroken("Complete parent uri not present: $parentUri")
-    return DocumentsContract.createDocument(cResolver, parentUri, optionalMimeType, fileName) != null
+    return DocumentsContract.createDocument(cResolver, parentUri, optionalMimeType, fileName).let {
+        if (it != null) {
+            FileXServer.setPathAndUri(rootUri!!, path, it)
+            true
+        }
+        else false
+    }
 }
 
 private fun FileX.traverse(
     directoryFunc: (dirName: String, nextDocId: String, childrenUri: Uri) -> Uri?,
-    fileFunction: (fileName: String, nextDocId: String, childrenUri: Uri) -> Boolean): Boolean =
-    uriCheck {
-        val dirs = path.split("/")
+    fileFunction: (fileName: String, nextDocId: String, childrenUri: Uri) -> Boolean): Boolean {
+
+        val dirs = path.substring(1).split("/")
         val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_DOCUMENT_ID)
         var childrenUri = getChildrenUri(rootUri!!)
         for (i in dirs.indices) {
@@ -124,8 +125,8 @@ private fun FileX.traverse(
                 }
                 close()
             }
-            if (i < dirs.indices.last) directoryFunc(dir, nextDocId, childrenUri).let { if (it != null) childrenUri = it else return@uriCheck false }
-            else return@uriCheck fileFunction(dirs.last(), nextDocId, childrenUri)
+            if (i < dirs.indices.last) directoryFunc(dir, nextDocId, childrenUri).let { if (it != null) childrenUri = it else return false }
+            else return fileFunction(dirs.last(), nextDocId, childrenUri)
         }
-        return@uriCheck false
+        return false
     }

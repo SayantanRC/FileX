@@ -14,9 +14,7 @@ class FileXInit(context: Context) {
     companion object{
         internal lateinit var fContext: Context
         private set
-
         internal val fCResolver by lazy { fContext.contentResolver }
-
         internal val storageVolumes = HashMap<String, String?>(0)
 
         internal val DEBUG_TAG = "FILEX_TAG"
@@ -30,6 +28,11 @@ class FileXInit(context: Context) {
                 catch (_: Exception){}
             }
         }
+
+        // public methods and variables
+        // *****************************************
+
+        var refreshFileOnCreation = true
 
         fun setGlobalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null){
             val uri = getGlobalRootUri()
