@@ -46,3 +46,4 @@ list()              -- done 20210104
 listFiles()         -- done 20210104
 extension           -- done 20210104
 nameWithoutExtension-- done 20210104
+renameTo            -- done 20210104

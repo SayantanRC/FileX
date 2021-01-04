@@ -100,6 +100,7 @@ class FileX(path: String): LifecycleOwner {
         FileXServer.pathAndUri.observe(this) {
             if (it.first == rootUri && it.second == this.path && it.third != null) {
                 uri = it.third
+                if (it.fourth != null) this.path = removeLeadingTrailingSlashOrColon(it.fourth)
             }
         }
         if (FileXInit.refreshFileOnCreation) refreshFile()
