@@ -82,11 +82,16 @@ class FileX(path: String): LifecycleOwner {
 
     private val lifecycleRegistry: LifecycleRegistry
 
-    private fun init(initPath: String = ""){
+    private fun init(initPath: String? = null){
         if (rootUri == null) rootUri = FileXInit.getGlobalRootUri().apply {
             if (this == null) throw RootNotInitializedException("Global root uri not set")
         }
-        if (initPath.isNotBlank()) this.path = removeLeadingTrailingSlashOrColon(initPath)
+        if (initPath != null) {
+            this.path = removeLeadingTrailingSlashOrColon(initPath)
+            if (initPath == "") {
+                uri = buildTreeDocumentUriFromId(rootDocumentId)
+            }
+        }
     }
 
     init {
