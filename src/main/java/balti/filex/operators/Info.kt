@@ -42,10 +42,11 @@ val FileX.volumePath: String get () = uri.let {
 }
 
 fun FileX.exists(): Boolean {
+    refreshFile()
     return uri?.let { checkUriExists(it) }?: false
 }
 val FileX.isDirectory: Boolean get() =
-    try { getStringQuery(DocumentsContract.Document.COLUMN_MIME_TYPE) == DocumentsContract.Document.MIME_TYPE_DIR }
+    exists() && try { getStringQuery(DocumentsContract.Document.COLUMN_MIME_TYPE) == DocumentsContract.Document.MIME_TYPE_DIR }
     catch (_: Exception) {false}
 
 val FileX.isFile: Boolean get() =
@@ -98,6 +99,9 @@ val FileX.usableSpace: Long get() = getSpace(Space.AVAILABLE)
 val FileX.totalSpace: Long get() = getSpace(Space.TOTAL)
 
 val FileX.isHidden: Boolean get() = name.startsWith(".")
+
+val FileX.extension: String get() = name.substringAfterLast('.', "")
+val FileX.nameWithoutExtension: String get() = name.substringBeforeLast(".")
 
 //
 //

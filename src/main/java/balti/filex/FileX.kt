@@ -18,6 +18,7 @@ import balti.filex.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.utils.Tools.checkUriExists
 import balti.filex.utils.Tools.removeLeadingTrailingSlashOrColon
 import balti.filex.utils.Tools.removeRearSlash
+import java.io.File
 
 
 class FileX(path: String): LifecycleOwner {

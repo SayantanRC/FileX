@@ -10,7 +10,7 @@ import balti.filex.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.utils.Tools.getChildrenUri
 
 fun FileX.refreshFile(){
-    val dirs = path.substring(1).split("/")
+    val dirs = if (path.length > 1) path.substring(1).split("/") else ArrayList(0)
     val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_DOCUMENT_ID)
     var childrenUri = getChildrenUri(rootUri!!)
     for (i in dirs.indices) {

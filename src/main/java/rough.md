@@ -25,3 +25,24 @@ fun FileX.listFiles(): ArrayList<String> {
     return files
 }
 ```
+```
+/*val FileX.isEmpty: Boolean get() = documentFile?.listFiles()?.isEmpty()?: false
+
+fun FileX.list(filter: ((dir: FileX, child: FileX) -> Boolean)): ArrayList<FileX>{
+    val immediateList = ArrayList<FileX>(0)
+    documentFile?.listFiles()?.forEach {fx ->
+        FileX(fx).let { if (filter(this, it)) immediateList.add(it) }
+    }
+    return immediateList
+}
+
+fun FileX.list(): ArrayList<FileX> =
+    documentFile?.listFiles()?.map { FileX(it) }.let { if (it != null) ArrayList(it) else ArrayList(0) }*/
+```
+
+delete()            -- done 20210104
+deleteRecursively() -- done 20210104
+list()              -- done 20210104
+listFiles()         -- done 20210104
+extension           -- done 20210104
+nameWithoutExtension-- done 20210104

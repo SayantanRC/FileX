@@ -41,10 +41,12 @@ fun FileX.createFileUsingPicker(optionalMimeType: String = "*/*", afterJob: ((re
 fun FileX.createNewFile(optionalMimeType: String = "*/*", makeDirectories: Boolean = false, overwriteIfExists: Boolean = false) : Boolean {
     if (!makeDirectories && uri != null){
         return uri?.let {
-            if (overwriteIfExists && checkUriExists(it)) {
+            if (!exists()) createBlankDoc(parentUri ?: rootUri!!, name, optionalMimeType)
+            else if (overwriteIfExists) {
                 tryIt { DocumentsContract.deleteDocument(cResolver, it) }
+                createBlankDoc(parentUri ?: rootUri!!, name, optionalMimeType)
             }
-            createBlankDoc(parentUri ?: rootUri!!, name, optionalMimeType)
+            else false
         }?: false
     }
     else return traverse({dir, nextDocId, childrenUri ->
@@ -110,7 +112,7 @@ private fun FileX.traverse(
     directoryFunc: (dirName: String, nextDocId: String, childrenUri: Uri) -> Uri?,
     fileFunction: (fileName: String, nextDocId: String, childrenUri: Uri) -> Boolean): Boolean {
 
-        val dirs = path.substring(1).split("/")
+        val dirs = if (path.length > 1) path.substring(1).split("/") else ArrayList(0)
         val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_DOCUMENT_ID)
         var childrenUri = getChildrenUri(rootUri!!)
         for (i in dirs.indices) {
