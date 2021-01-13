@@ -64,7 +64,7 @@ val FileX11.parentFile: FileX11? get() = parent?.let { FileX11(it) }
 
 val FileX11.parentUri: Uri? get() = parentFile?.uri
 
-val FileX11.parentCanonical: String get() = canonicalPath.let { if (it.isNotBlank()) it.substring(0, it.lastIndexOf("/")) else "" }
+val FileX11.parentCanonical: String get() = canonicalPath.let { if (it.isNotBlank()) it.substring(0, it.lastIndexOf("/")) else "/" }
 
 fun FileX11.length(): Long = try { getStringQuery(DocumentsContract.Document.COLUMN_SIZE)!!.toLong() } catch (_: Exception) {0L}
 fun FileX11.lastModified(): Long = try { getStringQuery(DocumentsContract.Document.COLUMN_LAST_MODIFIED)!!.toLong() } catch (_: Exception) {0L}
