@@ -1,17 +1,16 @@
-package balti.filex.operators
+package balti.filex.filex11.operators
 
 import android.annotation.TargetApi
 import android.os.Build
 import android.provider.DocumentsContract
 import androidx.annotation.RequiresApi
-import balti.filex.FileX
+import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
-import balti.filex.FileXServer
 
 @RequiresApi(Build.VERSION_CODES.N)
 @TargetApi(Build.VERSION_CODES.N)
-fun FileX.renameTo(dest: FileX): Boolean {
+fun FileX11.renameTo(dest: FileX11): Boolean {
     if (dest.exists()) return false
     val parentFile = dest.parentFile
     parentFile?.mkdirs()
@@ -21,8 +20,8 @@ fun FileX.renameTo(dest: FileX): Boolean {
             if (movedUri != null) {
                 tryIt { DocumentsContract.renameDocument(fCResolver, movedUri, dest.name) }
                 dest.refreshFile()
-                if (dest.exists()) FileXServer.setPathAndUri(rootUri!!, path, dest.uri, dest.path)
-                else FileXServer.setPathAndUri(rootUri!!, path, movedUri, dest.parent + "/" + name)
+                if (dest.exists()) balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, dest.uri, dest.path)
+                else balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, movedUri, dest.parent + "/" + name)
                 true
             }
             else false
@@ -30,12 +29,12 @@ fun FileX.renameTo(dest: FileX): Boolean {
     }
 }
 
-fun FileX.renameTo(newFileName: String): Boolean {
+fun FileX11.renameTo(newFileName: String): Boolean {
     tryIt { DocumentsContract.renameDocument(fCResolver, uri!!, newFileName) }
     val newFilePath = "$parent/$newFileName"
-    return FileX(newFilePath).let {
+    return FileX11(newFilePath).let {
         if (exists()) {
-            FileXServer.setPathAndUri(rootUri!!, path, it.uri, newFilePath)
+            balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, it.uri, newFilePath)
             true
         }
         else false

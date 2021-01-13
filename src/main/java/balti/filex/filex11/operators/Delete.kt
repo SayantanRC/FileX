@@ -1,17 +1,17 @@
-package balti.filex.operators
+package balti.filex.filex11.operators
 
 import android.provider.DocumentsContract
-import balti.filex.FileX
+import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 
-fun FileX.delete(): Boolean {
+fun FileX11.delete(): Boolean {
     return uri?.let {
         if (isFile || isEmpty) DocumentsContract.deleteDocument(fCResolver, it)
         else false
     } ?: false
 }
 
-fun FileX.deleteRecursively(): Boolean {
+fun FileX11.deleteRecursively(): Boolean {
     return uri?.let {
         DocumentsContract.deleteDocument(fCResolver, it)
     } ?: false

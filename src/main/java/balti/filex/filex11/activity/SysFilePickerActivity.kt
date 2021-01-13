@@ -1,4 +1,4 @@
-package balti.filex.activity
+package balti.filex.filex11.activity
 
 import android.app.Activity
 import android.content.Context
@@ -7,27 +7,28 @@ import android.os.Bundle
 
 class SysFilePickerActivity: Activity(), ToActivity {
 
-    companion object{
-        internal lateinit var context: Context
-        private lateinit var onResultFunction: (context: Activity, jobCode: Int, resultCode: Int, data: Intent?) -> Unit
-    }
+    private lateinit var onResultFunction: (context: Activity, resultCode: Int, data: Intent?) -> Unit
+    private var jobCode: Int = 111
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = this
-        ActivityFunctionDelegate.onActivityInit()
+        ActivityFunctionDelegate.onActivityInit(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        onResultFunction(this, requestCode, resultCode, data)
-        finish()
+        if (requestCode == jobCode) {
+            onResultFunction(this, resultCode, data)
+            finish()
+        }
     }
 
     override fun toActivity(
         trigger: (context: Activity) -> Unit,
-        onResult: (context: Activity, jobCode: Int, resultCode: Int, data: Intent?) -> Unit
+        onResult: (context: Activity, resultCode: Int, data: Intent?) -> Unit,
+        optionalJobCode: Int
     ) {
+        jobCode = optionalJobCode
         onResultFunction = onResult
         trigger(this)
     }

@@ -1,6 +1,5 @@
-package balti.filex.utils
+package balti.filex.filex11.utils
 
-import android.annotation.TargetApi
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -9,20 +8,15 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.DocumentsContract
-import android.util.Log
-import androidx.core.database.getFloatOrNull
-import androidx.core.database.getStringOrNull
 import androidx.documentfile.provider.DocumentFile
-import balti.filex.FileX
+import balti.filex.filex11.FileX11
 import balti.filex.FileXInit
-import balti.filex.FileXInit.Companion.DEBUG_TAG
 import balti.filex.FileXInit.Companion.fContext
-import balti.filex.exceptions.RootNotInitializedException
-import balti.filex.utils.Tools.getStringQuery
+import balti.filex.filex11.exceptions.RootNotInitializedException
 
 object Tools {
     fun traversePath(
-        fileX: FileX,
+        fileX: FileX11,
         fileFunc: (uri: Uri, name: String) -> Boolean?,
         directoryFunc: ((uri: Uri, name: String) -> Unit)? = null,
         autoCreateSubDirectories: Boolean = true
@@ -80,14 +74,14 @@ object Tools {
     }
 
 
-    internal fun FileX.buildTreeDocumentUriFromId(documentId: String): Uri{
+    internal fun FileX11.buildTreeDocumentUriFromId(documentId: String): Uri{
         return Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(rootUri!!.authority)
             .appendPath("tree").appendPath(rootDocumentId)
             .appendPath("document").appendPath(documentId)
             .build()
     }
 
-    internal fun FileX.getStringQuery(field: String, documentUri: Uri = this.uri?: Uri.EMPTY): String? {
+    internal fun FileX11.getStringQuery(field: String, documentUri: Uri = this.uri?: Uri.EMPTY): String? {
         if (uri == Uri.EMPTY) return null
         return documentUri.let { uri ->
             val cursor = FileXInit.fCResolver.query(uri, arrayOf(field), null, null, null)
@@ -98,7 +92,7 @@ object Tools {
         }
     }
 
-    internal fun FileX.getStringQuery(field: String, documentId: String): String? =
+    internal fun FileX11.getStringQuery(field: String, documentId: String): String? =
         getStringQuery(field, buildTreeDocumentUriFromId(documentId))
 
 
@@ -137,14 +131,14 @@ object Tools {
         return result
     }
 
-    internal fun FileX.getChildrenUri(docId: Uri): Uri {
+    internal fun FileX11.getChildrenUri(docId: Uri): Uri {
         return DocumentsContract.buildChildDocumentsUriUsingTree(
             rootUri,
             if (docId == rootUri) DocumentsContract.getTreeDocumentId(rootUri)
             else DocumentsContract.getDocumentId(docId)
         )
     }
-    internal fun FileX.getChildrenUri(docId: String): Uri {
+    internal fun FileX11.getChildrenUri(docId: String): Uri {
         return DocumentsContract.buildChildDocumentsUriUsingTree(rootUri, docId)
     }
 }

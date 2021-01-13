@@ -1,14 +1,13 @@
-package balti.filex.operators
+package balti.filex.filex11.operators
 
 import android.provider.DocumentsContract
-import balti.filex.FileX
+import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
-import balti.filex.interfaces.FileXFilter
-import balti.filex.interfaces.FileXNameFilter
-import balti.filex.utils.Tools.getChildrenUri
-import java.io.FilenameFilter
+import balti.filex.filex11.interfaces.FileXFilter
+import balti.filex.filex11.interfaces.FileXNameFilter
+import balti.filex.filex11.utils.Tools.getChildrenUri
 
-val FileX.isEmpty: Boolean get() {
+val FileX11.isEmpty: Boolean get() {
     if (!this.isDirectory || documentId == null) return false
     val childrenUri = getChildrenUri(documentId!!)
     val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
@@ -25,15 +24,15 @@ val FileX.isEmpty: Boolean get() {
     return isEmpty
 }
 
-fun FileX.listFiles(filter: FileXFilter? = null): Array<FileX>?{
+fun FileX11.listFiles(filter: FileXFilter? = null): Array<FileX11>?{
     if (!this.isDirectory || documentId == null) return null
-    val qualifyingList = ArrayList<FileX>(0)
+    val qualifyingList = ArrayList<FileX11>(0)
     val childrenUri = getChildrenUri(documentId!!)
     val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
     try {
         fCResolver.query(childrenUri, projection, null, null, null)?.run {
             while (moveToNext()) {
-                val f = FileX(this@listFiles.path, getString(0))
+                val f = FileX11(this@listFiles.path, getString(0))
                 if (filter == null || filter.accept(f))
                     qualifyingList.add(f)
             }
@@ -46,9 +45,9 @@ fun FileX.listFiles(filter: FileXFilter? = null): Array<FileX>?{
     return qualifyingList.toTypedArray()
 }
 
-fun FileX.listFiles(filter: FileXNameFilter): Array<FileX>?{
+fun FileX11.listFiles(filter: FileXNameFilter): Array<FileX11>?{
     if (!this.isDirectory || documentId == null) return null
-    val qualifyingList = ArrayList<FileX>(0)
+    val qualifyingList = ArrayList<FileX11>(0)
     val childrenUri = getChildrenUri(documentId!!)
     val projection = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
     try {
@@ -56,7 +55,7 @@ fun FileX.listFiles(filter: FileXNameFilter): Array<FileX>?{
             while (moveToNext()) {
                 getString(0).let { name ->
                     if (filter.accept(this@listFiles, name)) {
-                        val f = FileX(this@listFiles.path, name)
+                        val f = FileX11(this@listFiles.path, name)
                         qualifyingList.add(f)
                     }
                 }
@@ -70,19 +69,19 @@ fun FileX.listFiles(filter: FileXNameFilter): Array<FileX>?{
     return qualifyingList.toTypedArray()
 }
 
-fun FileX.listFiles(): Array<FileX>? = listFiles(null)
+fun FileX11.listFiles(): Array<FileX11>? = listFiles(null)
 
-fun FileX.listFiles(filter: ((file: FileX) -> Boolean)): Array<FileX>? =
-    listFiles(object : FileXFilter{
-        override fun accept(file: FileX): Boolean = filter(file)
+fun FileX11.listFiles(filter: ((file: FileX11) -> Boolean)): Array<FileX11>? =
+    listFiles(object : FileXFilter {
+        override fun accept(file: FileX11): Boolean = filter(file)
     })
 
-fun FileX.listFiles(filter: ((dir: FileX, name: String) -> Boolean)): Array<FileX>? =
-    listFiles(object : FileXNameFilter{
-        override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
+fun FileX11.listFiles(filter: ((dir: FileX11, name: String) -> Boolean)): Array<FileX11>? =
+    listFiles(object : FileXNameFilter {
+        override fun accept(dir: FileX11, name: String): Boolean = filter(dir, name)
     })
 
-fun FileX.list(filter: FileXFilter? = null): Array<String>?{
+fun FileX11.list(filter: FileXFilter? = null): Array<String>?{
     if (!this.isDirectory || documentId == null) return null
     val qualifyingList = ArrayList<String>(0)
     val childrenUri = getChildrenUri(documentId!!)
@@ -91,7 +90,7 @@ fun FileX.list(filter: FileXFilter? = null): Array<String>?{
         fCResolver.query(childrenUri, projection, null, null, null)?.run {
             while (moveToNext()) {
                 getString(0).let {
-                    val f = FileX(this@list.path, it)
+                    val f = FileX11(this@list.path, it)
                     if (filter == null || filter.accept(f))
                         qualifyingList.add(it)
                 }
@@ -105,7 +104,7 @@ fun FileX.list(filter: FileXFilter? = null): Array<String>?{
     return qualifyingList.toTypedArray()
 }
 
-fun FileX.list(filter: FileXNameFilter): Array<String>?{
+fun FileX11.list(filter: FileXNameFilter): Array<String>?{
     if (!this.isDirectory || documentId == null) return null
     val qualifyingList = ArrayList<String>(0)
     val childrenUri = getChildrenUri(documentId!!)
@@ -128,14 +127,14 @@ fun FileX.list(filter: FileXNameFilter): Array<String>?{
     return qualifyingList.toTypedArray()
 }
 
-fun FileX.list(): Array<String>? = list(null)
+fun FileX11.list(): Array<String>? = list(null)
 
-fun FileX.list(filter: ((file: FileX) -> Boolean)): Array<String>? =
-    list(object : FileXFilter{
-        override fun accept(file: FileX): Boolean = filter(file)
+fun FileX11.list(filter: ((file: FileX11) -> Boolean)): Array<String>? =
+    list(object : FileXFilter {
+        override fun accept(file: FileX11): Boolean = filter(file)
     })
 
-fun FileX.list(filter: ((dir: FileX, name: String) -> Boolean)): Array<String>? =
-    list(object : FileXNameFilter{
-        override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
+fun FileX11.list(filter: ((dir: FileX11, name: String) -> Boolean)): Array<String>? =
+    list(object : FileXNameFilter {
+        override fun accept(dir: FileX11, name: String): Boolean = filter(dir, name)
     })

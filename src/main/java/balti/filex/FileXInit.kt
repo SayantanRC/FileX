@@ -1,26 +1,30 @@
 package balti.filex
 
-import android.app.Activity.RESULT_OK
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
 import android.widget.Toast
-import balti.filex.utils.Constants.PREF_GLOBAL_ROOT_URI
-import balti.filex.activity.ActivityFunctionDelegate
-import balti.filex.utils.Tools
+import androidx.core.content.ContextCompat
+import balti.filex.filex11.FileX11
+import balti.filex.filex11.activity.ActivityFunctionDelegate
+import balti.filex.filex11.activity.TraditionalFileRequest
+import balti.filex.filex11.utils.RootUri
+import balti.filex.filex11.utils.Tools
 
-class FileXInit(context: Context) {
+class FileXInit(context: Context, val isTraditional: Boolean) {
     companion object{
         internal lateinit var fContext: Context
         private set
+
+        private var fisTraditional: Boolean = false
+
         internal val fCResolver by lazy { fContext.contentResolver }
-        internal val storageVolumes = HashMap<String, String?>(0)
 
         internal val DEBUG_TAG = "FILEX_TAG"
         internal val PREF_NAME = "filex"
-
-        internal val sharedPreferences by lazy { fContext.getSharedPreferences(PREF_NAME, MODE_PRIVATE) }
 
         internal fun tryIt(f: () -> Unit){
             try { f() } catch (e: Exception){
@@ -29,51 +33,33 @@ class FileXInit(context: Context) {
             }
         }
 
-        // public methods and variables
-        // *****************************************
+        internal val sharedPreferences by lazy { fContext.getSharedPreferences(PREF_NAME, MODE_PRIVATE) }
 
-        var refreshFileOnCreation = true
+        var refreshFileOnCreation: Boolean = true
+        val storageVolumes = HashMap<String, String?>(0)
 
-        fun setGlobalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null){
-            val uri = getGlobalRootUri()
-            if (uri == null) resetGlobalRootUri(afterJob)
-            else afterJob?.invoke(RESULT_OK, Intent().setData(uri))
+        fun isUserPermissionGranted(): Boolean{
+            return if (!fisTraditional) RootUri.getGlobalRootUri() != null
+            else {
+                ContextCompat.checkSelfPermission(fContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(fContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            }
         }
 
-        fun resetGlobalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null){
-            val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            ActivityFunctionDelegate(10,
-                Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                    flags = takeFlags
-                }) { context, _, resultCode, data ->
-                if (resultCode == RESULT_OK && data != null) {
-                    data.data?.let {
-                        context.contentResolver.takePersistableUriPermission(it, takeFlags)
-                        sharedPreferences.edit().run {
-                            putString(PREF_GLOBAL_ROOT_URI, it.toString())
-                            commit()
-                        }
-                        afterJob?.invoke(resultCode, data)
-                    }
+        fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
+            if (!fisTraditional) {
+                RootUri.resetGlobalRootUri(){resultCode, data ->
+                    onResult?.invoke(resultCode, data)
                 }
             }
-        }
-
-        fun getGlobalRootUri(): Uri? {
-            val gr = sharedPreferences.getString(PREF_GLOBAL_ROOT_URI, "")
-            if (gr == "") return null
             else {
-                try {
-                    val uri = Uri.parse(gr)
-                    fContext.contentResolver.persistedUriPermissions.forEach {
-                        if (it.uri == uri && it.isReadPermission && it.isWritePermission) return uri
-                    }
-                } catch (_: Exception){}
-                return null
+                ActivityFunctionDelegate({}, {_, resultCode, data ->
+                    onResult?.invoke(resultCode, data)
+                }, TraditionalFileRequest::class.java)
             }
         }
 
-        fun refreshStorageVolumes(){
+        fun refreshStorageVolumes() {
             storageVolumes.clear()
             Tools.getStorageVolumes().run {
                 this.keys.forEach {
@@ -84,6 +70,6 @@ class FileXInit(context: Context) {
     }
     init {
         fContext = context.applicationContext
-        refreshStorageVolumes()
+        fisTraditional = isTraditional
     }
 }
