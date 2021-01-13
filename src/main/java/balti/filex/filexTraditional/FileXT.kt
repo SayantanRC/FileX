@@ -10,9 +10,10 @@ class FileXT(path: String): FileX(false) {
     override var path: String = ""
     private set
 
+    val file: File
+
     init {
         this.path = removeLeadingTrailingSlashOrColon(path)
+        file = File(this.path)
     }
-
-    val file = File(path)
 }
