@@ -7,15 +7,16 @@ import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
+import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.getStringQuery
-import balti.filex.filex11.utils.Tools.removeRearSlash
 
 // public methods
 // *****************************************
 
 val FileX11.canonicalPath: String get() = "${volumePath}${storagePath}"
 val FileX11.absolutePath: String get() = canonicalPath
+val FileX11.rootPath: String get() = canonicalPath.let { it.substring(0, it.indexOf(path)) }
 
 val FileX11.storagePath: String get () =
     rootDocumentId.split(":").let {

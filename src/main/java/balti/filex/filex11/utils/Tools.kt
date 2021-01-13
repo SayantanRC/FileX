@@ -95,31 +95,6 @@ object Tools {
     internal fun FileX11.getStringQuery(field: String, documentId: String): String? =
         getStringQuery(field, buildTreeDocumentUriFromId(documentId))
 
-
-    @Suppress("NAME_SHADOWING")
-    internal fun removeLeadingTrailingSlashOrColon(path: String): String {
-        path.trim().let { path ->
-            if (path.isBlank()) return ""
-            val noFrontColon = if (path.startsWith(":")) {
-                if (path.length > 1) path.substring(1)
-                else ""
-            } else path
-            val withFrontSlash = noFrontColon.let { if (!it.startsWith("/")) "/$it" else it }
-            return removeRearSlash(withFrontSlash)
-        }
-    }
-
-    @Suppress("NAME_SHADOWING")
-    internal fun removeRearSlash(path: String): String {
-        path.trim().let { path ->
-            if (path.isBlank() || path == "/") return "/"
-            return if (path.last() == '/') {
-                if (path.length > 1) path.substring(0, path.length - 1)
-                else "/"
-            } else path
-        }
-    }
-
     internal fun checkUriExists(uri: Uri): Boolean{
         var result = false
         try {

@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
+import balti.filex.filexTraditional.FileXT
+import balti.filex.filexTraditional.operators.canonicalPath
 
 @RequiresApi(Build.VERSION_CODES.N)
 @TargetApi(Build.VERSION_CODES.N)
@@ -27,6 +29,16 @@ fun FileX11.renameTo(dest: FileX11): Boolean {
             else false
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.N)
+@TargetApi(Build.VERSION_CODES.N)
+fun FileX11.renameTo(dest: FileXT): Boolean {
+    return if (dest.canonicalPath.startsWith(rootPath)) {
+        val relativePath = dest.canonicalPath.substring(rootPath.length)
+        renameTo(FileX11(relativePath))
+    }
+    else false
 }
 
 fun FileX11.renameTo(newFileName: String): Boolean {

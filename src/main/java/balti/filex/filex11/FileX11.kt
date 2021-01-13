@@ -5,11 +5,11 @@ import android.provider.DocumentsContract
 import androidx.lifecycle.*
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.refreshFileOnCreation
+import balti.filex.Tools.removeLeadingTrailingSlashOrColon
 import balti.filex.filex11.exceptions.RootNotInitializedException
 import balti.filex.filex11.operators.refreshFile
 import balti.filex.filex11.utils.RootUri.getGlobalRootUri
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
-import balti.filex.filex11.utils.Tools.removeLeadingTrailingSlashOrColon
 
 
 class FileX11(path: String): FileX(false), LifecycleOwner {
