@@ -65,6 +65,8 @@ fun FileX11.createNewFile(optionalMimeType: String = "*/*", makeDirectories: Boo
     })
 }
 
+fun FileX11.createNewFile() = createNewFile(makeDirectories = false, overwriteIfExists = false)
+
 fun FileX11.mkdirs(): Boolean = traverse({ dir, nextDocId, childrenUri ->
         if (nextDocId == "") {
             getChildrenUri(DocumentsContract.createDocument(balti.filex.filex11.operators.cResolver, childrenUri, DocumentsContract.Document.MIME_TYPE_DIR, dir)!!)
