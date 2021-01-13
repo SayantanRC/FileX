@@ -7,7 +7,7 @@ import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.filex11.FileXServer
-import balti.filex.filex11.activity.ActivityFunctionDelegate
+import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.filex11.exceptions.DirectoryHierarchyBroken
 import balti.filex.filex11.exceptions.RootNotInitializedException
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId

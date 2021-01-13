@@ -1,14 +1,11 @@
 package balti.filex.filex11.utils
 
 import android.app.Activity
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.net.Uri
-import balti.filex.FileXInit.Companion.PREF_NAME
 import balti.filex.FileXInit.Companion.fContext
 import balti.filex.FileXInit.Companion.sharedPreferences
-import balti.filex.filex11.FileX11
-import balti.filex.filex11.activity.ActivityFunctionDelegate
+import balti.filex.activity.ActivityFunctionDelegate
 
 internal object RootUri {
 

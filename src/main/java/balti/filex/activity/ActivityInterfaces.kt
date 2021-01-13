@@ -1,4 +1,4 @@
-package balti.filex.filex11.activity
+package balti.filex.activity
 
 import android.app.Activity
 import android.content.Intent

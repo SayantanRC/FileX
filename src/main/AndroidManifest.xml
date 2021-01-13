@@ -3,7 +3,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application>
-        <activity android:name=".filex11.activity.SysFilePickerActivity"/>
-        <activity android:name=".filex11.activity.TraditionalFileRequest"/>
+        <activity android:name="balti.filex.activity.SysFilePickerActivity"/>
+        <activity android:name="balti.filex.activity.TraditionalFileRequest"
+            android:theme="@style/Theme.Transparent"
+            />
     </application>
 </manifest>

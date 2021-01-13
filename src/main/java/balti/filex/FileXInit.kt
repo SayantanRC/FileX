@@ -1,16 +1,14 @@
 package balti.filex
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import balti.filex.filex11.FileX11
-import balti.filex.filex11.activity.ActivityFunctionDelegate
-import balti.filex.filex11.activity.TraditionalFileRequest
+import balti.filex.activity.ActivityFunctionDelegate
+import balti.filex.activity.TraditionalFileRequest
 import balti.filex.filex11.utils.RootUri
 import balti.filex.filex11.utils.Tools
 

@@ -1,7 +1,6 @@
-package balti.filex.filex11.activity
+package balti.filex.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 
