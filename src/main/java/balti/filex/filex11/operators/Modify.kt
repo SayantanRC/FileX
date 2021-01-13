@@ -7,8 +7,10 @@ import androidx.annotation.RequiresApi
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
+import balti.filex.filex11.FileXServer
 import balti.filex.filexTraditional.FileXT
 import balti.filex.filexTraditional.operators.canonicalPath
+import balti.filex.filexTraditional.operators.renameTo
 
 @RequiresApi(Build.VERSION_CODES.N)
 @TargetApi(Build.VERSION_CODES.N)
@@ -22,8 +24,8 @@ fun FileX11.renameTo(dest: FileX11): Boolean {
             if (movedUri != null) {
                 tryIt { DocumentsContract.renameDocument(fCResolver, movedUri, dest.name) }
                 dest.refreshFile()
-                if (dest.exists()) balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, dest.uri, dest.path)
-                else balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, movedUri, dest.parent + "/" + name)
+                if (dest.exists()) FileXServer.setPathAndUri(rootUri!!, path, dest.uri, dest.path)
+                else FileXServer.setPathAndUri(rootUri!!, path, movedUri, dest.parent + "/" + name)
                 true
             }
             else false
@@ -38,7 +40,7 @@ fun FileX11.renameTo(dest: FileXT): Boolean {
         val relativePath = dest.canonicalPath.substring(rootPath.length)
         renameTo(FileX11(relativePath))
     }
-    else false
+    else FileXT(canonicalPath).renameTo(dest)
 }
 
 fun FileX11.renameTo(newFileName: String): Boolean {

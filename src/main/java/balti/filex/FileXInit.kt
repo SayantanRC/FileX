@@ -1,6 +1,7 @@
 package balti.filex
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
@@ -44,11 +45,14 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
             }
         }
 
-        fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
+        fun requestUserPermission(reRequest: Boolean = false, onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
             if (!fisTraditional) {
-                RootUri.resetGlobalRootUri(){resultCode, data ->
-                    onResult?.invoke(resultCode, data)
+                if (RootUri.getGlobalRootUri() == null || reRequest) {
+                    RootUri.resetGlobalRootUri() { resultCode, data ->
+                        onResult?.invoke(resultCode, data)
+                    }
                 }
+                else onResult?.invoke(Activity.RESULT_OK, null)
             }
             else {
                 ActivityFunctionDelegate({}, {_, resultCode, data ->
@@ -56,6 +60,9 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
                 }, TraditionalFileRequest::class.java)
             }
         }
+
+        fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) =
+            Companion.requestUserPermission(false, onResult)
 
         fun refreshStorageVolumes() {
             storageVolumes.clear()
