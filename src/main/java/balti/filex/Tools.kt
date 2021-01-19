@@ -2,7 +2,7 @@ package balti.filex
 
 internal object Tools {
     @Suppress("NAME_SHADOWING")
-    internal fun removeLeadingTrailingSlashOrColon(path: String): String {
+    internal fun removeTrailingSlashOrColonAddFrontSlash(path: String): String {
         path.trim().let { path ->
             if (path.isBlank()) return ""
             val noFrontColon = if (path.startsWith(":")) {

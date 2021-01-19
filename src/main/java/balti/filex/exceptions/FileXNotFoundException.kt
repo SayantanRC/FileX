@@ -1,4 +1,4 @@
-package balti.filex.filex11.exceptions
+package balti.filex.exceptions
 
 import java.io.FileNotFoundException
 

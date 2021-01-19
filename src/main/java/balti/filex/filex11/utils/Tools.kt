@@ -12,10 +12,10 @@ import androidx.documentfile.provider.DocumentFile
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
-import balti.filex.filex11.exceptions.RootNotInitializedException
+import balti.filex.exceptions.RootNotInitializedException
 
 object Tools {
-    fun traversePath(
+    internal fun traversePath(
         fileX: FileX11,
         fileFunc: (uri: Uri, name: String) -> Boolean?,
         directoryFunc: ((uri: Uri, name: String) -> Unit)? = null,

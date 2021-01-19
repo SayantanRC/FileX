@@ -18,7 +18,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         internal lateinit var fContext: Context
         private set
 
-        private var fisTraditional: Boolean = false
+        var fisTraditional: Boolean = false
 
         internal val fCResolver by lazy { fContext.contentResolver }
 

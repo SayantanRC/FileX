@@ -1,42 +1,39 @@
 package balti.filex.filexTraditional.operators
 
+import balti.filex.FileX
+import balti.filex.filex11.interfaces.FileXFilter
+import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
 import java.io.File
-import java.io.FileFilter
-import java.io.FilenameFilter
 
-val FileXT.isEmpty: Boolean get() =
-    if (isDirectory) {
-        file.list()?.isEmpty() ?: false
-    } else false
+internal class Filter(private val f: FileXT) {
 
-fun FileXT.listFiles(filter: FileFilter): Array<FileXT>? = convertToFileXT(file.listFiles(filter))
-fun FileXT.listFiles(filter: FilenameFilter): Array<FileXT>? = convertToFileXT(file.listFiles(filter))
-fun FileXT.listFiles(filter: (file: FileXT) -> Boolean): Array<FileXT>? {
-    return convertToFileXT(file.listFiles { pathname ->
-        filter(FileXT(pathname.canonicalPath))
-    })
-}
-fun FileXT.listFiles(filter: (dir: FileXT, name: String) -> Boolean): Array<FileXT>? {
-    return convertToFileXT(file.listFiles { dir, name ->
-        filter(FileXT(dir.canonicalPath), name)
-    })
-}
-fun FileXT.listFiles() = convertToFileXT(file.listFiles())
+    val isEmpty: Boolean
+        get() = f.run {
+            if (isDirectory) {
+                file.list()?.isEmpty() ?: false
+            } else false
+        }
 
-fun FileXT.list(filter: FileFilter): Array<String>? = file.listFiles()?.filter { filter.accept(it) }?.map { it.name }?.toTypedArray()
-fun FileXT.list(filter: FilenameFilter): Array<String>? = convertToStringArray(file.listFiles(filter))
-fun FileXT.list(filter: (file: FileXT) -> Boolean): Array<String>? {
-    return convertToStringArray(file.listFiles { pathname ->
-        filter(FileXT(pathname.canonicalPath))
+    fun listFiles(filter: FileXFilter): Array<FileX>? = f.file.listFiles()?.let {
+        convertToFileX(it.filter { filter.accept(FileXT(it)) })
+    }
+    fun listFiles(filter: FileXNameFilter): Array<FileX>? = convertToFileX(f.file.listFiles {
+        dir, name -> filter.accept(FileXT(dir), name)
     })
-}
-fun FileXT.list(filter: (dir: FileXT, name: String) -> Boolean): Array<String>? {
-    return convertToStringArray(file.listFiles { dir, name ->
-        filter(FileXT(dir.canonicalPath), name)
-    })
-}
-fun FileXT.list() = convertToStringArray(file.listFiles())
 
-private fun convertToFileXT(files: Array<File>?): Array<FileXT>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
-private fun convertToStringArray(files: Array<File>?): Array<String>? = files?.map { it.name }?.toTypedArray()
+    fun listFiles() = convertToFileX(f.file.listFiles())
+
+    fun list(filter: FileXFilter): Array<String>? = f.run {
+        file.listFiles()?.filter { filter.accept(FileXT(it)) }?.map { it.name }?.toTypedArray()
+    }
+    fun list(filter: FileXNameFilter): Array<String>? = convertToStringArray(f.file.listFiles{
+        dir, name -> filter.accept(FileXT(dir), name)
+    })
+
+    fun list() = convertToStringArray(f.file.listFiles())
+
+    private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
+    private fun convertToFileX(files: List<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
+    private fun convertToStringArray(files: Array<File>?): Array<String>? = files?.map { it.name }?.toTypedArray()
+}
