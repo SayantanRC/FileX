@@ -30,5 +30,3 @@ Log.d("Tag", f.canonicalPath)
 //   Output:  /storage/emulated/0/dir1/dir2/my/path/on/shared/storage
 ```
 Once a root is set, you can peacefully use methods like `createNewFile()` to create the document, and other known methods for further operation and new file/document creation.  
-
-See below for detailed explanation of the available methods.
