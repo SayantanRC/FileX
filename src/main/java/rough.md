@@ -47,3 +47,10 @@ listFiles()         -- done 20210104
 extension           -- done 20210104
 nameWithoutExtension-- done 20210104
 renameTo            -- done 20210104
+
+To build AAR: (AAR is located under - build/outputs/aar/FileX-release.aar)
+```
+export JAVA_HOME="$HOME/android-studio/jre/"
+./gradlew assembleRelease -xtest -xlint
+```
+
