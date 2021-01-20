@@ -1,5 +1,6 @@
 package balti.filex.filex11
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,6 +10,7 @@ import androidx.lifecycle.*
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.refreshFileOnCreation
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
+import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.ImproperFileXType
 import balti.filex.filex11.Extend.operators.Info
 import balti.filex.exceptions.RootNotInitializedException
@@ -34,6 +36,24 @@ internal class FileX11(path: String): FileX(false), LifecycleOwner {
             else docId.substring(rootId.length)
         }
     ) { this.uri = uri; rootUri = currentRootUri; }
+
+    fun setLocalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null) {
+        val JOB_CODE = 100
+        val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        ActivityFunctionDelegate(JOB_CODE,
+                Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                    flags = takeFlags
+                }) { context, resultCode, data ->
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                data.data?.let {
+                    context.contentResolver.takePersistableUriPermission(it, takeFlags)
+                    rootUri = it
+                    uri = buildTreeDocumentUriFromId(rootDocumentId)
+                    afterJob?.invoke(resultCode, data)
+                }
+            }
+        }
+    }
 
     var rootDocumentId: String = ""
     private set

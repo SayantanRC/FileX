@@ -22,9 +22,11 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val uri: Uri?
     //FileXT exclusive
     abstract val file: File?
-
     fun refreshFile() {
         if (this is FileX11) this.refreshFileX11()
+    }
+    fun resetRoot(onResult: ((resultCode: Int, data: Intent?) -> Unit)){
+        if (this is FileX11) this.setLocalRootUri(onResult)
     }
 
     //
