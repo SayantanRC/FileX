@@ -8,14 +8,13 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.DocumentsContract
-import androidx.documentfile.provider.DocumentFile
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
 import balti.filex.exceptions.RootNotInitializedException
 
 object Tools {
-    internal fun traversePath(
+    /*internal fun traversePath(
         fileX: FileX11,
         fileFunc: (uri: Uri, name: String) -> Boolean?,
         directoryFunc: ((uri: Uri, name: String) -> Unit)? = null,
@@ -39,7 +38,7 @@ object Tools {
             }
         }
         return true
-    }
+    }*/
 
     private val PRIMARY_VOLUME_NAME = "primary"
     private val DOWNLOADS_VOLUME_NAME = "downloads"
