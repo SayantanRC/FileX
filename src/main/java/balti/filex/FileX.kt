@@ -88,7 +88,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract fun renameTo(newFileName: String): Boolean
 
     //
-    // Modify
+    // Filter
     //
 
     abstract val isEmpty: Boolean
