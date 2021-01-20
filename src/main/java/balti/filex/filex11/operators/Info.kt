@@ -8,7 +8,6 @@ import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
-import balti.filex.filex11.operators.refreshFile
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.getStringQuery
 
