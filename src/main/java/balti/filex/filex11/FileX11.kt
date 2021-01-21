@@ -16,13 +16,17 @@ import balti.filex.filex11.Extend.operators.Info
 import balti.filex.exceptions.RootNotInitializedException
 import balti.filex.filex11.interfaces.FileXFilter
 import balti.filex.filex11.interfaces.FileXNameFilter
+import balti.filex.filex11.operators.*
 import balti.filex.filex11.operators.Create
 import balti.filex.filex11.operators.Delete
 import balti.filex.filex11.operators.Filter
 import balti.filex.filex11.operators.Modify
+import balti.filex.filex11.operators.Operations
 import balti.filex.filex11.utils.RootUri.getGlobalRootUri
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 
 internal class FileX11(path: String): FileX(false), LifecycleOwner {
@@ -180,4 +184,9 @@ internal class FileX11(path: String): FileX(false), LifecycleOwner {
     override fun list() = Filter.list()
     override fun list(filter: FileXFilter): Array<String>? = Filter.list(filter)
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
+    
+    private val Operations = Operations(this)
+
+    override fun inputStream(): InputStream? = Operations.inputStream()
+    override fun outputStream(): OutputStream? = Operations.outputStream()
 }

@@ -5,6 +5,8 @@ import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.filex11.utils.Tools.getChildrenUri
+import java.io.InputStream
+import java.io.OutputStream
 
 internal fun FileX11.refreshFileX11(){
     val dirs = if (path.length > 1) path.substring(1).split("/") else ArrayList(0)
@@ -32,6 +34,15 @@ internal fun FileX11.refreshFileX11(){
             balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, buildTreeDocumentUriFromId(nextDocId))
         }
     }
+}
+
+internal class Operations(private val f: FileX11) {
+
+    fun inputStream(): InputStream? =
+            f.uri?.let { fCResolver.openInputStream(it) }
+
+    fun outputStream(): OutputStream? =
+            f.uri?.let { fCResolver.openOutputStream(it) }
 }
 
 /*

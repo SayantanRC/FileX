@@ -8,6 +8,8 @@ import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.operators.refreshFileX11
 import balti.filex.filexTraditional.FileXT
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val path: String
@@ -114,4 +116,11 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
             list(object : FileXNameFilter{
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
+
+    //
+    // Operations
+    //
+
+    abstract fun inputStream(): InputStream?
+    abstract fun outputStream(): OutputStream?
 }
