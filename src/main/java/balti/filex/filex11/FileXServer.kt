@@ -3,7 +3,7 @@ package balti.filex.filex11
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 
-class FileXServer {
+internal class FileXServer {
     companion object{
         internal val pathAndUri = MutableLiveData<Quad<Uri, String, Uri?, String?>>().apply {
             value = Quad(Uri.EMPTY, "", null, null)
@@ -14,7 +14,7 @@ class FileXServer {
     }
 }
 
-public data class Quad<out A, out B, out C, out D>(
+internal data class Quad<out A, out B, out C, out D>(
     public val first: A,
     public val second: B,
     public val third: C,
