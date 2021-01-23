@@ -59,7 +59,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
     ...
-    <b>implementation 'com.github.SayantanRC:FileX:<u>alpha-1</u>'</b>
+    <b>implementation 'com.github.SayantanRC:FileX:<i>alpha-1</i>'</b>
 }
 </pre>
 
