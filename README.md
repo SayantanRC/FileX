@@ -41,6 +41,17 @@ However, based on this classification, some specific methods and attributes are 
 
 # Getting started
 
-The library is available on [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)
-Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.
-Check [this](https://stackoverflow.com/a/34919810/10967630) stack overflow answer on how to add AAR file.
+The library is available on [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)  
+1. In top level `build.gradle` file, in `allprojects` section, add jitpack as shown below.
+<pre>
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        ...
+        <b>maven { url 'https://jitpack.io' }</b>
+    }
+}
+</pre>
+Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
+Check [this](https://stackoverflow.com/a/34919810/10967630) stack overflow answer on how to add AAR file.  
