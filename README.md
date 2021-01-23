@@ -70,7 +70,8 @@ Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/F
 # Initialization
 
 ## Initialize the library
-In your `MainActivity` class, in `onCreate()` add the below line. This is only needed once in the entire app.
+In your `MainActivity` class, in `onCreate()` add the below line. This is only needed once in the entire app.  
+<b>This has to be before any `FileX` related operation or object creation is performed!!</b>  
 ```
 FileXInit(this, false)
 ```
