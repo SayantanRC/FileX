@@ -79,7 +79,7 @@ FileXInit(this, false)
 
 Alternately you can also initialise the `FileXInit()` method from a subclass of the `Application()` class if you have it in your app. 
 ### Manifest
-<pre>
+```
 <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/display_name"
@@ -89,7 +89,7 @@ Alternately you can also initialise the `FileXInit()` method from a subclass of 
         ...
         
 </application>
-</pre>
+```
 ### Application class
 <pre>
 class AppInstance: Application() {
