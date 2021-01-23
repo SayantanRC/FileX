@@ -67,9 +67,9 @@ Now you can use the library in the project.
 
 Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
 
-# Initialisation
+# Initialization
 
-## Initialise the library
+## Initialize the library
 In your `MainActivity` class, in `onCreate()` add the below line. This is only needed once in the entire app.
 ```
 FileXInit(this, false)
