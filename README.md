@@ -137,3 +137,6 @@ This creates a `FileXT` object i.e. with `isTraditional` = true even though the 
 | rootPath             | String?                                     | FileX11<br>(`isTraditional`<br>=false) | Returns the canonical path upto the root selected by the user.<br><b>Returns null for `FileXT`</b><br><br>Example: In the above scenario, rootPath = `/storage/emulated/0/dir1/dir2`                                                                      |
 | parentUri            | Uri?                                        | FileX11<br>(`isTraditional`<br>=false) | Returns the tree uri of the parent directory if present, else null.<br><b>Returns null for `FileXT`</b>                                                                                                                                                   |
 | isEmpty              | Boolean                                     | -                                      | Applicable on directories. Returns true if the directory is empty.                                                                                                                                                                                        |
+
+# Public methods for `FileX`
+
