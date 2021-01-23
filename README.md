@@ -37,7 +37,7 @@ Once a root is set, you can peacefully use methods like `createNewFile()` to cre
 ![Classification](/doc_assets/FX_classification.png)  
 
 This picture shows how FileX internally classifies itself as two different types based on the `isTraditional` argument. This is internal classification and you as user do not have to worry.  
-However, based on this classification, some specific methods and attributes are available based on this classification. Example `createFileUsingPicker()` is a method availble to `FileX11` objects, i.e. if `isTraditional` = false. But this method will throw an exception if used on `FileXT` object. These exclusive methods are expanded in a following section.
+However, based on this classification, some specific methods and attributes are available to specific types. Example `createFileUsingPicker()` is a method availble to `FileX11` objects, i.e. if `isTraditional` = false. But this method will throw an exception if used on `FileXT` object. These exclusive methods are expanded in a following section.
 
 # Getting started
 
