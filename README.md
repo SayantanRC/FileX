@@ -53,5 +53,17 @@ allprojects {
     }
 }
 </pre>
+2. Add dependency.
+<pre>
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.2'
+    ...
+    implementation 'com.github.SayantanRC:FileX:<b>alpha-1</b>'
+}
+</pre>
+
+Now you can use the library in the project.
+
 Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
 Check [this](https://stackoverflow.com/a/34919810/10967630) stack overflow answer on how to add AAR file.  
