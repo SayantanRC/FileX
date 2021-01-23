@@ -110,11 +110,11 @@ Here, the object `fx` gets its `isTraditional` parameter from the global paramet
 val fx = FileX.new("my/path", true)
 ```
 This creates a `FileXT` object i.e. with `isTraditional` = true even though the global value may be false.
-
-
+  
+  
 # Public attributes for `FileX`
-
-
+  
+  
 | Attribute name       | Return type<br>(`?` - null return possible) | Exclusively for                        | Description                                                                                                                                                                                                                                               |
 |----------------------|---------------------------------------------|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | uri                  | String?                                     | FileX11<br>(`isTraditional`<br>=false) | Returns Uri of the document.<br>If used on `FileX11`, returns the tree uri.  <br>If used on `FileXT`, returns `Uri.fromFile()`                                                                                                                            |
@@ -139,11 +139,11 @@ This creates a `FileXT` object i.e. with `isTraditional` = true even though the 
 | rootPath             | String?                                     | FileX11<br>(`isTraditional`<br>=false) | Returns the canonical path upto the root selected by the user.<br><b>Returns null for `FileXT`</b><br><br>Example: In the above scenario, rootPath = `/storage/emulated/0/dir1/dir2`                                                                      |
 | parentUri            | Uri?                                        | FileX11<br>(`isTraditional`<br>=false) | Returns the tree uri of the parent directory if present, else null.<br><b>Returns null for `FileXT`</b>                                                                                                                                                   |
 | isEmpty              | Boolean                                     | -                                      | Applicable on directories. Returns true if the directory is empty.                                                                                                                                                                                        |
-
-
+  
+  
 # Public methods for `FileX`
-
-
+  
+  
 | Method name                                                                                                                  | Return type<br>(`?` - null return possible) | Exclusively for                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | refreshFile()                                                                                                                | -                                           | FileX11<br>(`isTraditional`<br>=false) | <b>Not required by `FileXT`</b><br><br><br>If the document was not present during declaration of the FileX object, and the document is later created by any other app, then call `refreshFile()` on it to update the Uri pointing to the file.<br>Do note that if your app is itself creating the document, you need not call `refreshFile()` again.<br><br>Example:<br>```<br>val fx1 = FileX.new("aFile")<br>val fx2 = FileX.new("/aFile")<br>fx2.createNewFile()<br>```<br>In this case you need not call `refreshFile()` on `fx1`. However if any other app creates the document, then you will not be able to refer to it unless the file is refreshed. |
