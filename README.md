@@ -81,9 +81,8 @@ Alternately you can also initialise the `FileXInit()` method from a subclass of 
 ### Manifest
 ```
 <application
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/display_name"
-        <b>android:name=".AppInstance"</b>
+        ...
+        android:name=".AppInstance"
         ...
         >
         ...
