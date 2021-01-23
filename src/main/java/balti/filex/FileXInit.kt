@@ -55,10 +55,14 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
                 else onResult?.invoke(Activity.RESULT_OK, null)
             }
             else {
-                ActivityFunctionDelegate({}, {_, resultCode, data ->
-                    onResult?.invoke(resultCode, data)
-                }, TraditionalFileRequest::class.java)
+                requestTraditionalPermission(onResult)
             }
+        }
+
+        fun requestTraditionalPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null){
+            ActivityFunctionDelegate({}, {_, resultCode, data ->
+                onResult?.invoke(resultCode, data)
+            }, TraditionalFileRequest::class.java)
         }
 
         fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) =
@@ -74,6 +78,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         }
     }
     init {
+        refreshStorageVolumes()
         fContext = context.applicationContext
         fisTraditional = isTraditional
     }

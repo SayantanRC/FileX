@@ -1,4 +1,4 @@
-package balti.filex.filex11.Extend.operators
+package balti.filex.filex11.operators
 
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -25,8 +25,8 @@ internal class Info(private val f: FileX11) {
         }
 
     val volumePath: String
-        get() = f.uri.let {
-            f.rootDocumentId.split(":").let {
+        get() = f.run {
+            rootDocumentId.split(":").let {
                 if (it.isNotEmpty()) {
                     storageVolumes[it[0]].let { it ?: "" }
                 } else ""

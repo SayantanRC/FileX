@@ -78,7 +78,7 @@ internal class FileXT(path: String): FileX(false) {
 
     private val Filter = Filter(this)
 
-    override val isEmpty: Boolean = Filter.isEmpty
+    override val isEmpty: Boolean get () = Filter.isEmpty
     override fun listFiles(): Array<FileX>? = Filter.listFiles()
     override fun listFiles(filter: FileXFilter): Array<FileX>? = Filter.listFiles(filter)
     override fun listFiles(filter: FileXNameFilter): Array<FileX>? = Filter.listFiles(filter)
