@@ -76,7 +76,7 @@ In your `MainActivity` class, in `onCreate()` add the below line. This is only n
 FileXInit(this, false)
 ```
 - The first argument is the context of the class. `FileXInit` will internally get the application context from this context.  
-- The second argument is a global `isTraditional` attribute. All new FileX objects will take this value if not explicitly mentioned.  
+- The second argument is a <b>global</b> `isTraditional` attribute. All new FileX objects will take this value if not explicitly mentioned.  
 
 Alternately you can also initialise the `FileXInit()` method from a subclass of the `Application()` class if you have it in your app. 
 ### Manifest
@@ -99,3 +99,14 @@ class AppInstance: Application() {
     }
 }
 </pre>
+
+## Create FileX objects to work with
+Working with FileX objects is similar to working with Java File objects.
+```
+val fx = FileX.new("my/path")
+```
+Here, the object `fx` gets its `isTraditional` parameter from the global parameter defined in `FileXInit()`. If you wish to override it, you may declare as below:
+```
+val fx = FileX.new("my/path", true)
+```
+This creates a `FileXT` object i.e. with `isTraditional` = true even though the global value may be false.
