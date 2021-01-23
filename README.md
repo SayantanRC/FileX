@@ -66,3 +66,36 @@ dependencies {
 Now you can use the library in the project.
 
 Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
+
+# Initialisation
+
+## Initialise the library
+In your `MainActivity` class, in `onCreate()` add the below line. This is only needed once in the entire app.
+```
+FileXInit(this, false)
+```
+- The first argument is the context of the class. `FileXInit` will internally get the application context from this context.  
+- The second argument is a global `isTraditional` attribute. All new FileX objects will take this value if not explicitly mentioned.  
+
+Alternately you can also initialise the `FileXInit()` method from a subclass of the `Application()` class if you have it in your app. 
+### Manifest
+<pre>
+<application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/display_name"
+        <b>android:name=".AppInstance"</b>
+        ...
+        >
+        ...
+        
+</application>
+</pre>
+### Application class
+<pre>
+class AppInstance: Application() {
+    override fun onCreate() {
+        ...
+        <b>FileXInit(this, false)</b>
+    }
+}
+</pre>
