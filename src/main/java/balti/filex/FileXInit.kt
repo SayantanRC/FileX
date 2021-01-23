@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import balti.filex.activity.ActivityFunctionDelegate
@@ -18,7 +19,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         internal lateinit var fContext: Context
         private set
 
-        var fisTraditional: Boolean = false
+        internal var fisTraditional: Boolean = false
 
         internal val fCResolver by lazy { fContext.contentResolver }
 
@@ -78,8 +79,8 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         }
     }
     init {
-        refreshStorageVolumes()
         fContext = context.applicationContext
         fisTraditional = isTraditional
+        refreshStorageVolumes()
     }
 }
