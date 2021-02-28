@@ -20,7 +20,7 @@ internal class Info(private val f: FileX11) {
     val storagePath: String
         get() = f.run {
             rootDocumentId.split(":").let {
-                if (it.size > 1) "/${removeRearSlash(it[1])}$path" else path
+                if (it.size > 1 && it[1].isNotBlank()) "/${removeRearSlash(it[1])}$path" else path
             }
         }
 
