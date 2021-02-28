@@ -8,6 +8,7 @@ import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
+import balti.filex.filex11.utils.Constants.PROBABLE_MNT
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.getStringQuery
 
@@ -28,7 +29,9 @@ internal class Info(private val f: FileX11) {
         get() = f.run {
             rootDocumentId.split(":").let {
                 if (it.isNotEmpty()) {
-                    storageVolumes[it[0]].let { it ?: "" }
+                    storageVolumes[it[0]].let { vol ->
+                        vol ?: "$PROBABLE_MNT/${it[0]}"
+                    }
                 } else ""
             }
         }

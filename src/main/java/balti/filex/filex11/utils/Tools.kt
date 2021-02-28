@@ -11,6 +11,7 @@ import android.provider.DocumentsContract
 import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
 import balti.filex.filex11.FileX11
+import balti.filex.filex11.utils.Constants.PROBABLE_MNT
 import java.io.File
 
 object Tools {
@@ -86,7 +87,7 @@ object Tools {
                     storageVolume.uuid?.let { uuid ->
                         getIfExists(uuid).let {
                             if (it.isNotBlank()) allVolumes[uuid] = "$it/$uuid"
-                            else allVolumes[uuid] = "/mnt/media_rw/$uuid"
+                            else allVolumes[uuid] = "$PROBABLE_MNT/$uuid"
                         }
                     }
                 }
