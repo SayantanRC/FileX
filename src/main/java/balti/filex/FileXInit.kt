@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.util.Log
+import android.os.Build
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import balti.filex.activity.ActivityFunctionDelegate
@@ -62,9 +62,14 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         }
 
         fun requestTraditionalPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null){
-            ActivityFunctionDelegate({}, {_, resultCode, data ->
-                onResult?.invoke(resultCode, data)
-            }, TraditionalFileRequest::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityFunctionDelegate({}, { _, resultCode, data ->
+                    onResult?.invoke(resultCode, data)
+                }, TraditionalFileRequest::class.java)
+            }
+            else {
+                onResult?.invoke(Activity.RESULT_OK, null)
+            }
         }
 
         fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) =
