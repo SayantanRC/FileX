@@ -8,9 +8,10 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.DocumentsContract
-import balti.filex.filex11.FileX11
 import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
+import balti.filex.filex11.FileX11
+import java.io.File
 
 object Tools {
     /*internal fun traversePath(
@@ -45,30 +46,53 @@ object Tools {
 
     internal fun getStorageVolumes(): HashMap<String, String?> {
         val allVolumes = HashMap<String, String?>(0)
+        val mStorageManager: StorageManager = fContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+
+        // Android 11 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
-                val mStorageManager: StorageManager =
-                    fContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager
                 val storageVolumes: List<StorageVolume> = mStorageManager.storageVolumes
-                for (storageVolume in storageVolumes) {
+                storageVolumes.forEach { storageVolume ->
                     storageVolume.directory?.let {
-                        // primary volume?
                         if (storageVolume.isPrimary) allVolumes[PRIMARY_VOLUME_NAME] = it.path
-
-                        // other volumes?
                         val uuid: String? = storageVolume.uuid
                         if (uuid != null) allVolumes[uuid] = it.path
                     }
                 }
-                // not found.
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
+        // lower android versions
         else {
-            allVolumes[PRIMARY_VOLUME_NAME] = Environment.getExternalStorageDirectory()?.absolutePath
-            allVolumes[DOWNLOADS_VOLUME_NAME] = Environment.getExternalStorageDirectory()?.let { it.absolutePath + "/" + ACTUAL_DOWNLOAD_DIRECTORY_NAME }?: ""
+
+            // next two lines common for all lower android versions
+            Environment.getExternalStorageDirectory()?.absolutePath?.let { allVolumes[PRIMARY_VOLUME_NAME] = it }
+            Environment.getExternalStorageDirectory()?.let { allVolumes[DOWNLOADS_VOLUME_NAME] =  it.absolutePath + "/" + ACTUAL_DOWNLOAD_DIRECTORY_NAME }
+
+            // for Android N and above, useful to get SD-CARD paths
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                fun getIfExists(uuid: String): String {
+                    val expectedParents = arrayListOf(
+                            "/storage",
+                            // Fill here with other known accessible paths, if available
+                    )
+                    expectedParents.forEach {
+                        if (File(it, uuid).exists()) return it
+                    }
+                    return ""
+                }
+                mStorageManager.storageVolumes.forEach { storageVolume ->
+                    storageVolume.uuid?.let { uuid ->
+                        getIfExists(uuid).let {
+                            if (it.isNotBlank()) allVolumes[uuid] = "$it/$uuid"
+                            else allVolumes[uuid] = "/mnt/media_rw/$uuid"
+                        }
+                    }
+                }
+            }
         }
+
         return allVolumes
     }
 
