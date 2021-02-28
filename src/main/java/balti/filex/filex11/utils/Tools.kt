@@ -11,7 +11,6 @@ import android.provider.DocumentsContract
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
-import balti.filex.exceptions.RootNotInitializedException
 
 object Tools {
     /*internal fun traversePath(
@@ -52,13 +51,14 @@ object Tools {
                     fContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager
                 val storageVolumes: List<StorageVolume> = mStorageManager.storageVolumes
                 for (storageVolume in storageVolumes) {
-                    // primary volume?
-                    if (storageVolume.isPrimary) allVolumes[PRIMARY_VOLUME_NAME] =
-                        storageVolume.directory?.path
+                    storageVolume.directory?.let {
+                        // primary volume?
+                        if (storageVolume.isPrimary) allVolumes[PRIMARY_VOLUME_NAME] = it.path
 
-                    // other volumes?
-                    val uuid: String? = storageVolume.uuid
-                    if (uuid != null) allVolumes[uuid] = storageVolume.directory?.path
+                        // other volumes?
+                        val uuid: String? = storageVolume.uuid
+                        if (uuid != null) allVolumes[uuid] = it.path
+                    }
                 }
                 // not found.
             } catch (ex: Exception) {
