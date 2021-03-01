@@ -7,7 +7,6 @@ import balti.filex.filex11.interfaces.FileXFilter
 import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.operators.refreshFileX11
 import balti.filex.filexTraditional.FileXT
-import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -23,7 +22,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     //FileX11 exclusive
     abstract val uri: Uri?
     //FileXT exclusive
-    abstract val file: File?
+    abstract val file: java.io.File?
     fun refreshFile() {
         if (this is FileX11) this.refreshFileX11()
     }
@@ -88,6 +87,17 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     abstract fun renameTo(dest: FileX): Boolean
     abstract fun renameTo(newFileName: String): Boolean
+
+    //
+    // Copy
+    //
+
+    abstract fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX
+    /*abstract fun copyRecursively(
+        target: FileX,
+        overwrite: Boolean = false,
+        onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
+    ): Boolean*/
 
     //
     // Filter
