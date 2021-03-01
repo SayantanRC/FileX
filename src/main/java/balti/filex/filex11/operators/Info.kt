@@ -10,6 +10,7 @@ import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.utils.Constants.PROBABLE_MNT
 import balti.filex.filex11.utils.Tools.checkUriExists
+import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import balti.filex.filex11.utils.Tools.getStringQuery
 
 internal class Info(private val f: FileX11) {
@@ -80,7 +81,7 @@ internal class Info(private val f: FileX11) {
 
     val parentFile: FileX11? get() = parent?.let { FileX11(it) }
 
-    val parentUri: Uri? get() = parentFile?.uri
+    val parentUri: Uri? get() = if (parent != "/") parentFile?.uri else f.rootUri?.let { convertToDocumentUri(it) }
 
     val parentCanonical: String get() = canonicalPath.let { if (it.isNotBlank()) it.substring(0, it.lastIndexOf("/")) else "/" }
 
