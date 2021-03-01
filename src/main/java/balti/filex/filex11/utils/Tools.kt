@@ -121,12 +121,22 @@ object Tools {
 
     internal fun checkUriExists(uri: Uri): Boolean{
         var result = false
+        val evalUri =
+            (
+                    if (DocumentsContract.isDocumentUri(fContext, uri)) uri
+                    else try {
+                        DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri))
+                    }
+                    catch (_: Exception) { null }
+            ) ?: return false
         try {
-            val c = FileXInit.fCResolver.query(uri, null, null, null, null, null)
+            val c = FileXInit.fCResolver.query(evalUri, null, null, null, null, null)
             if (c != null && c.count > 0 && c.moveToFirst()) result = c.getString(4) != null
             c?.close()
         }
-        catch (_: Exception){}
+        catch (e: Exception){
+            e.printStackTrace()
+        }
         return result
     }
 
