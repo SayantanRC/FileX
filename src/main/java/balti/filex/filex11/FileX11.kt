@@ -6,21 +6,18 @@ import android.net.Uri
 import android.os.Build
 import android.provider.DocumentsContract
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.refreshFileOnCreation
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.ImproperFileXType
-import balti.filex.filex11.operators.Info
 import balti.filex.exceptions.RootNotInitializedException
 import balti.filex.filex11.interfaces.FileXFilter
 import balti.filex.filex11.interfaces.FileXNameFilter
-import balti.filex.filex11.operators.Create
-import balti.filex.filex11.operators.Delete
-import balti.filex.filex11.operators.Filter
-import balti.filex.filex11.operators.Modify
-import balti.filex.filex11.operators.Operations
+import balti.filex.filex11.operators.*
 import balti.filex.filex11.utils.RootUri.getGlobalRootUri
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import java.io.File
@@ -173,6 +170,11 @@ internal class FileX11(path: String): FileX(false), LifecycleOwner {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun renameTo(dest: FileX): Boolean = Modify.renameTo(dest)
     override fun renameTo(newFileName: String): Boolean = Modify.renameTo(newFileName)
+
+    private val Copy = Copy(this)
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun copyTo(target: FileX, overwrite: Boolean, bufferSize: Int): FileX = Copy.copyTo(target, overwrite, bufferSize)
 
     private val Filter = Filter(this)
 
