@@ -13,6 +13,7 @@ import balti.filex.filex11.utils.Constants.MNT_MEDIA_RW
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import balti.filex.filex11.utils.Tools.getStringQuery
+import java.util.*
 
 internal class Info(private val f: FileX11) {
 
@@ -35,7 +36,8 @@ internal class Info(private val f: FileX11) {
                     storageVolumes[uuid] ?:
                     when (Build.VERSION.SDK_INT) {
                         // fallback for Android M USB OTG
-                        Build.VERSION_CODES.M -> "$MNT_MEDIA_RW/$uuid"
+                        Build.VERSION_CODES.M ->
+                            if (uuid.toUpperCase(Locale.ROOT) == uuid && !uuid.contains('-')) "$MNT_MEDIA_RW/$uuid" else ""
                         else -> ""
                     }
                 } else ""
