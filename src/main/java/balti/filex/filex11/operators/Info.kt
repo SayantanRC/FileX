@@ -30,8 +30,15 @@ internal class Info(private val f: FileX11) {
         get() = f.run {
             FileXInit.refreshStorageVolumes()
 
+            // some file providers (Example: the Termux app) provide direct file path as the rootDocumentId
+            if (!rootDocumentId.contains(":") && rootDocumentId.startsWith("/")) {
+                rootDocumentId
+            }
+
+            // all other normal usage
+            else
             rootDocumentId.split(":").let {
-                //Log.d(FileXInit.DEBUG_TAG, "rootDocId: $rootDocumentId")
+                //Log.d(FileXInit.DEBUG_TAG, "rootDocId: $rootDocumentId split: $it")
                 if (it.isNotEmpty()) {
                     val uuid = it[0]
                     storageVolumes[uuid] ?: ""
