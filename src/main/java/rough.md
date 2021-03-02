@@ -51,6 +51,9 @@ renameTo            -- done 20210104
 inputStream()       -- done 20210121
 outputStream()      -- done 20210121
 
+`volumePath` working for:
+M,N,O,P,Q,R
+
 To build AAR: (AAR is located under - build/outputs/aar/FileX-release.aar)
 ```
 export JAVA_HOME="$HOME/android-studio/jre/"
