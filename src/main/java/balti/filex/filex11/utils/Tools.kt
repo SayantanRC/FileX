@@ -71,11 +71,15 @@ object Tools {
             Environment.getExternalStorageDirectory()?.absolutePath?.let { allVolumes[PRIMARY_VOLUME_NAME] = it }
             Environment.getExternalStorageDirectory()?.let { allVolumes[DOWNLOADS_VOLUME_NAME] =  it.absolutePath + "/" + ACTUAL_DOWNLOAD_DIRECTORY_NAME }
 
+            val STOARGE_RAW_PATH = "/storage"
+            val SELF_NAME = "self"
+            val EMULATED_NAME = "emulated"
+
             // for Android N and above, useful to get SD-CARD paths
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 fun getIfExists(uuid: String): String {
                     val expectedParents = arrayListOf(
-                            "/storage",
+                            STOARGE_RAW_PATH,
                             // Fill here with other known accessible paths, if available
                     )
                     expectedParents.forEach {
@@ -92,6 +96,17 @@ object Tools {
                     }
                 }
             }
+            // For Android M
+            else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+                val storageDir = File(STOARGE_RAW_PATH)
+                storageDir.list()?.run {
+                    forEach {
+                        if (it != SELF_NAME && it != EMULATED_NAME)
+                            allVolumes[it] = "$STOARGE_RAW_PATH/$it"
+                    }
+                }
+            }
+            // No known way to find for Android L
         }
 
         return allVolumes
