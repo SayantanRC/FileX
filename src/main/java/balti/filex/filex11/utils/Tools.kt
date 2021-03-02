@@ -44,8 +44,10 @@ object Tools {
     }*/
 
     private val PRIMARY_VOLUME_NAME = "primary"
-    private val DOWNLOADS_VOLUME_NAME = "downloads"
-    private val ACTUAL_DOWNLOAD_DIRECTORY_NAME = "Download"
+    private val predefinedVolNames = HashMap<String, String>().apply {
+        this["downloads"] = "Download"
+        this["home"] = "Documents"
+    }
 
     internal fun getStorageVolumes(): HashMap<String, String?> {
         val allVolumes = HashMap<String, String?>(0)
@@ -71,7 +73,11 @@ object Tools {
 
             // next two lines common for all lower android versions
             Environment.getExternalStorageDirectory()?.absolutePath?.let { allVolumes[PRIMARY_VOLUME_NAME] = it }
-            Environment.getExternalStorageDirectory()?.let { allVolumes[DOWNLOADS_VOLUME_NAME] =  it.absolutePath + "/" + ACTUAL_DOWNLOAD_DIRECTORY_NAME }
+            Environment.getExternalStorageDirectory()?.absolutePath?.let { storagePath ->
+                predefinedVolNames.forEach { vol ->
+                    allVolumes[vol.key] = "$storagePath/${vol.value}"
+                }
+            }
 
             val STOARGE_RAW_PATH = "/storage"
             val SELF_NAME = "self"
