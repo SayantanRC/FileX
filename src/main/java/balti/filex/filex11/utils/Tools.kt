@@ -13,6 +13,8 @@ import balti.filex.FileXInit.Companion.fContext
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.utils.Constants.MNT_MEDIA_RW
 import java.io.File
+import java.util.*
+import kotlin.collections.HashMap
 
 object Tools {
     /*internal fun traversePath(
@@ -101,8 +103,21 @@ object Tools {
                 val storageDir = File(STOARGE_RAW_PATH)
                 storageDir.list()?.run {
                     forEach {
-                        if (it != SELF_NAME && it != EMULATED_NAME)
-                            allVolumes[it] = "$STOARGE_RAW_PATH/$it"
+                        if (it != SELF_NAME && it != EMULATED_NAME) {
+                            // check for USB devices.
+                            // Observation: USB OTG drives are mounted as names in all capital letters and no hyphen (-)
+                            // Although they are available under /storage/..., they are neither readable nor writable.
+                            // Oddly this location of the USB OTG drive (under /storage/...) is also not accessible with
+                            // any root explorer or root based processes. It always displays empty.
+                            // However USB OTG is also mounted at /mnt/media_rw, with same name.
+                            // This location is also not readable/writable, but is accessible to any root based file explorer.
+                            // Hence it is at-least somewhat usable than the location under /storage/...
+                            if (it.toUpperCase(Locale.ROOT) == it && !it.contains('-'))
+                                allVolumes[it] = "$MNT_MEDIA_RW/$it"
+
+                            // for SD-CARD
+                            else allVolumes[it] = "$STOARGE_RAW_PATH/$it"
+                        }
                     }
                 }
             }
