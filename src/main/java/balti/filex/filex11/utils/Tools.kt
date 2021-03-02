@@ -112,12 +112,14 @@ object Tools {
                         if (it != SELF_NAME && it != EMULATED_NAME) {
                             // check for USB devices.
                             // Observation: USB OTG drives are mounted as names in all capital letters and no hyphen (-)
-                            // Although they are available under /storage/..., they are neither readable nor writable.
-                            // Oddly this location of the USB OTG drive (under /storage/...) is also not accessible with
-                            // any root explorer or root based processes. It always displays empty.
-                            // However USB OTG is also mounted at /mnt/media_rw, with same name.
-                            // This location is also not readable/writable, but is accessible to any root based file explorer.
-                            // Hence it is at-least somewhat usable than the location under /storage/...
+                            // IF they are available under /storage/..., they are neither readable nor writable.
+                                // Oddly this location of the USB OTG drive (under /storage/...) is also not accessible with
+                                // any root explorer or root based processes. It always displays empty.
+                                // However USB OTG is also mounted at /mnt/media_rw, with same name.
+                                // This location is also not readable/writable, but is accessible to any root based file explorer.
+                                // Hence it is at-least somewhat usable than the location under /storage/...
+                            // Sometimes USB OTG devices are mounted under /storage but not returned in File.list()
+                                // In that case, `volumePath` returns directly $MNT_MEDIA_RW/uuid
                             if (it.toUpperCase(Locale.ROOT) == it && !it.contains('-'))
                                 allVolumes[it] = "$MNT_MEDIA_RW/$it"
 

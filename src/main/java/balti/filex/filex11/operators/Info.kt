@@ -1,6 +1,7 @@
 package balti.filex.filex11.operators
 
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
 import android.system.Os
 import balti.filex.FileXInit.Companion.fCResolver
@@ -8,6 +9,7 @@ import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
+import balti.filex.filex11.utils.Constants.MNT_MEDIA_RW
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import balti.filex.filex11.utils.Tools.getStringQuery
@@ -29,7 +31,13 @@ internal class Info(private val f: FileX11) {
         get() = f.run {
             rootDocumentId.split(":").let {
                 if (it.isNotEmpty()) {
-                    storageVolumes[it[0]] ?: ""
+                    val uuid = it[0]
+                    storageVolumes[uuid] ?:
+                    when (Build.VERSION.SDK_INT) {
+                        // fallback for Android M USB OTG
+                        Build.VERSION_CODES.M -> "$MNT_MEDIA_RW/$uuid"
+                        else -> ""
+                    }
                 } else ""
             }
         }
