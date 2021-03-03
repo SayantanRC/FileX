@@ -180,11 +180,6 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     override fun renameTo(dest: FileX): Boolean = Modify.renameTo(dest)
     override fun renameTo(newFileName: String): Boolean = Modify.renameTo(newFileName)
 
-    private val Copy = Copy(this)
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun copyTo(target: FileX, overwrite: Boolean, bufferSize: Int): FileX = Copy.copyTo(target, overwrite, bufferSize)
-
     private val Filter = Filter(this)
 
     override val isEmpty: Boolean get() = Filter.isEmpty

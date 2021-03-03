@@ -1,15 +1,10 @@
-package balti.filex.filex11.operators
+package balti.filex
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import balti.filex.FileX
 import balti.filex.exceptions.FileXAlreadyExists
 import balti.filex.exceptions.FileXNotFoundException
-import balti.filex.filex11.FileX11
 
-internal class Copy(private val f: FileX11) {
+internal class Copy(private val f: FileX) {
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX {
 
         if (!f.exists()) {
@@ -44,6 +39,14 @@ internal class Copy(private val f: FileX11) {
         }
 
         return target
+    }
+
+    fun copyRecursively(
+            target: FileX,
+            overwrite: Boolean = false,
+            onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
+    ): Boolean {
+        TODO("Not yet implemented")
     }
 
 }

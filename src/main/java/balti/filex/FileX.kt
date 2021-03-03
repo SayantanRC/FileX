@@ -92,12 +92,14 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     // Copy
     //
 
-    abstract fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX
-    /*abstract fun copyRecursively(
+    private val Copy = Copy(this)
+
+    fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE) = Copy.copyTo(target, overwrite, bufferSize)
+    fun copyRecursively(
         target: FileX,
         overwrite: Boolean = false,
         onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
-    ): Boolean*/
+    ): Boolean = Copy.copyRecursively(target, overwrite, onError)
 
     //
     // Filter

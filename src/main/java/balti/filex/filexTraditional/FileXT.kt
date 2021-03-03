@@ -76,12 +76,6 @@ internal class FileXT(path: String): FileX(false) {
     override fun renameTo(dest: FileX): Boolean = Modify.renameTo(dest)
     override fun renameTo(newFileName: String): Boolean = Modify.renameTo(newFileName)
 
-    override fun copyTo(target: FileX, overwrite: Boolean, bufferSize: Int): FileX {
-        file.copyTo(target.file!!, overwrite, bufferSize).let {
-            return FileXT(it.canonicalPath)
-        }
-    }
-
     private val Filter = Filter(this)
 
     override val isEmpty: Boolean get () = Filter.isEmpty
