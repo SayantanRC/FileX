@@ -96,7 +96,7 @@ internal class Info(private val f: FileX11) {
             }
         }
 
-    val parentFile: FileX11? get() = parent?.let { FileX11(it) }
+    val parentFile: FileX11? get() = parent?.let { FileX11(it, currentRootUri = f.rootUri) }
 
     val parentUri: Uri? get() = if (parent != "/") parentFile?.uri else f.rootUri?.let { convertToDocumentUri(it) }
 

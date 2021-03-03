@@ -2,8 +2,8 @@ package balti.filex.filex11.operators
 
 import android.provider.DocumentsContract
 import balti.filex.FileX
-import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
+import balti.filex.filex11.FileX11
 import balti.filex.filex11.interfaces.FileXFilter
 import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.utils.Tools.getChildrenUri
@@ -35,7 +35,7 @@ internal class Filter(private val f: FileX11) {
         try {
             fCResolver.query(childrenUri, projection, null, null, null)?.run {
                 while (moveToNext()) {
-                    val f = FileX11(path + "/" + getString(0))
+                    val f = FileX11(path + "/" + getString(0), rootUri)
                     if (filter == null || filter.accept(f))
                         qualifyingList.add(f)
                 }
@@ -57,7 +57,7 @@ internal class Filter(private val f: FileX11) {
                 while (moveToNext()) {
                     getString(0).let { name ->
                         if (filter.accept(f, name)) {
-                            val f = FileX11("$path/$name")
+                            val f = FileX11("$path/$name", rootUri)
                             qualifyingList.add(f)
                         }
                     }
@@ -81,7 +81,7 @@ internal class Filter(private val f: FileX11) {
             fCResolver.query(childrenUri, projection, null, null, null)?.run {
                 while (moveToNext()) {
                     getString(0).let {
-                        val f = FileX11("$path/$it")
+                        val f = FileX11("$path/$it", rootUri)
                         if (filter == null || filter.accept(f))
                             qualifyingList.add(it)
                     }

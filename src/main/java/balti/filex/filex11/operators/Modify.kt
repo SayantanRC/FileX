@@ -5,9 +5,9 @@ import android.os.Build
 import android.provider.DocumentsContract
 import androidx.annotation.RequiresApi
 import balti.filex.FileX
-import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
+import balti.filex.filex11.FileX11
 import balti.filex.filex11.FileXServer
 import balti.filex.filexTraditional.FileXT
 
@@ -48,14 +48,14 @@ internal class Modify(private val f: FileX11) {
     private fun renameTo(dest: FileXT): Boolean = f.run {
         return if (dest.canonicalPath.startsWith(rootPath)) {
             val relativePath = dest.canonicalPath.substring(rootPath.length)
-            renameTo(FileX11(relativePath))
+            renameTo(FileX11(relativePath, rootUri))
         } else FileXT(canonicalPath).renameTo(dest)
     }
 
     fun renameTo(newFileName: String): Boolean = f.run{
         tryIt { DocumentsContract.renameDocument(fCResolver, uri!!, newFileName) }
         val newFilePath = "$parent/$newFileName"
-        return FileX11(newFilePath).let {
+        return FileX11(newFilePath, rootUri).let {
             if (exists()) {
                 FileXServer.setPathAndUri(rootUri!!, path, it.uri, newFilePath)
                 true
