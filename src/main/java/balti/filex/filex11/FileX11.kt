@@ -20,12 +20,14 @@ import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.operators.*
 import balti.filex.filex11.utils.RootUri.getGlobalRootUri
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
+import balti.filex.filex11.utils.Tools.checkUriExists
+import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
 
-internal class FileX11(path: String): FileX(false), LifecycleOwner {
+internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false), LifecycleOwner {
 
     internal constructor(uri: Uri, currentRootUri: Uri) : this(
         currentRootUri.let {
@@ -85,7 +87,12 @@ internal class FileX11(path: String): FileX(false), LifecycleOwner {
 
     private val lifecycleRegistry: LifecycleRegistry
 
-    private fun init(initPath: String? = null){
+    private fun init(initPath: String? = null, currentRootUri: Uri? = null){
+        currentRootUri?.let{ root ->
+            convertToDocumentUri(root)?.let { conv ->
+                if (checkUriExists(conv)) rootUri = root
+            }
+        }
         if (rootUri == null) rootUri = getGlobalRootUri().apply {
             if (this == null) throw RootNotInitializedException("Global root uri not set")
         }
@@ -98,7 +105,7 @@ internal class FileX11(path: String): FileX(false), LifecycleOwner {
     }
 
     init {
-        init(path)
+        init(path, currentRootUri)
         lifecycleRegistry = LifecycleRegistry(this)
         FileXServer.pathAndUri.observe(this) {
             if (it.first == rootUri && it.second == this.path && it.third != null) {
