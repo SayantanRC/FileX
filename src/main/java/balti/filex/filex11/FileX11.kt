@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import balti.filex.FileX
+import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.refreshFileOnCreation
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.activity.ActivityFunctionDelegate
@@ -90,7 +91,8 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     private fun init(initPath: String? = null, currentRootUri: Uri? = null){
         currentRootUri?.let{ root ->
             convertToDocumentUri(root)?.let { conv ->
-                if (checkUriExists(conv)) rootUri = root
+                val permissibleUris = fCResolver.persistedUriPermissions.map { it.uri }
+                if (checkUriExists(conv) && permissibleUris.contains(root)) rootUri = root
             }
         }
         if (rootUri == null) rootUri = getGlobalRootUri().apply {
