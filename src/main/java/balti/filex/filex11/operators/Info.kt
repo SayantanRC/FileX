@@ -1,6 +1,7 @@
 package balti.filex.filex11.operators
 
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
 import android.system.Os
 import balti.filex.FileXInit
@@ -11,6 +12,7 @@ import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.convertToDocumentUri
+import balti.filex.filex11.utils.Tools.deduceVolumePathForLollipop
 import balti.filex.filex11.utils.Tools.getStringQuery
 
 internal class Info(private val f: FileX11) {
@@ -36,13 +38,19 @@ internal class Info(private val f: FileX11) {
             }
 
             // all other normal usage
-            else
-            rootDocumentId.split(":").let {
+            else rootDocumentId.split(":").let {
                 //Log.d(FileXInit.DEBUG_TAG, "rootDocId: $rootDocumentId split: $it")
-                if (it.isNotEmpty()) {
+                var volPathFound: String = if (it.isNotEmpty()) {
                     val uuid = it[0]
                     storageVolumes[uuid] ?: ""
                 } else ""
+
+                // For Android L
+                if (volPathFound.isBlank() && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    volPathFound = this.deduceVolumePathForLollipop()
+                }
+
+                volPathFound
             }
         }
 

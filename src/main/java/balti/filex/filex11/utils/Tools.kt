@@ -1,5 +1,6 @@
 package balti.filex.filex11.utils
 
+import android.annotation.TargetApi
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -12,7 +13,11 @@ import balti.filex.FileXInit
 import balti.filex.FileXInit.Companion.fContext
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.utils.Constants.MNT_MEDIA_RW
+import balti.filex.filex11.utils.Constants.STOARGE_RAW_PATH
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 object Tools {
     /*internal fun traversePath(
@@ -77,7 +82,6 @@ object Tools {
                 }
             }
 
-            val STOARGE_RAW_PATH = "/storage"
             val SELF_NAME = "self"
             val EMULATED_NAME = "emulated"
 
@@ -126,12 +130,49 @@ object Tools {
                     }
                 }
             }
-            // No known way to find for Android L
+            // No reliable way to find volumes for Android L
+            // please check deduceVolumePathForLollipop() below which is called from Info.volumePath
+
         }
 
         return allVolumes
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    internal fun FileX11.deduceVolumePathForLollipop(): String {
+        val rawStorageDir = File(STOARGE_RAW_PATH)
+
+        fun generateRandomFileName(): String {
+            val currentTime = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.ROOT).format(Calendar.getInstance().time)
+            val randomNumber = (10000000..99999999).random()
+            return "$currentTime$randomNumber"
+        }
+
+        val randomFileName = generateRandomFileName()
+
+        // create a random file in the root uri
+        val testFile = FileX11(path = "/.$randomFileName", currentRootUri = rootUri)
+        testFile.createNewFile()
+        val testFileStoragePath = testFile.storagePath
+        val testFileLastModified = testFile.lastModified()
+
+        val filteredRawStorages = rawStorageDir.listFiles()?.filter { it.canWrite() } ?: listOf()
+
+        // check for the above created file in all possible locations and return when found
+        for (f in filteredRawStorages) {
+            File(f, testFileStoragePath).run {
+                if (exists() && testFileLastModified == lastModified()) {
+                    // found. delete and return.
+                    delete()
+                    return f.canonicalPath
+                }
+            }
+        }
+
+        // not found. delete and return empty string.
+        testFile.delete()
+        return ""
+    }
 
     internal fun FileX11.buildTreeDocumentUriFromId(documentId: String): Uri{
         return Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(rootUri!!.authority)
