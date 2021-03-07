@@ -20,31 +20,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 object Tools {
-    /*internal fun traversePath(
-        fileX: FileX11,
-        fileFunc: (uri: Uri, name: String) -> Boolean?,
-        directoryFunc: ((uri: Uri, name: String) -> Unit)? = null,
-        autoCreateSubDirectories: Boolean = true
-    ): Boolean {
-
-        if (fileX.rootUri == null) throw RootNotInitializedException("Root uri not initialised")
-
-        val parts = fileX.path.split("/")
-        var previousUri: Uri = fileX.rootUri!!
-        for (i in parts.indices){
-            if (i == parts.size-1) return fileFunc(previousUri, parts[i])?: false
-            else {
-                val df = DocumentFile.fromTreeUri(fContext, previousUri)
-                val sub = df?.run { findFile(parts[i])?: if (autoCreateSubDirectories) createDirectory(parts[i]) else null }
-                val subUri = sub?.uri
-                if (subUri != null && sub.isDirectory) {
-                    previousUri = subUri
-                    directoryFunc?.invoke(previousUri, parts[i])
-                } else { directoryFunc?.invoke(Uri.EMPTY, parts[i]); return false }
-            }
-        }
-        return true
-    }*/
 
     private val PRIMARY_VOLUME_NAME = "primary"
     private val predefinedVolNames = HashMap<String, String>().apply {
