@@ -5,8 +5,8 @@ import android.net.Uri
 import balti.filex.FileX
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.exceptions.ImproperFileXType
-import balti.filex.filex11.interfaces.FileXFilter
-import balti.filex.filex11.interfaces.FileXNameFilter
+import balti.filex.filex11.publicInterfaces.FileXFilter
+import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.operators.Filter
 import balti.filex.filexTraditional.operators.Modify
 import java.io.File

@@ -16,9 +16,9 @@ import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.ImproperFileXType
 import balti.filex.exceptions.RootNotInitializedException
-import balti.filex.filex11.interfaces.FileXFilter
-import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.operators.*
+import balti.filex.filex11.publicInterfaces.FileXFilter
+import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filex11.utils.RootUri.getGlobalRootUri
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.filex11.utils.Tools.checkUriExists

@@ -1,7 +1,6 @@
-package balti.filex.filex11.interfaces
+package balti.filex.filex11.publicInterfaces
 
 import balti.filex.FileX
-import balti.filex.filex11.FileX11
 
 interface FileXFilter {
     fun accept(file: FileX): Boolean

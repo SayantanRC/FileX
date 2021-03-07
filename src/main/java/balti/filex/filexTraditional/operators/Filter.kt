@@ -1,8 +1,8 @@
 package balti.filex.filexTraditional.operators
 
 import balti.filex.FileX
-import balti.filex.filex11.interfaces.FileXFilter
-import balti.filex.filex11.interfaces.FileXNameFilter
+import balti.filex.filex11.publicInterfaces.FileXFilter
+import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
 import java.io.File
 

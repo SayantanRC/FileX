@@ -3,9 +3,9 @@ package balti.filex
 import android.content.Intent
 import android.net.Uri
 import balti.filex.filex11.FileX11
-import balti.filex.filex11.interfaces.FileXFilter
-import balti.filex.filex11.interfaces.FileXNameFilter
 import balti.filex.filex11.operators.refreshFileX11
+import balti.filex.filex11.publicInterfaces.FileXFilter
+import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
 import java.io.InputStream
 import java.io.OutputStream
