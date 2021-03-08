@@ -1,7 +1,7 @@
 package balti.filex
 
-import balti.filex.exceptions.FileXAlreadyExists
-import balti.filex.exceptions.FileXNotFoundException
+import balti.filex.exceptions.*
+import java.io.IOException
 
 internal class Copy(private val f: FileX) {
 
@@ -45,8 +45,65 @@ internal class Copy(private val f: FileX) {
             target: FileX,
             overwrite: Boolean = false,
             onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
-    ): Boolean {
-        TODO("Not yet implemented")
+    ): Boolean = f.run {
+        if (!exists()) {
+            return onError(this, NoSuchFileException(file = this, reason = "The source file doesn't exist.")) !=
+                    OnErrorAction.TERMINATE
+        }
+        try {
+            // We cannot break for loop from inside a lambda, so we have to use an exception here
+            for (src in walkTopDown().onFail { f, e -> if (onError(f, e) == OnErrorAction.TERMINATE) throw FileSystemException(f) }) {
+                if (!src.exists()) {
+                    if (onError(src, NoSuchFileException(file = src, reason = "The source file doesn't exist.")) ==
+                            OnErrorAction.TERMINATE)
+                        return false
+                } else {
+
+                    // own logic: different from kotlin.io.copyRecursively()
+                    val relPath = src.canonicalPath.substring(this.canonicalPath.length).let {
+                        // remove leading '/'
+                        if (it.startsWith('/')) it.substring(1)
+                        else it
+                    }
+                    val targetPath = target.path.let {
+                        // add trailing '/'
+                        if (it.endsWith('/')) it else "$it/"
+                    }
+                    val dstFile = FileX.new("${targetPath}$relPath")
+                    // *****
+
+                    if (dstFile.exists() && !(src.isDirectory && dstFile.isDirectory)) {
+                        val stillExists = if (!overwrite) true else {
+                            if (dstFile.isDirectory)
+                                !dstFile.deleteRecursively()
+                            else
+                                !dstFile.delete()
+                        }
+
+                        if (stillExists) {
+                            if (onError(dstFile, FileAlreadyExistsException(file = src,
+                                            other = dstFile,
+                                            reason = "The destination file already exists.")) == OnErrorAction.TERMINATE)
+                                return false
+
+                            continue
+                        }
+                    }
+
+                    if (src.isDirectory) {
+                        dstFile.mkdirs()
+                    } else {
+                        if (src.copyTo(dstFile, overwrite).length() != src.length()) {
+                            if (onError(src, IOException("Source file wasn't copied completely, length of destination file differs.")) == OnErrorAction.TERMINATE)
+                                return false
+                        }
+                    }
+                }
+            }
+            return true
+        } catch (e: FileSystemException) {
+            return false
+        }
     }
 
 }
