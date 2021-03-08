@@ -7,8 +7,10 @@ import balti.filex.filex11.operators.refreshFileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
+import java.io.BufferedWriter
 import java.io.InputStream
 import java.io.OutputStream
+import java.io.OutputStreamWriter
 
 abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val path: String
@@ -134,5 +136,47 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     //
 
     abstract fun inputStream(): InputStream?
-    abstract fun outputStream(): OutputStream?
+
+    /**
+     * Taken from [android.content.ContentProvider.openAssetFile]
+     *
+     * @param mode Access mode for the file.  May be "r" for read-only access,
+     * "w" for write-only access (erasing whatever data is currently in
+     * the file), "wa" for write-only access to append to any existing data,
+     * "rw" for read and write access on any existing data, and "rwt" for read
+     * and write access that truncates any existing file.
+     */
+    abstract fun outputStream(mode: String = "w"): OutputStream?
+
+    fun startWriting(writer: Writer, append: Boolean = false){
+        writer.setFileX(this, append)
+        writer.writeLines()
+        writer.close()
+    }
+
+    abstract class Writer{
+        private var writer: BufferedWriter? = null
+        internal fun setFileX(file: FileX, append: Boolean) = file.run {
+            writer = BufferedWriter(OutputStreamWriter(
+                    outputStream(
+                            if (append) "wa" else "rwt"
+                            // "rwt" wipes the file clean before writing.
+                            // This is seen to be the behaviour in FileWriter.
+
+                            // "rw", "w" they start replacing the lines from top. If the file has
+                            // 3 lines and append = false and only 1 line is written, the first line
+                            // of the file is replaced with the new content. The rest 2 lines which
+                            // were present previously remains unchanged.
+                    )
+            ))
+        }
+        abstract fun writeLines()
+        fun writeLine(line: String) {
+            writeString("$line\n")
+        }
+        fun writeString(line: String) = writer?.run {
+            write(line)
+        }
+        internal fun close() = writer?.close()
+    }
 }
