@@ -22,7 +22,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     //FileX11 exclusive
     abstract val uri: Uri?
     //FileXT exclusive
-    abstract val file: java.io.File?
+    abstract val file: java.io.File
     fun refreshFile() {
         if (this is FileX11) this.refreshFileX11()
     }
