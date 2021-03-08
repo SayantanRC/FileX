@@ -1,6 +1,6 @@
 package balti.filex
 
-import balti.filex.exceptions.AccessDeniedException
+import balti.filex.exceptions.FileXAccessDeniedException
 import java.io.IOException
 import java.util.*
 
@@ -113,7 +113,7 @@ public class FileXTreeWalk private constructor(
 
                     fileList = root.listFiles()
                     if (fileList == null) {
-                        onFail?.invoke(root, AccessDeniedException(file = root, reason = "Cannot list files in a directory"))
+                        onFail?.invoke(root, FileXAccessDeniedException(file = root, reason = "Cannot list files in a directory"))
                         failed = true
                     }
                 }
@@ -156,7 +156,7 @@ public class FileXTreeWalk private constructor(
                         // Then read an array of files, if any
                         fileList = root.listFiles()
                         if (fileList == null) {
-                            onFail?.invoke(root, AccessDeniedException(file = root, reason = "Cannot list files in a directory"))
+                            onFail?.invoke(root, FileXAccessDeniedException(file = root, reason = "Cannot list files in a directory"))
                         }
                         if (fileList == null || fileList!!.size == 0) {
                             onLeave?.invoke(root)

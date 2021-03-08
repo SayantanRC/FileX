@@ -47,14 +47,14 @@ internal class Copy(private val f: FileX) {
             onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
     ): Boolean = f.run {
         if (!exists()) {
-            return onError(this, NoSuchFileException(file = this, reason = "The source file doesn't exist.")) !=
+            return onError(this, NoSuchFileXException(file = this, reason = "The source file doesn't exist.")) !=
                     OnErrorAction.TERMINATE
         }
         try {
             // We cannot break for loop from inside a lambda, so we have to use an exception here
-            for (src in walkTopDown().onFail { f, e -> if (onError(f, e) == OnErrorAction.TERMINATE) throw FileSystemException(f) }) {
+            for (src in walkTopDown().onFail { f, e -> if (onError(f, e) == OnErrorAction.TERMINATE) throw FileXSystemException(f) }) {
                 if (!src.exists()) {
-                    if (onError(src, NoSuchFileException(file = src, reason = "The source file doesn't exist.")) ==
+                    if (onError(src, NoSuchFileXException(file = src, reason = "The source file doesn't exist.")) ==
                             OnErrorAction.TERMINATE)
                         return false
                 } else {
@@ -81,7 +81,7 @@ internal class Copy(private val f: FileX) {
                         }
 
                         if (stillExists) {
-                            if (onError(dstFile, FileAlreadyExistsException(file = src,
+                            if (onError(dstFile, FileXAlreadyExistsException(file = src,
                                             other = dstFile,
                                             reason = "The destination file already exists.")) == OnErrorAction.TERMINATE)
                                 return false
@@ -101,7 +101,7 @@ internal class Copy(private val f: FileX) {
                 }
             }
             return true
-        } catch (e: FileSystemException) {
+        } catch (e: FileXSystemException) {
             return false
         }
     }
