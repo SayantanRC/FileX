@@ -21,7 +21,8 @@ File("my/example/path")
 This can be used to access private storage of the app. This also lets you access shared storage on Android 10 and below.  
 However, for accessing shared storage on Android 11+, you cannot declare the `isTraditional` parameter as true.  
 ```
-val f = FileX("my/path/on/shared/storage")
+val f = FileX.new("my/path/on/shared/storage")
+// ignoring the second parameter defaults to false.
 ```
 You may call `resetRoot()` on the object `f` to open the Documents UI which will allow the user to select a root directory on the shared storage. Once a root directory is chosen by the user, the path mentioned by you will be relative to that root.  
 Assume in the above case, the user selects a directory as `[Internal storage]/dir1/dir2`. Then `f` here refers to `[Internal storage]/dir1/dir2/my/path/on/shared/storage`.  
