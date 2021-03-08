@@ -1,7 +1,5 @@
-package balti.filex.filex11.utils
+package balti.filex
 
-import balti.filex.BuildConfig
-import balti.filex.FileX
 import balti.filex.exceptions.AccessDeniedException
 import java.io.IOException
 import java.util.*
