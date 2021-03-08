@@ -10,6 +10,7 @@ import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.operators.Filter
 import balti.filex.filexTraditional.operators.Modify
 import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -87,5 +88,5 @@ internal class FileXT(path: String): FileX(false) {
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
 
     override fun inputStream(): InputStream = file.inputStream()
-    override fun outputStream(): OutputStream = file.outputStream()
+    override fun outputStream(mode: String): OutputStream = FileOutputStream(file, mode == "wa")
 }

@@ -193,5 +193,5 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     private val Operations = Operations(this)
 
     override fun inputStream(): InputStream? = Operations.inputStream()
-    override fun outputStream(): OutputStream? = Operations.outputStream()
+    override fun outputStream(mode: String): OutputStream? = Operations.outputStream(mode)
 }

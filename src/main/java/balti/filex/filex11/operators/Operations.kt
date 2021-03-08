@@ -1,8 +1,8 @@
 package balti.filex.filex11.operators
 
 import android.provider.DocumentsContract
-import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
+import balti.filex.filex11.FileX11
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.filex11.utils.Tools.getChildrenUri
 import java.io.InputStream
@@ -41,8 +41,8 @@ internal class Operations(private val f: FileX11) {
     fun inputStream(): InputStream? =
             f.uri?.let { fCResolver.openInputStream(it) }
 
-    fun outputStream(): OutputStream? =
-            f.uri?.let { fCResolver.openOutputStream(it) }
+    fun outputStream(mode: String): OutputStream? =
+            f.uri?.let { fCResolver.openOutputStream(it, mode) }
 }
 
 /*
