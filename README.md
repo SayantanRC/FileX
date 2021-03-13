@@ -1,4 +1,5 @@
 # FileX
+[Build instructions](build_instructions.md)  
 # Philosophy
 From Android 11 onwards, it is mandatory to use `DocumentsContract` or similar approach to write to shared storage, because of enforcement of Storage Access Framework. Our old and beloved Java File no longer works unless you are writing on private storage.  
 Hence there are two different ways to write a file: 1. Use Java File to write to internal storage. 2. Use DocumentsContract to write to shared storage.  
