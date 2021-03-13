@@ -3,9 +3,7 @@ package balti.filex.filex11
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.DocumentsContract
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -176,7 +174,6 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
 
     private val Modify = Modify(this)
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun renameTo(dest: FileX): Boolean = Modify.renameTo(dest)
     override fun renameTo(newFileName: String): Boolean = Modify.renameTo(newFileName)
 

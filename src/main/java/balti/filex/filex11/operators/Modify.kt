@@ -1,9 +1,7 @@
 package balti.filex.filex11.operators
 
-import android.annotation.TargetApi
 import android.os.Build
 import android.provider.DocumentsContract
-import androidx.annotation.RequiresApi
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.tryIt
@@ -13,8 +11,6 @@ import balti.filex.filexTraditional.FileXT
 
 internal class Modify(private val f: FileX11) {
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    @TargetApi(Build.VERSION_CODES.N)
     fun renameTo(dest: FileX): Boolean {
         return when (dest) {
             is FileX11 -> renameTo(dest)
@@ -23,14 +19,15 @@ internal class Modify(private val f: FileX11) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    @TargetApi(Build.VERSION_CODES.N)
     private fun renameTo(dest: FileX11): Boolean = f.run {
-        if (dest.exists()) return false
+        if (dest.exists()) {
+            if (dest.isFile) return false
+            else if (!dest.isEmpty) return false
+        }
         val parentFile = dest.parentFile
         parentFile?.mkdirs()
         return if (parentFile?.uri == null) false
-        else {
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             DocumentsContract.moveDocument(fCResolver, uri!!, parentUri!!, parentFile.uri!!).let { movedUri ->
                 if (movedUri != null) {
                     tryIt { DocumentsContract.renameDocument(fCResolver, movedUri, dest.name) }
@@ -41,10 +38,16 @@ internal class Modify(private val f: FileX11) {
                 } else false
             }
         }
+
+        // for Android M and below, copy and then delete.
+        else {
+            if (balti.filex.Copy(this).copyRecursively(dest, deleteAfterCopy = true)) {
+                if (deleteRecursively()) return@run true
+            }
+            return@run false
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    @TargetApi(Build.VERSION_CODES.N)
     private fun renameTo(dest: FileXT): Boolean = f.run {
         return if (dest.canonicalPath.startsWith(rootPath)) {
             val relativePath = dest.canonicalPath.substring(rootPath.length)
