@@ -171,3 +171,24 @@ This creates a `FileXT` object i.e. with `isTraditional` = true even though the 
 | listFiles(filter: FileXNameFilter)                                                                                           | Array-FileX?                                | -                                      | Returns FileX elements array filtering with a `FileXNameFilter`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | copyTo(<br>  target:FileX,<br>  overwrite:Boolean=false,<br>  bufferSize:Int<br>)                                            | FileX                                       | -                                      | Copies a file and returns the target. Logic is completely copied from File.copyTo() of kotlin.io.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | copyRecursively(<br>  target:FileX,<br>  overwrite:Boolean=false,<br>  onError:<br>    (FileX, Exception)<br>)               | Boolean                                     | -                                      | Directory copy recursively, return true if success else false.<br>Logic is completely copied from File.copyRecursively() of kotlin.io.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+# Easy writing to files.
+You can easily write to a newly created file without having to deal with input or output streams. Check the below example:
+```
+// create a blank file
+val fx = FileX.new(/my_dir/my_file.txt)
+fx.createNewFile(makeDirectories = true)
+
+// start writing to file
+fx.startWriting(object : FileX.Writer() {
+  override fun writeLines() {
+  
+    // write a strings without line breaks.
+    writeString("a string. ")
+    writeString("another string in the same line.")
+    
+    // write a new line. Similar to writeString() with a line break at the end.
+    writeLine("a new line.")
+    writeLine("3rd line.")
+  }
+})
+```
