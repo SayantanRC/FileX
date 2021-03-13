@@ -44,7 +44,8 @@ internal class Copy(private val f: FileX) {
     fun copyRecursively(
             target: FileX,
             overwrite: Boolean = false,
-            onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception }
+            onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception },
+            deleteAfterCopy: Boolean = false  // internal flag used to move files.
     ): Boolean = f.run {
         if (!exists()) {
             return onError(this, NoSuchFileXException(file = this, reason = "The source file doesn't exist.")) !=
@@ -97,6 +98,9 @@ internal class Copy(private val f: FileX) {
                             if (onError(src, IOException("Source file wasn't copied completely, length of destination file differs.")) == OnErrorAction.TERMINATE)
                                 return false
                         }
+
+                        // deleteAfterCopy is an internal flag used to move files.
+                        else if (deleteAfterCopy) src.delete()
                     }
                 }
             }
