@@ -10,6 +10,10 @@ Quick links
   - [Get the library from jitpack.io](#get-the-library-from-jitpackio)  
   - [Use the AAR file from this repository](#use-the-aar-file-from-this-repository)  
 - [Initialize the library](#initialize-the-library)  
+- [Init methods](#init-methods)
+  - [Check for read-write permission](#check-for-file-read-write-permissions)
+  - [Request for read-write access](#request-for-read-write-access)
+  - [Refresh storage volumes](#refresh-storage-volumes)
 - [Public attributes](#public-attributes-for-filex)  
 - [Public methods](#public-methods-for-filex)  
 - [Easy writing to files](#easy-writing-to-files)  
@@ -47,6 +51,8 @@ Log.d("Tag", f.canonicalPath)
 //   Output:  /storage/emulated/0/dir1/dir2/my/path/on/shared/storage
 ```
 Once a root is set, you can peacefully use methods like `createNewFile()` to create the document, and other known methods for further operation and new file/document creation.  
+Please check the sections:
+[Check for file read write permissions](#check-for-file-read-write-permissions)  
 
 # Internal classification (based on `isTraditional`)
 
@@ -154,6 +160,61 @@ Here, the object `fx` gets its `isTraditional` parameter from the global paramet
 val fx = FileX.new("my/path", true)
 ```
 This creates a `FileXT` object i.e. with `isTraditional` = true even though the global value may be false.
+
+# Init methods
+These are public methods available from `FileXInit` class.
+## Check for file read-write permissions.
+```
+fun isUserPermissionGranted(): Boolean
+```
+For FileXT, the above method checks if the `Manifest.permission.READ_EXTERNAL_STORAGE` and `Manifest.permission.WRITE_EXTERNAL_STORAGE` are granted by the system.  
+For FileX11, it checks if user has selected a root directory via the system ui and if the root exists now.  
+#### Usage  
+```
+val isPermissionGranted = FileXInit.isUserPermissionGranted()
+if (isPermissionGranted){
+    // ... create some files
+}
+```
+## Request for read-write access.
+```
+fun requestUserPermission(reRequest: Boolean = false, onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null)
+```
+For FileXT, this method requests `Manifest.permission.READ_EXTERNAL_STORAGE` and `Manifest.permission.WRITE_EXTERNAL_STORAGE` from the `ActivityCompat.requestPermissions()` method.  
+For FileX11, this method starts the system ui to let the user select a global root directory. The uri from the selected root directory is internally stored.  
+All new FileX objects will consider this user selected directory as the root.     
+#### Arguments:  
+`reRequest`: Only applicable for FileX11, defunct for FileXT. Default is "false". If "false" and global root is already selected by user, then user is not asked again. If "true" user is prompted to select a new global root directory. Root of all previously created FileX objects will remain unchanged.  
+`onResult: ((resultCode: Int, data: Intent?) -> Unit)`: Optional callback function called once permission is granted or denied.
+  - `resultCode`: If success, it is `Activity.RESULT_OK` else usually `Activity.RESULT_CANCELED`.  
+  - `data`: Intent with some information.  
+    - For FileXT  
+    `data.getStringArrayExtra("permissions")` = Array is requested permissions. Equal to array consisting `Manifest.permission.READ_EXTERNAL_STORAGE`, `Manifest.permission.WRITE_EXTERNAL_STORAGE`    
+    `data.getStringArrayExtra("grantResults")` = Array is granted permissions. If granted, should be equal to array of `PackageManager.PERMISSION_GRANTED`, `PackageManager.PERMISSION_GRANTED`  
+    - For FileX11  
+    `data.data` = Uri of the selected root directory.  
+#### Usage  
+```
+FileXInit.requestUserPermission() { resultCode, data ->
+
+    // this will be executed once user grants read-write permission (or selects new global root).
+    // this block will also be executed to permission was already granted.
+    // if permission was not previously granted (or global root is null), user will be prompted, 
+    // and this block will be executed once user takes action.
+
+    Log.d("DEBUG_TAG", "result code: $resultCode")
+    if (!FileXInit.isTraditional) {
+        Log.d("DEBUG_TAG", "root uri: ${data?.data}")
+    }
+    // create some files
+}
+```
+## Refresh storage volumes
+```
+fun refreshStorageVolumes()
+```
+Useful only for FileX11 and above Android M. Detects all attached storage volumes. Say a new USB OTG drive is attached, then this may be helpful. In most cases, manually calling this method is not required as it is done automatically by the library.  
+Usage: `FileXInit.refreshStorageVolumes()`
 
 # Public attributes for `FileX`
 
