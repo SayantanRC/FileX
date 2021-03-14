@@ -38,7 +38,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
         }
     ) { this.uri = uri; rootUri = currentRootUri; }
 
-    fun setLocalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null) {
+    fun setLocalRootUri(afterJob: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
         val JOB_CODE = 100
         val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         ActivityFunctionDelegate(JOB_CODE,
@@ -51,8 +51,9 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
                     rootUri = it
                     uri = buildTreeDocumentUriFromId(rootDocumentId)
                     afterJob?.invoke(resultCode, data)
-                }
+                } ?: afterJob?.invoke(resultCode, data)
             }
+            else afterJob?.invoke(resultCode, data)
         }
     }
 

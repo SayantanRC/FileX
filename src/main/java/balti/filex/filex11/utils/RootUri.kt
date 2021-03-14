@@ -9,13 +9,13 @@ import balti.filex.activity.ActivityFunctionDelegate
 
 internal object RootUri {
 
-    fun setGlobalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null) {
+    fun setGlobalRootUri(afterJob: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
         val uri = getGlobalRootUri()
         if (uri == null) resetGlobalRootUri(afterJob)
         else afterJob?.invoke(Activity.RESULT_OK, Intent().setData(uri))
     }
 
-    fun resetGlobalRootUri(afterJob: ((resultCode: Int, data: Intent) -> Unit)? = null) {
+    fun resetGlobalRootUri(afterJob: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
         val takeFlags =
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         ActivityFunctionDelegate(10,
@@ -30,8 +30,9 @@ internal object RootUri {
                         commit()
                     }
                     afterJob?.invoke(resultCode, data)
-                }
+                } ?: afterJob?.invoke(resultCode, data)
             }
+            else afterJob?.invoke(resultCode, data)
         }
     }
 
