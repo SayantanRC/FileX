@@ -178,12 +178,14 @@ object Tools {
         catch (_: Exception) { null }
     }
 
-    internal fun checkUriExists(uri: Uri): Boolean{
+    internal fun checkUriExists(uri: Uri, checkIfDirectory: Boolean = false): Boolean{
         var result = false
         val evalUri = convertToDocumentUri(uri) ?: return false
+        val projection = if (checkIfDirectory) arrayOf(DocumentsContract.Document.COLUMN_MIME_TYPE) else null
         try {
-            val c = FileXInit.fCResolver.query(evalUri, null, null, null, null, null)
-            if (c != null && c.count > 0 && c.moveToFirst()) result = c.getString(4) != null
+            val c = FileXInit.fCResolver.query(evalUri, projection, null, null, null, null)
+            if (c != null && c.count > 0 && c.moveToFirst()) result = c.columnCount != 0
+            if (result && checkIfDirectory) result = c?.getString(0) == DocumentsContract.Document.MIME_TYPE_DIR
             c?.close()
         }
         catch (e: Exception){
