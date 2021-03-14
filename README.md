@@ -2,9 +2,9 @@
 [![JitPack](https://img.shields.io/jitpack/v/github/SayantanRC/FileX?color=green)](https://jitpack.io/#SayantanRC/FileX)  
 [Build instructions](build_instructions.md)  
 # Philosophy
-From Android 11 onwards, it is mandatory to use `DocumentsContract` or similar approach to write to shared storage, because of enforcement of Storage Access Framework. Our old and beloved Java File no longer works unless you are writing on private storage.  
-Hence there are two different ways to write a file: 1. Use Java File to write to internal storage. 2. Use DocumentsContract to write to shared storage.  
-This causes excess code and also DocumentsContract is not very friendly to work with, as it is completely a Uri based approach than the file path based approach we are generally aware of.  
+From Android 11 onward, it is mandatory to use `DocumentsContract` or similar approach to write to shared storage, because of enforcement of Storage Access Framework. Our old and beloved Java File no longer works unless you are writing on private storage.  
+Hence, there are two different ways to write a file: 1. Use Java File to write to internal storage. 2. Use DocumentsContract to write to shared storage.  
+This means extra code to write. Also, DocumentsContract is not very friendly to work with, as it is completely a Uri based approach than the file path based approach we are generally aware of.  
 
 Hence `FileX` was created. FileX tries to address these problems:
 1. It is mostly file path based. You as a user of the library do not have to think about Uris. They are handled in background.
@@ -28,7 +28,7 @@ val f = FileX.new("my/path/on/shared/storage")
 ```
 You may call `resetRoot()` on the object `f` to open the Documents UI which will allow the user to select a root directory on the shared storage. Once a root directory is chosen by the user, the path mentioned by you will be relative to that root.  
 Assume in the above case, the user selects a directory as `[Internal storage]/dir1/dir2`. Then `f` here refers to `[Internal storage]/dir1/dir2/my/path/on/shared/storage`.  
-This can also be seen by calling `canonicalPath` on `f`
+This can also be seen by calling `canonicalPath` on `f`.
 ```
 Log.d("Tag", f.canonicalPath)  
 //   Output:  /storage/emulated/0/dir1/dir2/my/path/on/shared/storage
@@ -39,14 +39,14 @@ Once a root is set, you can peacefully use methods like `createNewFile()` to cre
 
 ![Classification](/doc_assets/FX_classification.png)  
 
-This picture shows how FileX internally classifies itself as two different types based on the `isTraditional` argument. This is internal classification and you as user do not have to worry.  
-However, based on this classification, some specific methods and attributes are available to specific types. Example `createFileUsingPicker()` is a method availble to `FileX11` objects, i.e. if `isTraditional` = false. But this method will throw an exception if used on `FileXT` object. These exclusive methods are expanded in a following section.
+This picture shows how FileX internally classifies itself as two different types based on the `isTraditional` argument. This is internal classification, and you as user do not have to worry.  
+However, based on this classification, some specific methods and attributes are available to specific types. Example `createFileUsingPicker()` is a method available to `FileX11` objects, i.e. if `isTraditional` = false. But this method will throw an exception if used on `FileXT` object. These exclusive methods are expanded in a following section.
 
 # Getting started
 You can import the library in your project in any of the below ways.
 
 ## Get the library from [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)  
-1. In top level `build.gradle` file, in `allprojects` section, add jitpack as shown below.
+1. In top-level `build.gradle` file, in `allprojects` section, add jitpack as shown below.
 <pre>
 allprojects {
     repositories {
@@ -72,7 +72,7 @@ Perform a gradle sync. Now you can use the library in the project.
 1. Get the latest released AAR file from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
 2. In your `app` module directory of the project, there should exist a directory named `libs`. If not, create it.  
 3. Place the downloaded AAR file inside the `libs` directory.
-4. In top level `build.gradle` file, in `allprojects` section, add the below lines.
+4. In top-level `build.gradle` file, in `allprojects` section, add the below lines.
 <pre>
 allprojects {
     repositories {
