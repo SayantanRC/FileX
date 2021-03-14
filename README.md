@@ -1,6 +1,19 @@
 # FileX
 [![JitPack](https://img.shields.io/jitpack/v/github/SayantanRC/FileX?color=green)](https://jitpack.io/#SayantanRC/FileX)  
 [Build instructions](build_instructions.md)  
+
+Quick links  
+- [Philosophy](#philosophy)  
+  - [How paths are interpreted?](#how-paths-are-interpreted)  
+- [Internal classification](#internal-classification-based-on-istraditional)
+- [Getting started](#getting-started)  
+  - [Get the library from jitpack.io](#get-the-library-from-jitpackio)  
+  - [Use the AAR file from this repository](#use-the-aar-file-from-this-repository)  
+- [Initialize the library](#initialize-the-library)  
+- [Public attributes](#public-attributes-for-filex)  
+- [Public methods](#public-methods-for-filex)  
+- [Easy writing to files](#easy-writing-to-files)  
+
 # Philosophy
 From Android 11 onward, it is mandatory to use `DocumentsContract` or similar approach to write to shared storage, because of enforcement of Storage Access Framework. Our old and beloved Java File no longer works unless you are writing on private storage.  
 Hence, there are two different ways to write a file: 1. Use Java File to write to internal storage. 2. Use DocumentsContract to write to shared storage.  
