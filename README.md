@@ -184,7 +184,7 @@ For FileXT, this method requests `Manifest.permission.READ_EXTERNAL_STORAGE` and
 For FileX11, this method starts the system ui to let the user select a global root directory. The uri from the selected root directory is internally stored.  
 All new FileX objects will consider this user selected directory as the root.     
 #### Arguments:  
-`reRequest`: Only applicable for FileX11, defunct for FileXT. Default is "false". If "false" and global root is already selected by user, then user is not asked again. If "true" user is prompted to select a new global root directory. Root of all previously created FileX objects will remain unchanged.  
+`reRequest`: Only applicable for FileX11, defunct for FileXT. Default is "false". If "false" and global root is already selected by user, and exists now, then user is not asked again. If "true" user is prompted to select a new global root directory. Root of all previously created FileX objects will remain unchanged.  
 `onResult: ((resultCode: Int, data: Intent?) -> Unit)`: Optional callback function called once permission is granted or denied.
   - `resultCode`: If success, it is `Activity.RESULT_OK` else usually `Activity.RESULT_CANCELED`.  
   - `data`: Intent with some information.  
@@ -198,8 +198,8 @@ All new FileX objects will consider this user selected directory as the root.
 FileXInit.requestUserPermission() { resultCode, data ->
 
     // this will be executed once user grants read-write permission (or selects new global root).
-    // this block will also be executed to permission was already granted.
-    // if permission was not previously granted (or global root is null), user will be prompted, 
+    // this block will also be executed if permission was already granted.
+    // if permission was not previously granted (or global root is null or deleted), user will be prompted, 
     // and this block will be executed once user takes action.
 
     Log.d("DEBUG_TAG", "result code: $resultCode")
@@ -285,7 +285,7 @@ fx.createNewFile(makeDirectories = true)
 fx.startWriting(object : FileX.Writer() {
   override fun writeLines() {
   
-    // write a strings without line breaks.
+    // write strings without line breaks.
     writeString("a string. ")
     writeString("another string in the same line.")
     
