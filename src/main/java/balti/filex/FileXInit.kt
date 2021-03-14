@@ -14,12 +14,12 @@ import balti.filex.activity.TraditionalFileRequest
 import balti.filex.filex11.utils.RootUri
 import balti.filex.filex11.utils.Tools
 
-class FileXInit(context: Context, val isTraditional: Boolean) {
+class FileXInit(context: Context, isTraditional: Boolean) {
     companion object{
         internal lateinit var fContext: Context
         private set
 
-        internal var fisTraditional: Boolean = false
+        internal var globalIsTraditional: Boolean = false
 
         internal val fCResolver by lazy { fContext.contentResolver }
 
@@ -39,7 +39,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         val storageVolumes = HashMap<String, String?>(0)
 
         fun isUserPermissionGranted(): Boolean{
-            return if (!fisTraditional) RootUri.getGlobalRootUri().let { it != null && Tools.checkUriExists(it) }
+            return if (!globalIsTraditional) RootUri.getGlobalRootUri().let { it != null && Tools.checkUriExists(it) }
             else {
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
@@ -47,7 +47,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
         }
 
         fun requestUserPermission(reRequest: Boolean = false, onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
-            if (!fisTraditional) {
+            if (!globalIsTraditional) {
                 val globalRoot = RootUri.getGlobalRootUri()
                 if (globalRoot == null || !Tools.checkUriExists(globalRoot) || reRequest) {
                     RootUri.resetGlobalRootUri() { resultCode, data ->
@@ -86,7 +86,7 @@ class FileXInit(context: Context, val isTraditional: Boolean) {
     }
     init {
         fContext = context.applicationContext
-        fisTraditional = isTraditional
+        globalIsTraditional = isTraditional
         refreshStorageVolumes()
     }
 }
