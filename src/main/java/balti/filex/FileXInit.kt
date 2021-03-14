@@ -42,7 +42,7 @@ class FileXInit(context: Context, isTraditional: Boolean) {
         val storageVolumes = HashMap<String, String?>(0)
 
         fun isUserPermissionGranted(): Boolean{
-            return if (!globalIsTraditional) RootUri.getGlobalRootUri().let { it != null && Tools.checkUriExists(it) }
+            return if (!globalIsTraditional) RootUri.getGlobalRootUri().let { it != null && Tools.checkUriExists(it, true) }
             else {
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
@@ -52,7 +52,7 @@ class FileXInit(context: Context, isTraditional: Boolean) {
         fun requestUserPermission(reRequest: Boolean = false, onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
             if (!globalIsTraditional) {
                 val globalRoot = RootUri.getGlobalRootUri()
-                if (globalRoot == null || !Tools.checkUriExists(globalRoot) || reRequest) {
+                if (globalRoot == null || !Tools.checkUriExists(globalRoot, true) || reRequest) {
                     RootUri.resetGlobalRootUri() { resultCode, data ->
                         onResult?.invoke(resultCode, data)
                     }
