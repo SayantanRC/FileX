@@ -43,8 +43,9 @@ This picture shows how FileX internally classifies itself as two different types
 However, based on this classification, some specific methods and attributes are available to specific types. Example `createFileUsingPicker()` is a method availble to `FileX11` objects, i.e. if `isTraditional` = false. But this method will throw an exception if used on `FileXT` object. These exclusive methods are expanded in a following section.
 
 # Getting started
+You can import the library in your project in any of the below ways.
 
-The library is available on [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)  
+## Get the library from [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)  
 1. In top level `build.gradle` file, in `allprojects` section, add jitpack as shown below.
 <pre>
 allprojects {
@@ -56,19 +57,46 @@ allprojects {
     }
 }
 </pre>
-2. Add dependency.
+2. In the "app" level `build.gradle` file, add the dependency.
 <pre>
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
     ...
     <b>implementation 'com.github.SayantanRC:FileX:<i>alpha-4</i>'</b>
 }
 </pre>
 
-Now you can use the library in the project.
+Perform a gradle sync. Now you can use the library in the project.
 
-Or you can get the AAR files from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
+## Use the AAR file from this repository.
+1. Get the latest released AAR file from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
+2. In your `app` module directory of the project, there should exist a directory named `libs`. If not, create it.  
+3. Place the downloaded AAR file inside the `libs` directory.
+4. In top level `build.gradle` file, in `allprojects` section, add the below lines.
+<pre>
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        ...
+        <b>
+        flatDir {
+            dirs 'libs'
+        }
+        </b>
+    }
+}
+</pre>
+5. In the "app" level `build.gradle` file, add the dependency.
+<pre>
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    ...
+    <b>implementation(name:'FileX-release', ext:'aar')</b>
+}
+</pre>
+
+Perform a gradle sync to use the library.
 
 # Initialization
 
