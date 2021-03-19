@@ -7,10 +7,9 @@ import balti.filex.filex11.operators.refreshFileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
-import java.io.BufferedWriter
-import java.io.InputStream
-import java.io.OutputStream
-import java.io.OutputStreamWriter
+import java.io.*
+import java.nio.charset.Charset
+import java.util.*
 
 abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val path: String
@@ -152,6 +151,17 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         writer.setFileX(this, append)
         writer.writeLines()
         writer.close()
+    }
+
+    // next two functions copied straightaway from kotlin.io
+    fun readLines(charset: Charset = Charsets.UTF_8): List<String> {
+        val result = ArrayList<String>()
+        forEachLine(charset) { result.add(it); }
+        return result
+    }
+    fun forEachLine(charset: Charset = Charsets.UTF_8, action: (line: String) -> Unit): Unit {
+        // Note: close is called at forEachLine
+        BufferedReader(InputStreamReader(inputStream(), charset)).forEachLine(action)
     }
 
     abstract class Writer{
