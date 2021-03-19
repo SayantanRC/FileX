@@ -129,3 +129,6 @@ app/libs/
 app/release/
 app/src/main/res/drawable-v24/
 app/src/main/res/drawable-xxxhdpi/
+
+# Remove my build script
+.build_it.sh
