@@ -7,3 +7,4 @@
 ### VERSION UPDATE
 1. `README.md` : Update the jitpack release name in the `Getting started` section.
 2. `README.md` : Check if the jitpack badge is updated. If not, regenerate the badge.
+3. Change `versionCode` and `versionName` in build.gradle.
