@@ -36,6 +36,10 @@ class FileXInit(context: Context, isTraditional: Boolean) {
         val isTraditional: Boolean
         get() = globalIsTraditional
 
+        fun setTraditional(isTraditional: Boolean){
+            globalIsTraditional = isTraditional
+        }
+
         internal val sharedPreferences by lazy { fContext.getSharedPreferences(PREF_NAME, MODE_PRIVATE) }
 
         var refreshFileOnCreation: Boolean = true
