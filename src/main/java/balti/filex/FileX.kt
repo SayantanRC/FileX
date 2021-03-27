@@ -164,6 +164,19 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         BufferedReader(InputStreamReader(inputStream(), charset)).forEachLine(action)
     }
 
+    fun getDirLength(): Long {
+        return if (exists()) {
+            if (!isDirectory) length()
+            else {
+                var sum = 0L
+                listFiles()?.let {
+                    for (f in it) sum += f.getDirLength()
+                }
+                sum
+            }
+        } else 0
+    }
+
     abstract class Writer{
         private var writer: BufferedWriter? = null
         internal fun setFileX(file: FileX, append: Boolean) = file.run {
