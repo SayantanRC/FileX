@@ -24,6 +24,7 @@ internal class FileXT(path: String): FileX(false) {
     override lateinit var file: File
 
     init {
+        this.path = path
         refreshFile()
     }
 
