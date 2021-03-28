@@ -208,6 +208,14 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         fun writeString(line: String) = writer?.run {
             write(line)
         }
+
+        // add all possible variants of BufferedWriter write()
+        fun write(c: Int) = writer?.write(c)
+        fun write(str: String) = writer?.write(str)
+        fun write(cbuf: CharArray) = writer?.write(cbuf)
+        fun write(s: String, off: Int, len: Int) = writer?.write(s, off, len)
+        fun write(cbuf: CharArray, off: Int, len: Int) = writer?.write(cbuf, off, len)
+
         internal fun close() = writer?.close()
     }
 }
