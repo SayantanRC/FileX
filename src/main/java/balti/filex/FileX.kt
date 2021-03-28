@@ -154,7 +154,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         writer.close()
     }
 
-    fun writeOneLine(string: String, append: Boolean){
+    fun writeOneLine(string: String, append: Boolean = false){
         if (!exists()) createNewFile()
         val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(if (append) "wa" else "rwt")))
         writer.write(string)
