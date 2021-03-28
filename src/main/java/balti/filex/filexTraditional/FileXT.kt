@@ -24,6 +24,10 @@ internal class FileXT(path: String): FileX(false) {
     override lateinit var file: File
 
     init {
+        refreshFile()
+    }
+
+    override fun refreshFile() {
         this.path = removeTrailingSlashOrColonAddFrontSlash(path)
         file = File(this.path)
     }

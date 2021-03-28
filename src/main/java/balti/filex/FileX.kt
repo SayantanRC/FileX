@@ -3,11 +3,15 @@ package balti.filex
 import android.content.Intent
 import android.net.Uri
 import balti.filex.filex11.FileX11
-import balti.filex.filex11.operators.refreshFileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
-import java.io.*
+import java.io.BufferedWriter
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
 
@@ -24,9 +28,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val uri: Uri?
     //FileXT exclusive
     abstract val file: java.io.File
-    fun refreshFile() {
-        if (this is FileX11) this.refreshFileX11()
-    }
+    abstract fun refreshFile()
     fun resetRoot(onResult: ((resultCode: Int, data: Intent?) -> Unit)){
         if (this is FileX11) this.setLocalRootUri(onResult)
     }
