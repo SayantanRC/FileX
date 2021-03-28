@@ -11,9 +11,11 @@ internal class FileXServer {
             value = Quad(Uri.EMPTY, "", null, null)
         }
         internal fun setPathAndUri(rootUri: Uri, path: String, uri: Uri?, newPath: String? = null){
-            Handler(Looper.getMainLooper()).post {
+            val runnable = Runnable {
                 pathAndUri.value = Quad(rootUri, path, uri, newPath)
             }
+            if (Looper.myLooper() == Looper.getMainLooper()) runnable.run()
+            else Handler(Looper.getMainLooper()).post(runnable)
         }
     }
 }

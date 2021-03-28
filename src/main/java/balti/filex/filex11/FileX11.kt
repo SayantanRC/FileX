@@ -109,7 +109,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
 
     init {
         init(path, currentRootUri)
-        Handler(Looper.getMainLooper()).post {
+        val runnable = Runnable {
             lifecycleRegistry = LifecycleRegistry(this)
             FileXServer.pathAndUri.observe(this) {
                 if (it.first == rootUri && it.second == this.path && it.third != null) {
@@ -117,14 +117,16 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
                     if (it.fourth != null) this.path = removeTrailingSlashOrColonAddFrontSlash(it.fourth)
                 }
             }
-            if (refreshFileOnCreation) refreshFile()
             lifecycleRegistry.currentState = Lifecycle.State.STARTED
         }
+        if (refreshFileOnCreation) refreshFile()
+        if (Looper.myLooper() == Looper.getMainLooper()) runnable.run()
+        else Handler(Looper.getMainLooper()).post(runnable)
     }
 
-    enum class FileXCodes {
+    /*enum class FileXCodes {
         OK, OVERWRITE, SKIP, TERMINATE, MERGE, NEW_IF_EXISTS
-    }
+    }*/
 
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
