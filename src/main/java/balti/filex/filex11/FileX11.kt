@@ -3,6 +3,8 @@ package balti.filex.filex11
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -85,7 +87,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     override var path: String = ""
     private set
 
-    private val lifecycleRegistry: LifecycleRegistry
+    private lateinit var lifecycleRegistry: LifecycleRegistry
 
     private fun init(initPath: String? = null, currentRootUri: Uri? = null){
         currentRootUri?.let{ root ->
@@ -107,15 +109,17 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
 
     init {
         init(path, currentRootUri)
-        lifecycleRegistry = LifecycleRegistry(this)
-        FileXServer.pathAndUri.observe(this) {
-            if (it.first == rootUri && it.second == this.path && it.third != null) {
-                uri = it.third
-                if (it.fourth != null) this.path = removeTrailingSlashOrColonAddFrontSlash(it.fourth)
+        Handler(Looper.getMainLooper()).post {
+            lifecycleRegistry = LifecycleRegistry(this)
+            FileXServer.pathAndUri.observe(this) {
+                if (it.first == rootUri && it.second == this.path && it.third != null) {
+                    uri = it.third
+                    if (it.fourth != null) this.path = removeTrailingSlashOrColonAddFrontSlash(it.fourth)
+                }
             }
+            if (refreshFileOnCreation) refreshFile()
+            lifecycleRegistry.currentState = Lifecycle.State.STARTED
         }
-        if (refreshFileOnCreation) refreshFile()
-        lifecycleRegistry.currentState = Lifecycle.State.STARTED
     }
 
     enum class FileXCodes {
