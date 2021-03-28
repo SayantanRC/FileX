@@ -148,8 +148,16 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract fun outputStream(mode: String = "w"): OutputStream?
 
     fun startWriting(writer: Writer, append: Boolean = false){
+        if (!exists()) createNewFile()
         writer.setFileX(this, append)
         writer.writeLines()
+        writer.close()
+    }
+
+    fun writeOneLine(string: String, append: Boolean){
+        if (!exists()) createNewFile()
+        val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(if (append) "wa" else "rwt")))
+        writer.write(string)
         writer.close()
     }
 
