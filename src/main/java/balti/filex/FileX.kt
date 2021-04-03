@@ -18,8 +18,11 @@ import java.util.*
 abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val path: String
     companion object {
-        fun new(path: String, isTraditional: Boolean = FileXInit.globalIsTraditional): FileX =
-                if (isTraditional) FileXT(path) else FileX11(path)
+        fun new(path: String, isTraditional: Boolean = FileXInit.globalIsTraditional): FileX {
+            return Tools.removeDuplicateSlashes(path).let {
+                if (isTraditional) FileXT(it) else FileX11(it)
+            }
+        }
         fun new(parent: String, child: String, isTraditional: Boolean = FileXInit.globalIsTraditional): FileX =
                 FileX.new("$parent/$child", isTraditional)
     }
