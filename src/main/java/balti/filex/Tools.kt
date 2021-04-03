@@ -34,10 +34,10 @@ internal object Tools {
                 "$it "
             }.let { path ->
 
-                var startPtr: Char = path[0]
-                var endPtr: Char = path[1]
+                var lastDuplicatePtr: Char = path[0]
+                var ptr: Char = path[1]
 
-                fun qualifyForRemoval(): Boolean {
+                fun qualifyForRemoval(startPtr: Char, endPtr: Char): Boolean {
                     // this function can be modified to remove and duplicate character, not just '/'
                     //    return startPtr == endPtr
                     return startPtr == '/' && endPtr == '/'
@@ -46,16 +46,17 @@ internal object Tools {
                 val modifiedString = StringBuffer("")
 
                 for (i in 1 until path.length) {
-                    // startPtr is one place behind endPtr.
-                    // Add startPtr char to modifiedString if startPtr and endPtr are not duplicate.
-                    // If duplicate, freeze startPtr in its place, do not add anything to modifiedString.
-                    // Once duplication is over, again move startPtr behind endPtr and
-                    // add startPtr char to modifiedString. This will add only one instance of
+                    ptr = path[i]
+                    val behindPtr = path[i-1]
+                    // behindPtr is one place behind ptr.
+                    // Add lastDuplicatePtr char to modifiedString if ptr and behindPtr are not duplicate.
+                    // If duplicate, freeze lastDuplicatePtr in its place, do not add anything to modifiedString.
+                    // Once duplication is over, again move lastDuplicatePtr behind ptr and
+                    // add lastDuplicatePtr char to modifiedString. This will add only one instance of
                     // all the adjacent duplicate characters.
-                    endPtr = path[i]
-                    if (!qualifyForRemoval()) {
-                        startPtr = path[i - 1]
-                        modifiedString.append(startPtr)
+                    if (!qualifyForRemoval(ptr, behindPtr)) {
+                        lastDuplicatePtr = behindPtr
+                        modifiedString.append(lastDuplicatePtr)
                     }
                 }
                 return modifiedString.toString()
