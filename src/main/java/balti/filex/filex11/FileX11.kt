@@ -102,7 +102,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
         }
         if (initPath != null) {
             this.path = removeTrailingSlashOrColonAddFrontSlash(initPath)
-            if (initPath == "") {
+            if (initPath == "" || initPath == "/") {
                 uri = buildTreeDocumentUriFromId(rootDocumentId)
             }
         }
