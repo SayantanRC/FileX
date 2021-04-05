@@ -3,6 +3,7 @@ package balti.filex.filex11.operators
 import android.provider.DocumentsContract
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.fCResolver
+import balti.filex.Quad
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
@@ -117,5 +118,38 @@ internal class Filter(private val f: FileX11) {
     }
 
     fun list(): Array<String>? = list(null)
+
+    fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+        val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
+
+        if (!this.isDirectory || documentId == null) return null
+        val childrenUri = getChildrenUri(documentId!!)
+
+        val projection = arrayOf(
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                DocumentsContract.Document.COLUMN_MIME_TYPE,
+                DocumentsContract.Document.COLUMN_SIZE,
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+        )
+        try {
+            fCResolver.query(childrenUri, projection, null, null, null)?.run {
+                moveToFirst()
+                while (moveToNext()) {
+                    val name = getString(0)
+                    val isDirectory = getString(1) == DocumentsContract.Document.MIME_TYPE_DIR
+                    val size = try { getString(2).toLong() } catch (_: Exception) { 0L }
+                    val lastModified = try { getString(3).toLong() } catch (_: Exception) { 0L }
+                    val entry = Quad(name, isDirectory, size, lastModified)
+                    results.add(entry)
+                }
+                close()
+            }
+            return results
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+
+    }
 
 }
