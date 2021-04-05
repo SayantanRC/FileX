@@ -1,6 +1,7 @@
 package balti.filex.filexTraditional.operators
 
 import balti.filex.FileX
+import balti.filex.Quad
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
@@ -32,6 +33,21 @@ internal class Filter(private val f: FileXT) {
     })
 
     fun list() = convertToStringArray(f.file.listFiles())
+
+    fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+        val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
+
+        f.file.listFiles()?.forEach {
+            val name = it.name
+            val isDirectory = it.isDirectory
+            val size = it.length()
+            val lastModified = it.lastModified()
+            val entry = Quad(name, isDirectory, size, lastModified)
+            results.add(entry)
+        } ?: return null
+
+        return results
+    }
 
     private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
     private fun convertToFileX(files: List<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
