@@ -133,7 +133,6 @@ internal class Filter(private val f: FileX11) {
         )
         try {
             fCResolver.query(childrenUri, projection, null, null, null)?.run {
-                moveToFirst()
                 while (moveToNext()) {
                     val name = getString(0)
                     val isDirectory = getString(1) == DocumentsContract.Document.MIME_TYPE_DIR
