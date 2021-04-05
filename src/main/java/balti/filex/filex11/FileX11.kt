@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleRegistry
 import balti.filex.FileX
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.FileXInit.Companion.refreshFileOnCreation
+import balti.filex.Quad
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.activity.ActivityFunctionDelegate
 import balti.filex.exceptions.ImproperFileXType
@@ -194,6 +195,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     override fun list() = Filter.list()
     override fun list(filter: FileXFilter): Array<String>? = Filter.list(filter)
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
+    override fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverything()
 
     private val Operations = Operations(this)
 

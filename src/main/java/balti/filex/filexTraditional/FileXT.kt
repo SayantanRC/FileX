@@ -3,6 +3,7 @@ package balti.filex.filexTraditional
 import android.content.Intent
 import android.net.Uri
 import balti.filex.FileX
+import balti.filex.Quad
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.exceptions.ImproperFileXType
 import balti.filex.filex11.publicInterfaces.FileXFilter
@@ -91,6 +92,7 @@ internal class FileXT(path: String): FileX(false) {
     override fun list() = Filter.list()
     override fun list(filter: FileXFilter): Array<String>? = Filter.list(filter)
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
+    override fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverything()
 
     override fun inputStream(): InputStream = file.inputStream()
     override fun outputStream(mode: String): OutputStream = FileOutputStream(file, mode == "wa")

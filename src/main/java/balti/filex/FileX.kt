@@ -135,9 +135,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
             list(object : FileXNameFilter{
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
-    /*fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>{
-        TODO()
-    }*/
+    abstract fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>?
 
     //
     // Operations
