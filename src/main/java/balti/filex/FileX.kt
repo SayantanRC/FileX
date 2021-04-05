@@ -14,6 +14,7 @@ import java.io.OutputStreamWriter
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val path: String
@@ -134,6 +135,9 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
             list(object : FileXNameFilter{
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
+    /*fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>{
+        TODO()
+    }*/
 
     //
     // Operations

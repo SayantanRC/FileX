@@ -1,6 +1,15 @@
 package balti.filex
 
+
+public data class Quad<out A, out B, out C, out D>(
+        public val first: A,
+        public val second: B,
+        public val third: C,
+        public val fourth: D
+)
+
 internal object Tools {
+
     @Suppress("NAME_SHADOWING")
     internal fun removeTrailingSlashOrColonAddFrontSlash(path: String): String {
         path.trim().let { path ->

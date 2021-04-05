@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import balti.filex.Quad
 
 internal class FileXServer {
     companion object{
@@ -19,10 +20,3 @@ internal class FileXServer {
         }
     }
 }
-
-internal data class Quad<out A, out B, out C, out D>(
-    public val first: A,
-    public val second: B,
-    public val third: C,
-    public val fourth: D
-)
