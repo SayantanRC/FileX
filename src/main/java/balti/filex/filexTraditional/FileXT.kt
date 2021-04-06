@@ -92,7 +92,8 @@ internal class FileXT(path: String): FileX(false) {
     override fun list() = Filter.list()
     override fun list(filter: FileXFilter): Array<String>? = Filter.list(filter)
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
-    override fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverything()
+    override fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverythingInQuad()
+    override fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>? = Filter.listEverything()
 
     override fun inputStream(): InputStream = file.inputStream()
     override fun outputStream(mode: String): OutputStream = FileOutputStream(file, mode == "wa")

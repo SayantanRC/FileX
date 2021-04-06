@@ -34,7 +34,7 @@ internal class Filter(private val f: FileXT) {
 
     fun list() = convertToStringArray(f.file.listFiles())
 
-    fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+    fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
         val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
 
         f.file.listFiles()?.forEach {
@@ -47,6 +47,27 @@ internal class Filter(private val f: FileXT) {
         } ?: return null
 
         return results
+    }
+
+    fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>? = f.run {
+        val resultNames = ArrayList<String>(0)
+        val resultDirectory = ArrayList<Boolean>(0)
+        val resultSize = ArrayList<Long>(0)
+        val resultLastModified = ArrayList<Long>(0)
+
+        f.file.listFiles()?.forEach {
+            val name = it.name
+            val isDirectory = it.isDirectory
+            val size = it.length()
+            val lastModified = it.lastModified()
+
+            resultNames.add(name)
+            resultDirectory.add(isDirectory)
+            resultSize.add(size)
+            resultLastModified.add(lastModified)
+        } ?: return null
+
+        return Quad(resultNames, resultDirectory, resultSize, resultLastModified)
     }
 
     private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()

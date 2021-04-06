@@ -195,7 +195,8 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     override fun list() = Filter.list()
     override fun list(filter: FileXFilter): Array<String>? = Filter.list(filter)
     override fun list(filter: FileXNameFilter): Array<String>? = Filter.list(filter)
-    override fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverything()
+    override fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = Filter.listEverythingInQuad()
+    override fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>? = Filter.listEverything()
 
     private val Operations = Operations(this)
 

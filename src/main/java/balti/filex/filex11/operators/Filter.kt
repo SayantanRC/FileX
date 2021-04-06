@@ -119,7 +119,7 @@ internal class Filter(private val f: FileX11) {
 
     fun list(): Array<String>? = list(null)
 
-    fun listEverything(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+    fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
         val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
 
         if (!this.isDirectory || documentId == null) return null
@@ -144,6 +144,43 @@ internal class Filter(private val f: FileX11) {
                 close()
             }
             return results
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>? = f.run {
+        val resultNames = ArrayList<String>(0)
+        val resultDirectory = ArrayList<Boolean>(0)
+        val resultSize = ArrayList<Long>(0)
+        val resultLastModified = ArrayList<Long>(0)
+
+        if (!this.isDirectory || documentId == null) return null
+        val childrenUri = getChildrenUri(documentId!!)
+
+        val projection = arrayOf(
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                DocumentsContract.Document.COLUMN_MIME_TYPE,
+                DocumentsContract.Document.COLUMN_SIZE,
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+        )
+        try {
+            fCResolver.query(childrenUri, projection, null, null, null)?.run {
+                while (moveToNext()) {
+                    val name = getString(0)
+                    val isDirectory = getString(1) == DocumentsContract.Document.MIME_TYPE_DIR
+                    val size = try { getString(2).toLong() } catch (_: Exception) { 0L }
+                    val lastModified = try { getString(3).toLong() } catch (_: Exception) { 0L }
+
+                    resultNames.add(name)
+                    resultDirectory.add(isDirectory)
+                    resultSize.add(size)
+                    resultLastModified.add(lastModified)
+                }
+                close()
+            }
+            return Quad(resultNames, resultDirectory, resultSize, resultLastModified)
         } catch (e: Exception) {
             e.printStackTrace()
             return null
