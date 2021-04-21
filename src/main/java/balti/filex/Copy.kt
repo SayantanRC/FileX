@@ -23,7 +23,7 @@ internal class Copy(private val f: FileX) {
 
         if (f.isDirectory) {
             if (!target.mkdirs())
-                throw Exception("Failed to create target directory.")
+                throw FileXSystemException(f, target, "Failed to create target directory.")
         } else {
 
             target.createNewFile(makeDirectories = true)
