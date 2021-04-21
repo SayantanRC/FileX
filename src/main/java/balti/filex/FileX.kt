@@ -20,12 +20,19 @@ import kotlin.collections.ArrayList
  * FileX is a modern approach to deal with files in the Android Storage Access Framework (SAF) world.
  * FileX allows you to use some access and write to files using file paths rather than having to deal with [Uri][android.net.Uri].
  * FileX also allows you to use traditional [Java File][java.io.File] for operations in the private data directory of the app.
+ *
+ * - Internally, FileX is categorised in two ways:
+ * [FileXT] - for using traditional [Java File][java.io.File]; [FileX11] - for using the Storage Access Framework way.
+ * However only this FileX class is available for use, the `FileX11` and `FileXT` classes are hidden, to keep the use simple.
+ * Both the classes `FileXT` and `FileX11` are child classes this FileX class, and share common characteristics.
+ * In many cases both the formats are compatible with each other. Like a file referred by `FileXT` can be copied to a location referred by `FileX11`.
+ * The user of this library REALLY NEED NOT KNOW which class is being used internally in most cases.
  * Please refer to the README.md for further information.
  *
  * - Please note that the constructor is hidden. To create a FileX object, see [new] function.
  *
- * @param isTraditional If true, FileX acts as a wrapper to [Java File][java.io.File]. In this case [FileXT] class is used.
- *                      If this variable is false, SAF way is used. In this case [FileX11] class is used.
+ * @param isTraditional If true, FileX internally uses [FileXT] class which acts as a wrapper to [Java File][java.io.File].
+ * If this variable is false, FileX internally uses [FileX11] class, which is created for operating in the SAF way, using content Uri and content resolver for many of the tasks.
  */
 abstract class FileX internal constructor(val isTraditional: Boolean) {
 
@@ -131,21 +138,17 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * Canonical path of the object.
-     *
-     * For [FileX11] returns complete path for any physical storage location (including SD cards).
+     * - For [FileX11] returns complete path for any physical storage location (including SD cards).
      * This path is calculated fairly reliably on Android 11+. However for lower Android versions,
      * especially below Android 7 (Nougat), the result may not be very reliable if this path points to USB-OTG or SD cards.
-     *
-     * For [FileXT] it simply uses the [java.io.File.getCanonicalPath]
+     * - For [FileXT] it simply uses the [java.io.File.getCanonicalPath]
      */
     abstract val canonicalPath: String
 
     /**
      * Absolute path of the object.
-     *
-     * For [FileX11] returns same value as [canonicalPath]
-     *
-     * For [FileXT] it simply uses the [java.io.File.getAbsolutePath]
+     * - For [FileX11] returns same value as [canonicalPath]
+     * - For [FileXT] it simply uses the [java.io.File.getAbsolutePath]
      */
     abstract val absolutePath: String
 
@@ -176,11 +179,9 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * String path of the parent directory of this FileX object.
-     *
-     * For [FileX11] (SAF way), the path returned is the relative path from the user selected root and not full [canonicalPath].
+     * - For [FileX11] (SAF way), the path returned is the relative path from the user selected root and not full [canonicalPath].
      * Returns null if called on the root itself (as no permission to see beyond root).
-     *
-     * For [FileXT] (traditional way), executes [java.io.File.getParent]
+     * - For [FileXT] (traditional way), executes [java.io.File.getParent]
      */
     abstract val parent: String?
 
@@ -195,22 +196,154 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * This does not return null even if called on root. If called on root, it returns "/". Applicable for both [FileXT] and [FileX11].
      */
     abstract val parentCanonical: String
+
+    /**
+     * Length of the file in bytes.
+     * - For [FileX11] (SAF way) - uses content resolver query to get the length.
+     * - For [FileXT] (traditional way) - please see [Java File length()][java.io.File.length].
+     *
+     * @return Length of the file in bytes. Returns 0L if file does not exist.
+     */
     abstract fun length(): Long
+
+    /**
+     * Value representing the time the file was last modified, measured in milliseconds since the epoch (00:00:00 GMT, January 1, 1970).
+     * - For [FileX11] (SAF way) - uses content resolver query to get the last modified value.
+     * - For [FileXT] (traditional way) - [Java File lastModified()][java.io.File.lastModified].
+     *
+     * @return Last modified value of the file. Returns 0L if file does not exist.
+     */
     abstract fun lastModified(): Long
+
+    /**
+     * Returns if the document can be read from. Usually always true for `FileX11`.
+     * - For [FileX11] (SAF way) - checks if the [Uri][android.net.Uri] of the file has the read permission
+     * via [UriPermission isReadPermission()][android.content.UriPermission.isReadPermission].
+     * See [Info.canRead()][balti.filex.filex11.operators.Info.canRead].
+     * - For [FileXT] (traditional way) - See [Java File canRead()][java.io.File.canRead].
+     *
+     * @return Boolean representing file / document can be read or not.
+     */
     abstract fun canRead(): Boolean
+
+    /**
+     * Returns if the document can be written to. Usually always true for `FileX11`.
+     * - For [FileX11] (SAF way) - checks if the [Uri][android.net.Uri] of the file has the write permission
+     * via [UriPermission isWritePermission()][android.content.UriPermission.isWritePermission].
+     * See [Info.canWrite()][balti.filex.filex11.operators.Info.canWrite].
+     * - For [FileXT] (traditional way) - See [Java File canWrite()][java.io.File.canWrite].
+     *
+     * @return Boolean representing file / document can be written to or not.
+     */
     abstract fun canWrite(): Boolean
+
+    /**
+     * Number of bytes of free space available in the root storage location.
+     * - For [FileX11] (SAF way) - uses [ParcelFileDescriptor][android.os.ParcelFileDescriptor] and [OS fstatvfs][android.system.Os.fstatvfs].
+     * See [Info.getSpace()][balti.filex.filex11.operators.Info.getSpace].
+     * - For [FileXT] (traditional way) - See [Java File getFreeSpace()][java.io.File.getFreeSpace].
+     */
     abstract val freeSpace: Long
+
+    /**
+     * Number of bytes of usable space to write data in the root storage location. This usually takes care of permissions and other restrictions and more accurate than `freeSpace`.
+     * - For [FileX11] (SAF way) - uses [ParcelFileDescriptor][android.os.ParcelFileDescriptor] and [OS fstatvfs][android.system.Os.fstatvfs].
+     * See [Info.getSpace()][balti.filex.filex11.operators.Info.getSpace].
+     * - For [FileXT] (traditional way) - See [Java File getUsableSpace()][java.io.File.getUsableSpace].
+     */
     abstract val usableSpace: Long
+
+    /**
+     * Number of bytes representing total space of the root storage location.
+     * - For [FileX11] (SAF way) - uses [ParcelFileDescriptor][android.os.ParcelFileDescriptor] and [OS fstatvfs][android.system.Os.fstatvfs].
+     * See [Info.getSpace()][balti.filex.filex11.operators.Info.getSpace].
+     * - For [FileXT] (traditional way) - See [Java File getTotalSpace()][java.io.File.getTotalSpace].
+     */
     abstract val totalSpace: Long
+
+    /**
+     * Checks if the document is hidden.
+     * - For [FileX11] (SAF way) - There is not much available way to check if a document is really hidden. So this checks if the name begins with a `.`
+     * - For [FileXT] (traditional way) - See [Java File isHidden()][java.io.File.isHidden].
+     */
     abstract val isHidden: Boolean
+
+    /**
+     * Extension of the document. Works identically to [kotlin.io.extension].
+     */
     abstract val extension: String
+
+    /**
+     * The name of the document without the extension part. Works identically to [kotlin.io.nameWithoutExtension].
+     */
     abstract val nameWithoutExtension: String
     //FileX11 exclusive
+
+    /**
+     * `FileX11 exclusive` (SAF way)
+     *
+     * Returns the path of the document from the root of the storage. Returns null for `FileXT`.
+     * See [Info.storagePath][balti.filex.filex11.operators.Info.storagePath].
+     *
+     * - Example 1 : For a document with user selected root = `[Internal storage]/dir1/dir2` and
+     * having a [path] = `my/test_doc.txt`: the value of `storagePath` = `/dir1/dir2/my/test_doc.txt`.
+     * - Example 2 : For a document with user selected root = `[SD card]/all_documents` and
+     * having a [path] = `/thesis/doc.pdf`: the value of `storagePath` = `/all_documents/thesis/doc.pdf`.
+     * - Important note: This returns `null` for [FileXT] (traditional way).
+     */
     abstract val storagePath: String?
+
+    /**
+     * `FileX11 exclusive` (SAF way)
+     *
+     * Returns the canonical path of the of the storage medium. Useful to find the mount point of SD cards and USB-OTG drives.
+     * This path, in most cases, is not readable or writable unless the user picks selects it from the system picker.
+     * Returns null for `FileXT`.
+     *
+     * See [Info.volumePath][balti.filex.filex11.operators.Info.volumePath],
+     * [getStorageVolumes()][balti.filex.filex11.utils.Tools.getStorageVolumes]
+     * and for Android 5.x: [deduceVolumePathForLollipop()][balti.filex.filex11.utils.Tools.deduceVolumePathForLollipop].
+     *
+     * - Example 1 : For a document with user selected root = `[Internal storage]/dir1/dir2` and
+     * having a [path] = `my/doc.txt`: the value of `volumePath` = `/storage/emulated/0`.
+     * - Example 2 : For a document with user selected root = `[SD card]/all_documents` and
+     * having a [path] = `/thesis/doc.pdf`: the value of `volumePath` = `/storage/B840-4A40`.
+     * (the location name is based on the UUID of the storage medium)
+     * - Important note: This returns `null` for [FileXT] (traditional way).
+     */
     abstract val volumePath: String?
+
+    /**
+     * `FileX11 exclusive` (SAF way)
+     *
+     * Returns the canonical path upto the root selected by the user from the system picker. Returns null for `FileXT`.
+     * See [Info.rootPath][balti.filex.filex11.operators.Info.rootPath].
+     *
+     * - Example 1 : For a document with user selected root = `[Internal storage]/dir1/dir2` and
+     * having a [path] = `my/test_doc.txt`: the value of `rootPath` = `/storage/emulated/0/dir1/dir2`.
+     * - Example 2 : For a document with user selected root = `[SD card]/all_documents` and
+     * having a [path] = `/thesis/doc.pdf`: the value of `rootPath` = `/storage/B840-4A40/all_documents`.
+     * - Important note: This returns `null` for [FileXT] (traditional way).
+     */
     abstract val rootPath: String?
+
+    /**
+     * `FileX11 exclusive` (SAF way)
+     *
+     * Returns the tree uri of the parent directory if present, else null.
+     * Will return null if run on the user selected root as we have no permission to see beyond that location.
+     * See [Info.parentUri][balti.filex.filex11.operators.Info.parentUri].
+     * - Returns null for `FileXT`
+     */
     abstract val parentUri: Uri?
-    //FileXT exclusive
+
+    /**
+     * `FileXT exclusive` (traditional way)
+     *
+     * Returns if the Java File pointed by a FileX object is executable. Always false for `FileX11`.
+     * - For [FileX11] (SAF way) - Simply returns `false`
+     * - For [FileXT] (traditional way) - See [Java File canExecute()][java.io.File.canExecute].
+     */
     abstract fun canExecute(): Boolean
 
     //
