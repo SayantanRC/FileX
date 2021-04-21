@@ -3,6 +3,7 @@ package balti.filex.filex11.operators
 import android.provider.DocumentsContract
 import balti.filex.filex11.FileX11
 import balti.filex.FileXInit.Companion.fCResolver
+import balti.filex.filex11.utils.FileX11DeleteOnExit
 
 internal class Delete(private val f: FileX11) {
     fun delete(): Boolean = f.run {
@@ -16,5 +17,9 @@ internal class Delete(private val f: FileX11) {
         return uri?.let {
             DocumentsContract.deleteDocument(fCResolver, it)
         } ?: false
+    }
+
+    fun deleteOnExit() {
+        FileX11DeleteOnExit.add(f)
     }
 }
