@@ -167,9 +167,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
 
     override fun delete(): Boolean = Delete.delete()
     override fun deleteRecursively(): Boolean = Delete.deleteRecursively()
-    override fun deleteOnExit() {
-        throw ImproperFileXType("Only applicable on traditional FileX")
-    }
+    override fun deleteOnExit() = Delete.deleteOnExit()
 
     private val Create = Create(this)
 
