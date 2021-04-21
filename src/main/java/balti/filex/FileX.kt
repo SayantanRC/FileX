@@ -222,7 +222,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * See [Info.canRead()][balti.filex.filex11.operators.Info.canRead].
      * - For [FileXT] (traditional way) - See [Java File canRead()][java.io.File.canRead].
      *
-     * @return Boolean representing file / document can be read or not.
+     * @return `true` if file / document can be read, else `false`
      */
     abstract fun canRead(): Boolean
 
@@ -233,7 +233,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * See [Info.canWrite()][balti.filex.filex11.operators.Info.canWrite].
      * - For [FileXT] (traditional way) - See [Java File canWrite()][java.io.File.canWrite].
      *
-     * @return Boolean representing file / document can be written to or not.
+     * @return `true` if file / document can be written to, else `false`
      */
     abstract fun canWrite(): Boolean
 
@@ -347,7 +347,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileX11] (SAF way) - Simply returns `false`
      * - For [FileXT] (traditional way) - See [Java File canExecute()][java.io.File.canExecute].
      *
-     * @return True if the file is executable, else false.
+     * @return `true` if the file is executable, else `false`.
      */
     abstract fun canExecute(): Boolean
 
@@ -362,7 +362,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * See [Delete.delete()][balti.filex.filex11.operators.Delete.delete]
      * - For [FileXT] (traditional way) - See [Java File delete()][java.io.File.delete].
      *
-     * @return True is the file / document could be deleted, else false.
+     * @return `true` is the file / document could be deleted, else `false`.
      */
     abstract fun delete(): Boolean
 
@@ -401,7 +401,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * @param overwriteIfExists Deletes the document if already present and creates a blank document.
      * @param optionalMimeType For `FileX11` a mime type of the document (as string) can be specified. Ignored for `FileXT`.
      *
-     * @return Returns true, if document creation is successful, else false.
+     * @return `true` if document creation is successful, else `false`.
      *
      * @throws balti.filex.exceptions.DirectoryHierarchyBroken If `makeDirectories = false` and the full tree path is not present.
      * Also see [DocumentsContract.createDocument()][android.provider.DocumentsContract.createDocument].
@@ -417,7 +417,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * This function is basically the same with the options:
      * `makeDirectories = false` and `overwriteIfExists = false`.
      *
-     * @return Returns true, if document creation is successful, else false.
+     * @return `true` if document creation is successful, else `false`.
      * @throws balti.filex.exceptions.DirectoryHierarchyBroken If the full tree path is not present.
      * For FileXT, also see [Java File createNewFile()][java.io.File.createNewFile] for additional exceptions that may be thrown.
      */
