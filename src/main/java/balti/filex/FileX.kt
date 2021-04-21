@@ -507,7 +507,33 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     private val Copy = Copy(this)
 
+    /**
+     * Copies a file and returns the target. Does not copy a directory. Logic is completely copied from [kotlin.io.copyTo]
+     * @param target FileX object referring to destination location, immaterial whether `FileX11` or `FileXT` type.
+     * @param overwrite If `true` deletes the file / directory (if empty) and copies the file referred by the current FileX object.
+     * @param bufferSize Int value specifying the stream buffer size while copying the file size.
+     *
+     * @return The target FileX object, basically same as the parameter [target].
+     * This occurs only if the operation is successful, else one of the below exceptions sre thrown.
+     *
+     * @throws FileXNotFoundException If the source file does not exist.
+     * @throws FileXAlreadyExists If the target file exists and [overwrite] = `false`, OR the destination file could not be deleted.
+     * This can happen the the destination is a non-empty directory.
+     * @throws FileXSystemException If the source (this FileX object) is a directory, and an empty directory could not be created in the target location.
+     */
     fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX = Copy.copyTo(target, overwrite, bufferSize)
+
+    /**
+     * Directory copy recursively, return true if success else false. Logic is completely copied from kotlin.io copyRecursively().
+     * For better documentation of the logic, please refer to [kotlin.io.copyRecursively].
+     *
+     * Note that if this function fails, then partial copying may have taken place.
+     *
+     * @param target FileX object referring to destination location, immaterial whether `FileX11` or `FileXT` type.
+     * @param overwrite If `true` deletes conflicting files / directories if exists inside the target.
+     * @param onError Function to execute in case of errors.
+     * @return `false` if the copying was terminated, `true` otherwise.
+     */
     fun copyRecursively(
         target: FileX,
         overwrite: Boolean = false,
