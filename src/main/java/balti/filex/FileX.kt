@@ -6,6 +6,10 @@ import balti.filex.filex11.FileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
+import balti.filex.exceptions.DirectoryHierarchyBroken
+import balti.filex.exceptions.FileXAlreadyExists
+import balti.filex.exceptions.FileXNotFoundException
+import balti.filex.exceptions.FileXSystemException
 import java.io.BufferedWriter
 import java.io.BufferedReader
 import java.io.InputStream
@@ -104,6 +108,8 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     /**
      * `FileX11 exclusive` (SAF way)
      *
+     * This is useful for `FileX11`. For `FileXT` (traditional way) it is not very useful.
+     *
      * If the document was not present during declaration of the FileX object, and the document is later created by any other app,
      * or this app from a background thread, then call [refreshFile] on it to update the Uri pointing to the file.
      * Do note that if your app is itself creating the document on the main thread, you need not call [refreshFile()] again.
@@ -119,6 +125,9 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      *
      * Even in the case of the file being created in a background thread, the Uri of the file does get updated after about 200 ms.
      * But this is not very reliable, hence it is recommended to call [refreshFile].
+     *
+     * - For [FileX11] See [FileX11.refreshFileX11()][balti.filex.filex11.operators.refreshFileX11]
+     * - For [FileXT] See [FileXT.refreshFile]
      */
     abstract fun refreshFile()
 
@@ -403,7 +412,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      *
      * @return `true` if document creation is successful, else `false`.
      *
-     * @throws balti.filex.exceptions.DirectoryHierarchyBroken If `makeDirectories = false` and the full tree path is not present.
+     * @throws DirectoryHierarchyBroken If `makeDirectories = false` and the full tree path is not present.
      * Also see [DocumentsContract.createDocument()][android.provider.DocumentsContract.createDocument].
      * For FileXT, also see [Java File createNewFile()][java.io.File.createNewFile] for additional exceptions that may be thrown.
      */
@@ -418,7 +427,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * `makeDirectories = false` and `overwriteIfExists = false`.
      *
      * @return `true` if document creation is successful, else `false`.
-     * @throws balti.filex.exceptions.DirectoryHierarchyBroken If the full tree path is not present.
+     * @throws DirectoryHierarchyBroken If the full tree path is not present.
      * For FileXT, also see [Java File createNewFile()][java.io.File.createNewFile] for additional exceptions that may be thrown.
      */
     abstract fun createNewFile(): Boolean
@@ -431,7 +440,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileXT] (traditional way) - See [Java File mkdirs()][java.io.File.mkdirs].
      *
      * @return `true` if all the directories in the path was created, else `false`.
-     * @throws balti.filex.exceptions.DirectoryHierarchyBroken For `FileX11`
+     * @throws DirectoryHierarchyBroken For `FileX11`
      * if [DocumentsContract.createDocument()][android.provider.DocumentsContract.createDocument] fails while creating directory.
      * For `FileXT`, also see [Java File mkdirs()][java.io.File.mkdirs] for additional exceptions that may be thrown.
      */
