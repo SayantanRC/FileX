@@ -277,6 +277,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * The name of the document without the extension part. Works identically to [kotlin.io.nameWithoutExtension].
      */
     abstract val nameWithoutExtension: String
+
     //FileX11 exclusive
 
     /**
@@ -337,12 +338,16 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      */
     abstract val parentUri: Uri?
 
+    // FileXT exclusive
+
     /**
      * `FileXT exclusive` (traditional way)
      *
      * Returns if the Java File pointed by a FileX object is executable. Always false for `FileX11`.
      * - For [FileX11] (SAF way) - Simply returns `false`
      * - For [FileXT] (traditional way) - See [Java File canExecute()][java.io.File.canExecute].
+     *
+     * @return True if the file is executable, else false.
      */
     abstract fun canExecute(): Boolean
 
@@ -350,9 +355,36 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     // Delete
     //
 
+    /**
+     * Deletes a single document or empty directory. Does not delete a non-empty directory. Returns true if successful, else false.
+     * Deletion is only performed if the FileX object refers to a file or an empty directory.
+     * - For [FileX11] (SAF way) - Uses [DocumentsContract.deleteDocument()][android.provider.DocumentsContract.deleteDocument].
+     * See [Delete.delete()][balti.filex.filex11.operators.Delete.delete]
+     * - For [FileXT] (traditional way) - See [Java File delete()][java.io.File.delete].
+     *
+     * @return True is the file / document could be deleted, else false.
+     */
     abstract fun delete(): Boolean
+
+    /**
+     * Deletes a directory and all documents and other directories inside it, even if not empty. Returns true if successful.
+     * - For [FileX11] (SAF way) - Uses [DocumentsContract.deleteDocument()][android.provider.DocumentsContract.deleteDocument].
+     * See [Delete.deleteRecursively()][balti.filex.filex11.operators.Delete.deleteRecursively]
+     * - For [FileXT] (traditional way) - See [Kotlin deleteRecursively()][kotlin.io.deleteRecursively].
+     */
     abstract fun deleteRecursively(): Boolean
-    //FileXT exclusive
+
+    /**
+     * Requests that the file or directory denoted by this abstract pathname be deleted when the virtual machine terminates.
+     *
+     * All files on which this method is called will get deleted once `System.exit()` is called, similar to [java.io.File.deleteOnExit].
+     * - For [FileX11] (SAF way) - Use copied logic to add a shutdown hook to runtime.
+     * See [FileX11DeleteOnExit][balti.filex.filex11.utils.FileX11DeleteOnExit] and [Delete.deleteOnExit()][balti.filex.filex11.operators.Delete.deleteOnExit]
+     * - For [FileXT] (traditional way) - See [Java File deleteOnExit()][java.io.File.deleteOnExit].
+     *
+     * - RECOMMENDED: Although this works both on `FileX11` and `FileXT`, but implementation for `FileX11` is basically a patch work
+     * from the implementation from `java.io.DeleteOnExitHook`. It is highly recommended to surround the code by `try-catch` block.
+     */
     abstract fun deleteOnExit()
 
     //
