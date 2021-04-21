@@ -465,7 +465,31 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     // Modify
     //
 
+    /**
+     * Move the current document to the path mentioned by the FileX parameter `dest`
+     * - For [FileX11] (SAF way) - this only works in the actual sense of "moving" for Android 7+ (API 24) due to Android limitations.
+     * For lower Android versions, this copies the file / directory and then deletes from the old location.
+     * See the functions in [FileX11 Modify][balti.filex.filex11.operators.Modify].
+     * - For [FileXT] (traditional way) - this mainly uses [Java File renameTo()][java.io.File.renameTo] to additional modifications.
+     * See the functions in [FileXT Modify][balti.filex.filexTraditional.operators.Modify].
+     *
+     * - For exceptions, see [DocumentsContract.moveDocument()][android.provider.DocumentsContract.moveDocument] for `FileX11`
+     * and [Java File renameTo()][java.io.File.renameTo] `FileXT`.
+     *
+     * @param dest A FileX object pointing to the location where the current file / directory is to be moved.
+     * This argument can be of both type, `FileXT` (traditional way, with [isTraditional] = true) or
+     * `FileX11` (SAF way, with [isTraditional] = false). Similarly, this method can be called on any FileX object,
+     * immaterial of it being traditional type or SAF type.
+     *
+     * @return `true` if move was successful, `false` otherwise.
+     */
     abstract fun renameTo(dest: FileX): Boolean
+
+    /**
+     * Rename the document in place. This is used to only change the name and cannot move the document.
+     * @param newFileName New string file name of the current document / file.
+     * @return `true` if rename was successful, `false` otherwise.
+     */
     abstract fun renameTo(newFileName: String): Boolean
 
     //
