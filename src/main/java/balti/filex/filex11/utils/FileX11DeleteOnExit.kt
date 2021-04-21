@@ -16,9 +16,9 @@ import java.util.*
  * quick removal.
  */
 object FileX11DeleteOnExit {
-    private var files: LinkedHashSet<String?>? = LinkedHashSet()
+    private var files: LinkedHashSet<FileX?>? = LinkedHashSet()
     @Synchronized
-    fun add(file: String?) {
+    fun add(file: FileX?) {
         checkNotNull(files) {
             // DeleteOnExitHook is running. Too late to add a file
             "Shutdown in progress"
@@ -27,7 +27,7 @@ object FileX11DeleteOnExit {
     }
 
     fun runHooks() {
-        var theFiles: LinkedHashSet<String?>?
+        var theFiles: LinkedHashSet<FileX?>?
         synchronized(FileX11DeleteOnExit::class.java) {
             theFiles = files
             files = null
@@ -37,8 +37,8 @@ object FileX11DeleteOnExit {
         // reverse the list to maintain previous jdk deletion order.
         // Last in first deleted.
         toBeDeleted.reverse()
-        for (filename in toBeDeleted) {
-            (filename?.let { FileX.new(it) })?.delete();
+        for (file in toBeDeleted) {
+            file?.delete();
         }
     }
 
