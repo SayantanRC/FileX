@@ -5,6 +5,7 @@ import android.net.Uri
 import balti.filex.FileX
 import balti.filex.Quad
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
+import balti.filex.exceptions.DirectoryHierarchyBroken
 import balti.filex.exceptions.ImproperFileXType
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
@@ -64,10 +65,16 @@ internal class FileXT(path: String): FileX(false) {
     override fun deleteOnExit() = file.deleteOnExit()
     override fun deleteRecursively(): Boolean = file.deleteRecursively()
 
-    override fun createNewFile(): Boolean = file.createNewFile()
+    override fun createNewFile(): Boolean {
+        if (parentFile?.exists() != true) throw DirectoryHierarchyBroken("No such file or directory")
+        return file.createNewFile()
+    }
     override fun createNewFile(makeDirectories: Boolean, overwriteIfExists: Boolean, optionalMimeType: String): Boolean {
         if (makeDirectories){
             parentFile.let { it?.mkdirs() }
+        }
+        else {
+            if (parentFile?.exists() != true) throw DirectoryHierarchyBroken("No such file or directory")
         }
         if (overwriteIfExists) file.delete()
         return file.createNewFile()
