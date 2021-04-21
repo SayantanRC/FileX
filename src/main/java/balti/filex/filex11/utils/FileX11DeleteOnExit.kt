@@ -15,7 +15,7 @@ import java.util.*
  * A set is used both to prevent double-insertion of the same file as well as offer
  * quick removal.
  */
-object FileX11DeleteOnExit {
+internal object FileX11DeleteOnExit {
     private var files: LinkedHashSet<FileX?>? = LinkedHashSet()
     @Synchronized
     fun add(file: FileX?) {
