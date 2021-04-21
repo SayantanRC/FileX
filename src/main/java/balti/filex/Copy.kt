@@ -7,6 +7,9 @@ internal class Copy(private val f: FileX) {
 
     fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX {
 
+        f.refreshFile()
+        target.refreshFile()
+
         if (!f.exists()) {
             throw FileXNotFoundException("The source file doesn't exist.")
         }
@@ -47,6 +50,10 @@ internal class Copy(private val f: FileX) {
             onError: (FileX, Exception) -> OnErrorAction = { _, exception -> throw exception },
             deleteAfterCopy: Boolean = false  // internal flag used to move files.
     ): Boolean = f.run {
+
+        this.refreshFile()
+        target.refreshFile()
+
         if (!exists()) {
             return onError(this, NoSuchFileXException(file = this, reason = "The source file doesn't exist.")) !=
                     OnErrorAction.TERMINATE
