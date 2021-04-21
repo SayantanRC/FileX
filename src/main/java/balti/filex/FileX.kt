@@ -378,6 +378,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * Requests that the file or directory denoted by this abstract pathname be deleted when the virtual machine terminates.
      *
      * All files on which this method is called will get deleted once `System.exit()` is called, similar to [java.io.File.deleteOnExit].
+     *
      * - For [FileX11] (SAF way) - Use copied logic to add a shutdown hook to runtime.
      * See [FileX11DeleteOnExit][balti.filex.filex11.utils.FileX11DeleteOnExit] and [Delete.deleteOnExit()][balti.filex.filex11.operators.Delete.deleteOnExit]
      * - For [FileXT] (traditional way) - See [Java File deleteOnExit()][java.io.File.deleteOnExit].
@@ -391,11 +392,73 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     // Create
     //
 
-    abstract fun createNewFile(): Boolean
+    /**
+     * Create a blank document.
+     * - For [FileX11] (SAF way) - See [FileX11 Create.createNewFile()][balti.filex.filex11.operators.Create.createNewFile].
+     * - For [FileXT] (traditional way) - See [FileXT.createNewFile()][FileXT.createNewFile].
+     *
+     * @param makeDirectories Creates the whole directory tree before the document if not present.
+     * @param overwriteIfExists Deletes the document if already present and creates a blank document.
+     * @param optionalMimeType For `FileX11` a mime type of the document (as string) can be specified. Ignored for `FileXT`.
+     *
+     * @return Returns true, if document creation is successful, else false.
+     *
+     * @throws balti.filex.exceptions.DirectoryHierarchyBroken If `makeDirectories = false` and the full tree path is not present.
+     * Also see [DocumentsContract.createDocument()][android.provider.DocumentsContract.createDocument].
+     * For FileXT, also see [Java File createNewFile()][java.io.File.createNewFile] for additional exceptions that may be thrown.
+     */
     abstract fun createNewFile(makeDirectories: Boolean = false, overwriteIfExists: Boolean = false, optionalMimeType: String = "*/*"): Boolean
+
+    /**
+     * Creates a blank document referred to by the FileX object.
+     *
+     * See [createNewFile(makeDirectories, overwriteIfExists, optionalMimeType][createNewFile].
+     *
+     * This function is basically the same with the options:
+     * `makeDirectories = false` and `overwriteIfExists = false`.
+     *
+     * @return Returns true, if document creation is successful, else false.
+     * @throws balti.filex.exceptions.DirectoryHierarchyBroken If the full tree path is not present.
+     * For FileXT, also see [Java File createNewFile()][java.io.File.createNewFile] for additional exceptions that may be thrown.
+     */
+    abstract fun createNewFile(): Boolean
+
+    /**
+     * Make all directories specified by the path of the FileX object
+     * (including the last element of the path and other non-existing parent directories).
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Create.mkdirs()][balti.filex.filex11.operators.Create.mkdirs].
+     * - For [FileXT] (traditional way) - See [Java File mkdirs()][java.io.File.mkdirs].
+     *
+     * @return `true` if all the directories in the path was created, else `false`.
+     * @throws balti.filex.exceptions.DirectoryHierarchyBroken For `FileX11`
+     * if [DocumentsContract.createDocument()][android.provider.DocumentsContract.createDocument] fails while creating directory.
+     * For `FileXT`, also see [Java File mkdirs()][java.io.File.mkdirs] for additional exceptions that may be thrown.
+     */
     abstract fun mkdirs(): Boolean
+
+    /**
+     * Creates only the last element of the path as a directory. Parent directories must be already present.
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Create.mkdir()][balti.filex.filex11.operators.Create.mkdir].
+     * - For [FileXT] (traditional way) - See [Java File mkdir()][java.io.File.mkdir].
+     * For `FileXT`, also see [Java File mkdirs()][java.io.File.mkdirs] for exceptions that may be thrown.
+     *
+     * @return `true` if the directory was created, else `false`.
+     */
     abstract fun mkdir(): Boolean
-    //FileXT exclusive
+
+    /**
+     * `FileX11 exclusive`
+     *
+     * Invoke the System file picker to create the file. Only applicable on `FileX11`.
+     * After the system picker opens, the user selects a location and the file is created in that loaction.
+     *
+     * @param optionalMimeType mime type can be spcified as a string.
+     * @param afterJob callback function can be passed to execute after document is created.
+     * - `resultCode` = `Activity.RESULT_OK` if document is successfully created.
+     * - `data` = Intent data returned by System after document creation.
+     */
     abstract fun createFileUsingPicker(optionalMimeType: String = "*/*", afterJob: ((resultCode: Int, data: Intent?) -> Unit)? = null)
 
     //
