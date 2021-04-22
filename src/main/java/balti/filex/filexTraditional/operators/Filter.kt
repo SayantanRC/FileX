@@ -32,7 +32,7 @@ internal class Filter(private val f: FileXT) {
         dir, name -> filter.accept(FileXT(dir), name)
     })
 
-    fun list() = convertToStringArray(f.file.listFiles())
+    fun list(): Array<String>? = f.file.list()
 
     fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
         val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
