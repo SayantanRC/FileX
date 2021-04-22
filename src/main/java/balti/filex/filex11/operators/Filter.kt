@@ -119,7 +119,7 @@ internal class Filter(private val f: FileX11) {
 
     fun list(): Array<String>? = list(null)
 
-    fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+    fun listEverythingInQuad(): List<Quad<String, Boolean, Long, Long>>? = f.run {
         val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
 
         if (!this.isDirectory || documentId == null) return null

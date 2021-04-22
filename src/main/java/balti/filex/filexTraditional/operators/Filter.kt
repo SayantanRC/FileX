@@ -35,7 +35,7 @@ internal class Filter(private val f: FileXT) {
 
     fun list(): Array<String>? = f.file.list()
 
-    fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>? = f.run {
+    fun listEverythingInQuad(): List<Quad<String, Boolean, Long, Long>>? = f.run {
         val results = ArrayList<Quad<String, Boolean, Long, Long>>(0)
 
         f.file.listFiles()?.forEach {
