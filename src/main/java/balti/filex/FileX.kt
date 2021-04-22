@@ -552,7 +552,8 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract val isEmpty: Boolean
 
     /**
-     * Returns list of all the files and directories under the current directory. This is to be only run on a directory location and not a file.
+     * Returns array of all the files and directories under the current directory as FileX objects.
+     * This is to be only run on a directory location and not a file.
      *
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
@@ -563,8 +564,9 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract fun listFiles(): Array<FileX>?
 
     /**
-     * Returns FileX elements array filtering with a [FileXFilter]. This is to be only run on a directory location and not a file.
-     * A condition to filter is specified in the `accept()` method.
+     * Returns array of files and directories under the current directory as FileX objects, which pass a filtering logic provided with [FileXFilter].
+     * This is to be only run on a directory location and not a file.
+     * The condition to filter is specified in the `accept()` method.
      *
      * - Example: List all files having "txt" extension.
      * ```
@@ -585,7 +587,8 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     abstract fun listFiles(filter: FileXFilter): Array<FileX>?
 
     /**
-     * Returns FileX elements array filtering with a [FileXNameFilter]. This is to be only run on a directory location and not a file.
+     * Returns array of files and directories under the current directory as FileX objects, which pass a filtering logic provided with [FileXNameFilter].
+     * This is to be only run on a directory location and not a file.
      * A condition to filter is specified in the `accept()` method.
      *
      * - Example: List all files having "txt" extension.
