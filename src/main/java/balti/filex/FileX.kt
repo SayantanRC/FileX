@@ -558,7 +558,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
      *
-     * @return Array of FileX objects pointing to the contents of the directory.
+     * @return Array of FileX objects pointing to all the contents of the directory.
      * Returns null if the current FileX object is a file and not a directory.
      */
     abstract fun listFiles(): Array<FileX>?
@@ -581,7 +581,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
      *
-     * @return Array of FileX objects pointing to the contents of the directory.
+     * @return Array of FileX objects pointing to the contents of the directory, which qualify the filtering logic.
      * Returns null if the current FileX object is a file and not a directory.
      */
     abstract fun listFiles(filter: FileXFilter): Array<FileX>?
@@ -597,7 +597,8 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * val dir2 = FileX.new("pdf_document_directory")
      * val filter = object : FileXNameFilter{
      *     override fun accept(dir: FileX, name: String): Boolean {
-     *         // Lets say we need to filter all PDF files stored in directories having "document" in their name
+     *         // Lets say we need to filter all PDF files stored in
+     *         // directories having "document" in their name
      *         return dir.name.contains("document") && name.endsWith(".pdf")
      *     }
      * }
@@ -609,7 +610,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
      *
-     * @return Array of FileX objects pointing to the contents of the directory.
+     * @return Array of FileX objects pointing to the contents of the directory, which qualify the filtering logic.
      * Returns null if the current FileX object is a file and not a directory.
      */
     abstract fun listFiles(filter: FileXNameFilter): Array<FileX>?
@@ -629,7 +630,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
      *
-     * @return Array of FileX objects pointing to the contents of the directory.
+     * @return Array of FileX objects pointing to the contents of the directory, which qualify the filtering logic.
      * Returns null if the current FileX object is a file and not a directory.
      */
     fun listFiles(filter: (file: FileX) -> Boolean): Array<FileX>? =
@@ -647,13 +648,13 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * val allTextFiles = directory.list { dir, name ->
      *     // Filter all pdf files
      *     name.endsWith(".pdf")
-     *     // In this example 'dir' becomes fairly useless.
+     *     // In this example 'dir' is fairly useless.
      * }
      * ```
      * - For [FileX11] (SAF way) - See [FileX11 Filter.listFiles()][balti.filex.filex11.operators.Filter.listFiles]
      * - For [FileXT] (traditional way) - See [FileXT Filter.listFiles()][balti.filex.filexTraditional.operators.Filter.listFiles]
      *
-     * @return Array of FileX objects pointing to the contents of the directory.
+     * @return Array of FileX objects pointing to the contents of the directory, which qualify the filtering logic.
      * Returns null if the current FileX object is a file and not a directory.
      */
     fun listFiles(filter: (dir: FileX, name: String) -> Boolean): Array<FileX>? =
@@ -661,18 +662,125 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
 
-
+    /**
+     * Returns string array of names of all the files and directories under the current directory.
+     * This is to be only run on a directory location and not a file.
+     *
+     * - Can be compared with [listFiles], but this returns only names of the files and not FileX objects.
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.list()][balti.filex.filex11.operators.Filter.list]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.list()][balti.filex.filexTraditional.operators.Filter.list]
+     *
+     * @return Array of names (strings) of all files and directories under the current directory.
+     * Returns null if the current FileX object is a file and not a directory.
+     */
     abstract fun list(): Array<String>?
+
+    /**
+     * Returns array of names of files and directories under the current directory, which pass a filtering logic provided with [FileXNameFilter].
+     * This is to be only run on a directory location and not a file.
+     * A condition to filter is specified in the `accept()` method.
+     *
+     * - Example: List all files having "txt" extension.
+     * ```
+     * val dir = FileX.new("a_directory")
+     * val allTextFileNames: Array<String>? = dir.list(object : FileXFilter {
+     *     override fun accept(file: FileX): Boolean {
+     *         // Get names of all text files
+     *         return file.extension == "txt"
+     *     }
+     * })
+     * ```
+     *
+     * - Can be compared with [listFiles], but this returns only names of the files and not FileX objects.
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.list()][balti.filex.filex11.operators.Filter.list]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.list()][balti.filex.filexTraditional.operators.Filter.list]
+     *
+     * @return Array of names (strings) of files and directories under the current directory, which qualify the filtering logic.
+     * Returns null if the current FileX object is a file and not a directory.
+     */
     abstract fun list(filter: FileXFilter): Array<String>?
+
+    /**
+     * Returns array of names of files and directories under the current directory, which pass a filtering logic provided with [FileXNameFilter].
+     * This is to be only run on a directory location and not a file.
+     * A condition to filter is specified in the `accept()` method.
+     *
+     * - Example: List all files having "txt" extension.
+     * ```
+     * val dir1 = FileX.new("a_directory")
+     * val dir2 = FileX.new("pdf_document_directory")
+     * val filter = object : FileXNameFilter{
+     *     override fun accept(dir: FileX, name: String): Boolean {
+     *         // Lets say we need to filter all PDF files stored in
+     *         // directories having "document" in their name
+     *         return dir.name.contains("document") && name.endsWith(".pdf")
+     *     }
+     * }
+     * dir1.list(filter)
+     * // dir1's name does not contain "document", no file inside will qualify.
+     * val names: Array<String>? = dir2.list(filter)
+     * // here files ending with ".pdf" will qualify.
+     * // it will contain names of the pdf files, rather than FileX objects.
+     * ```
+     *
+     * - Can be compared with [listFiles], but this returns only names of the files and not FileX objects.
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.list()][balti.filex.filex11.operators.Filter.list]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.list()][balti.filex.filexTraditional.operators.Filter.list]
+     *
+     * @return Array of names (strings) of files and directories under the current directory, which qualify the filtering logic.
+     * Returns null if the current FileX object is a file and not a directory.
+     */
     abstract fun list(filter: FileXNameFilter): Array<String>?
+
+    /**
+     * This function is made for use as arrow function, without needing to explicitly define the filter object.
+     * This is just an implementation of `list(filter: FileXFilter)`.
+     *
+     * - Example: List all files having "txt" extension.
+     * ```
+     * val dir = FileX.new("a_directory")
+     * val allTextFileNames: Array<String>? = dir.list { file ->
+     *     // Filter all text files
+     *     file.extension == "txt"
+     * }
+     * ```
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.list()][balti.filex.filex11.operators.Filter.list]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.list()][balti.filex.filexTraditional.operators.Filter.list]
+     *
+     * @return Array of names (strings) of files and directories under the current directory, which qualify the filtering logic.
+     * Returns null if the current FileX object is a file and not a directory.
+     */
     fun list(filter: (file: FileX) -> Boolean): Array<String>? =
             list(object : FileXFilter{
                 override fun accept(file: FileX): Boolean = filter(file)
             })
+
+    /**
+     * This function is made for use as arrow function, without needing to explicitly define the filter object.
+     * This is just an implementation of `list(filter: FileXNameFilter)`.
+     *
+     * - Example: List all files having "txt" extension.
+     * ```
+     * val dir = FileX.new("a_directory")
+     * val allTextFilesNames: Array<String>? = dir.list { dir, name ->
+     *     // Filter all text files
+     *     name.endsWith(".pdf")
+     *     // In this example 'dir' is fairly useless.
+     * }
+     * ```
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.list()][balti.filex.filex11.operators.Filter.list]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.list()][balti.filex.filexTraditional.operators.Filter.list]
+     *
+     * @return Array of names (strings) of files and directories under the current directory, which qualify the filtering logic.
+     * Returns null if the current FileX object is a file and not a directory.
+     */
     fun list(filter: (dir: FileX, name: String) -> Boolean): Array<String>? =
             list(object : FileXNameFilter{
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
+
     abstract fun listEverythingInQuad(): ArrayList<Quad<String, Boolean, Long, Long>>?
     abstract fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>?
 
