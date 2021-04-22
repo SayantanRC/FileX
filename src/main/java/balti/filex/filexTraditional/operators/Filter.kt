@@ -70,7 +70,7 @@ internal class Filter(private val f: FileXT) {
         return Quad(resultNames, resultDirectory, resultSize, resultLastModified)
     }
 
-    private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
-    private fun convertToFileX(files: List<File>?): Array<FileX>? = files?.map { FileXT(it.canonicalPath) }?.toTypedArray()
+    private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it) }?.toTypedArray()
+    private fun convertToFileX(files: List<File>?): Array<FileX>? = files?.map { FileXT(it) }?.toTypedArray()
     private fun convertToStringArray(files: Array<File>?): Array<String>? = files?.map { it.name }?.toTypedArray()
 }
