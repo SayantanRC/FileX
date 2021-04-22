@@ -16,15 +16,15 @@ internal class Filter(private val f: FileXT) {
             } else false
         }
 
-    fun listFiles(filter: FileXFilter): Array<FileX>? = convertToFileX(f.file.listFiles { file ->
+    fun listFiles(filter: FileXFilter): Array<FileX>? = convertToFileXArray(f.file.listFiles { file ->
         filter.accept(FileXT(file))
     })
 
-    fun listFiles(filter: FileXNameFilter): Array<FileX>? = convertToFileX(f.file.listFiles {
+    fun listFiles(filter: FileXNameFilter): Array<FileX>? = convertToFileXArray(f.file.listFiles {
         dir, name -> filter.accept(FileXT(dir), name)
     })
 
-    fun listFiles() = convertToFileX(f.file.listFiles())
+    fun listFiles() = convertToFileXArray(f.file.listFiles())
 
     fun list(filter: FileXFilter): Array<String>? = f.run {
         file.listFiles()?.filter { filter.accept(FileXT(it)) }?.map { it.name }?.toTypedArray()
@@ -71,6 +71,6 @@ internal class Filter(private val f: FileXT) {
         return Quad(resultNames, resultDirectory, resultSize, resultLastModified)
     }
 
-    private fun convertToFileX(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it) }?.toTypedArray()
+    private fun convertToFileXArray(files: Array<File>?): Array<FileX>? = files?.map { FileXT(it) }?.toTypedArray()
     private fun convertToStringArray(files: Array<File>?): Array<String>? = files?.map { it.name }?.toTypedArray()
 }
