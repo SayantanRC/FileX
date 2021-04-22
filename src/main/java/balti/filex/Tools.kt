@@ -1,6 +1,24 @@
 package balti.filex
 
-
+/**
+ * Inspired from [kotlin.Pair].
+ * Represents a set of four values.
+ *
+ * There is no meaning attached to values in this class, it can be used for any purpose.
+ * Quad exhibits value semantics, i.e. two quads are equal if both components are equal.
+ *
+ * @param A type of the first value.
+ * @param B type of the second value.
+ * @param C type of the third value.
+ * @param D type of the fourth value.
+ *
+ * @property first First value.
+ * @property second Second value.
+ * @property third Third value.
+ * @property fourth Fourth value.
+ *
+ * @constructor Creates a new instance of Quad.
+ */
 public data class Quad<out A, out B, out C, out D>(
         public val first: A,
         public val second: B,
