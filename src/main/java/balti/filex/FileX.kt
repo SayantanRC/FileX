@@ -781,7 +781,125 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
                 override fun accept(dir: FileX, name: String): Boolean = filter(dir, name)
             })
 
+    /**
+     * Sometimes list() and listFiles() can have huge overhead. This function was created to tackle that situation.
+     * This function is comparatively much faster, especially on [FileX11] (SAF way) as it just loops once
+     * using content resolver and picks up all the required information using the cursor.
+     * See [FileX11 Filter.listEverything()][balti.filex.filex11.operators.Filter.listEverything]
+     *
+     * This is to be only run on a directory location and not a file. This function returns a set of 4 lists.
+     * The lists contain information of all the containing files and directories.
+     *
+     * The lists in the specific order are:
+     * - `1st list` - `List<String>` : List of names of all the files and directories.
+     * - `2nd list` - `List<Boolean>` : Corresponding list denoting if a name (i.e. entry of the `1st list`) is a directory or not.
+     * - `3rd list` - `List<Long>` : Corresponding list containing the [length] (file size in bytes) of entry of the `1st list`.
+     *              This is not accurate if the entry is a directory (to be checked from the `2nd list`)
+     * - `4th list` - `List<Long>` : Corresponding list denoting the [lastModified] value of each entry.
+     *
+     * Do note that a specific index represents properties of the same file all across the lists.
+     * For example, at (say) INDEX=5,
+     *
+     * 1. 1st_list(5)="sample_doc.txt";
+     * 2. 2nd_list(5)=false;
+     * 3. 3rd_list(5)=13345;
+     * 4. 4th_list(5)=1619053629000
+     *
+     * All these properties are for the same file "sample_doc.txt".
+     *
+     * - Example:
+     * ```
+     * val dir = FileX.new("a_directory")
+     * dir.listEverything()?.let { everything ->
+     *     for (i in everything.first.indices) {
+     *         // loop over all the indices
+     *         // NOTE: Actual size of directories will be incorrect.
+     *         Log.d("DEBUG_TAG",
+     *                 "Found content with name \"${everything.first[i]}\"\n" +
+     *                 "This file is a directory: ${everything.second[i]}.\n" +
+     *                 "Size (in bytes) of this file: ${everything.third[i]}.\n" +
+     *                 "Last modified value: ${everything.fourth[i]}."
+     *         )
+     *     }
+     * }
+     * ```
+     * The output is something as below:
+     * ```
+     * Found content with name: "Telegram.apk"
+     * This file is a directory: false.
+     * Size (in bytes) of this file: 57449002.
+     * Last modified value: 1618589301000.
+     *
+     * Found content with name: "bank_statements"
+     * This file is a directory: true.
+     * Size (in bytes) of this file: 4096.
+     * Last modified value: 1619093174000.
+     *
+     * Found content with name: "IMG_20210419_125842.jpg"
+     * This file is a directory: false.
+     * Size (in bytes) of this file: 8474609.
+     * Last modified value: 1618817328000.
+     * ```
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.listEverything()][balti.filex.filex11.operators.Filter.listEverything]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.listEverything()][balti.filex.filexTraditional.operators.Filter.listEverything]
+     *
+     * @return Set of 4 lists containing names, boolean denoting if directory, size in bytes, and last modified.
+     * Returns null if listing did not work (typically happens if the current FileX object is a file and not a directory)
+     */
     abstract fun listEverything(): Quad<List<String>, List<Boolean>, List<Long>, List<Long>>?
+
+    /**
+     * This function is very similar to [listEverything]. Recommended to see its documentation first.
+     *
+     * This is to be only run on a directory location and not a file.
+     * This function returns a single list, each element of the list being a [Quad] of 4 items.
+     * Each quad item contain information of 1 file / directory. All the quads together denote all the contents of the directory.
+     *
+     * Each [Quad]'s 4 elements are:
+     * - `first: String` - Name of an object (a file or directory).
+     * - `second: Boolean` - If the corresponding object is a directory or not.
+     * - `third: Long` - [length] (file size in bytes) of the object.
+     *                   This is not accurate if the object is a directory (to be checked from the `second`)
+     * - `fourth: Long` : [lastModified] value of the object.
+     *
+     * - Example:
+     * ```
+     * val dir = FileX.new("a_directory")
+     * dir.listEverythingInQuad()?.forEach {
+     *     // Each item represents 1 file or directory
+     *     Log.d("DEBUG_TAG",
+     *             "Found content with name: \"${it.first}\".\n" +
+     *             "This file is a directory: ${it.second}.\n" +
+     *             "Size (in bytes) of this file: ${it.third}.\n" +
+     *             "Last modified value: ${it.fourth}."
+     *     )
+     * }
+     * ```
+     * The output is something as below:
+     * ```
+     * Found content with name: "Telegram.apk".
+     * This file is a directory: false.
+     * Size (in bytes) of this file: 57449002.
+     * Last modified value: 1618589301000.
+     *
+     * "bank_statements".
+     * This file is a directory: true.
+     * Size (in bytes) of this file: 4096.
+     * Last modified value: 1619093174000.
+     *
+     * "IMG_20210419_125842.jpg".
+     * This file is a directory: false.
+     * Size (in bytes) of this file: 8474609.
+     * Last modified value: 1618817328000.
+     * ```
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 Filter.listEverythingInQuad()][balti.filex.filex11.operators.Filter.listEverythingInQuad]
+     * - For [FileXT] (traditional way) - See [FileXT Filter.listEverythingInQuad()][balti.filex.filexTraditional.operators.Filter.listEverythingInQuad]
+     *
+     * @return One list containing [Quad]s of (name, boolean denoting if directory, size in bytes, last modified) of the files / directories.
+     * Returns null if listing did not work (typically happens if the current FileX object is a file and not a directory)
+     */
     abstract fun listEverythingInQuad(): List<Quad<String, Boolean, Long, Long>>?
 
     //
