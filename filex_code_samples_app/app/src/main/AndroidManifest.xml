@@ -3,9 +3,10 @@
     package="balti.filex.codesamples">
 
     <application
+        android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FileX">
+        android:theme="@style/Theme.FileXCodeSamples">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

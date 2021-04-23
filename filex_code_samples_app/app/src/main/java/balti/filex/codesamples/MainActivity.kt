@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Initialize FileX library
+        // Initialize FileX
         FileXInit(this, false)
     }
 }
