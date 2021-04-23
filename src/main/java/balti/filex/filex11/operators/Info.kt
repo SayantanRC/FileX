@@ -59,6 +59,10 @@ internal class Info(private val f: FileX11) {
         return uri?.let { checkUriExists(it) } ?: false
     }
 
+    internal fun existsWithoutRefresh(): Boolean = f.run {
+        return uri?.let { checkUriExists(it) } ?: false
+    }
+
     val isDirectory: Boolean
         get() =
             exists() && try {
