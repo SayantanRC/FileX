@@ -10,14 +10,13 @@ import balti.filex.exceptions.DirectoryHierarchyBroken
 import balti.filex.exceptions.FileXAlreadyExists
 import balti.filex.exceptions.FileXNotFoundException
 import balti.filex.exceptions.FileXSystemException
-import java.io.BufferedWriter
-import java.io.BufferedReader
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.nio.charset.Charset
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -906,19 +905,45 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     // Operations
     //
 
+    /**
+     * Returns an [InputStream] from a file to read the file.
+     *
+     * For traditional FileX, uses [FileInputStream][kotlin.io.inputStream],
+     * else uses [content resolver openInputStream()][android.content.ContentResolver.openInputStream]
+     *
+     * - For [FileX11] (SAF way) - See [FileX11 inputStream()][balti.filex.filex11.operators.Operations.inputStream]
+     * - For [FileXT] (traditional way) - See [FileXT inputStream()][balti.filex.filexTraditional.FileXT.inputStream]
+     *
+     * @return An [InputStream] object to read the file.
+     * Returns `null` if file does not exist, or the method is run on a directory.
+     */
     abstract fun inputStream(): InputStream?
 
     /**
-     * Taken from [android.content.ContentProvider.openAssetFile]
+     * Returns an [OutputStream] to the document to write to.
+     * This function mainly useful for [FileX11] (SAF way).
+     * For [FileXT] (traditional way) please use the function `outputStream(append:Boolean)` below.
+     *
+     * The mode parameter is taken from [android.content.ContentProvider.openAssetFile]
      *
      * @param mode Access mode for the file.  May be "r" for read-only access,
      * "w" for write-only access (erasing whatever data is currently in
      * the file), "wa" for write-only access to append to any existing data,
      * "rw" for read and write access on any existing data, and "rwt" for read
      * and write access that truncates any existing file.
+     *
+     * @return An [OutputStream] object to write to the file.
+     * Returns `null` if stream could not be opened or the method is run on a directory.
      */
     abstract fun outputStream(mode: String): OutputStream?
 
+    /**
+     * Returns an [OutputStream] to the document to write to.
+     * @param append Pass `true` to append to the end of the file. If `false`, deletes all contents of the file before writing.
+     *
+     * @return An [OutputStream] object to write to the file.
+     * Returns `null` if stream could not be opened or the method is run on a directory.
+     */
     fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "w")
 
     fun startWriting(writer: Writer, append: Boolean = false){
