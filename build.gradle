@@ -27,7 +27,7 @@ repositories {
 }
 
 buildscript {
-    ext.kotlin_version = "1.4.30"
+    ext.kotlin_version = "1.4.32"
     repositories {
         google()
         jcenter()
