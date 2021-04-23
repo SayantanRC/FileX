@@ -919,6 +919,8 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      */
     abstract fun outputStream(mode: String = "w"): OutputStream?
 
+    fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "w")
+
     fun startWriting(writer: Writer, append: Boolean = false){
         if (!exists()) createNewFile()
         refreshFile()
