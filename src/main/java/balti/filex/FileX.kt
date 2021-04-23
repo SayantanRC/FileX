@@ -917,7 +917,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * "rw" for read and write access on any existing data, and "rwt" for read
      * and write access that truncates any existing file.
      */
-    abstract fun outputStream(mode: String = "w"): OutputStream?
+    abstract fun outputStream(mode: String): OutputStream?
 
     fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "w")
 
