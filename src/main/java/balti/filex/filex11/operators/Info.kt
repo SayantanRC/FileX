@@ -55,8 +55,17 @@ internal class Info(private val f: FileX11) {
         }
 
     fun exists(): Boolean = f.run{
-        refreshFile()
-        return uri?.let { checkUriExists(it) } ?: false
+        return when {
+            uri == null -> {
+                refreshFileX11()
+                existsWithoutRefresh()
+            }
+            existsWithoutRefresh() -> true
+            else -> {
+                refreshFileX11()
+                existsWithoutRefresh()
+            }
+        }
     }
 
     internal fun existsWithoutRefresh(): Boolean = f.run {
