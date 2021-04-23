@@ -38,9 +38,13 @@ internal fun FileX11.refreshFileX11(){
 
 internal class Operations(private val f: FileX11) {
 
-    fun inputStream(): InputStream? =
-            f.uri?.let { fCResolver.openInputStream(it) }
+    fun inputStream(): InputStream? = f.run {
+        refreshFile()
+        uri?.let { fCResolver.openInputStream(it) }
+    }
 
-    fun outputStream(mode: String): OutputStream? =
-            f.uri?.let { fCResolver.openOutputStream(it, mode) }
+    fun outputStream(mode: String): OutputStream? = f.run {
+        refreshFile()
+        uri?.let { fCResolver.openOutputStream(it, mode) }
+    }
 }
