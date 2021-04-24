@@ -16,6 +16,7 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.collections.ArrayList
 
@@ -1079,28 +1080,139 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         } else 0
     }
 
+    /**
+     * Writer class to be used with [startWriting].
+     * The function [writeLines] must be overridden. Inside the function body, following methods are available.
+     *
+     * - [writeLine(line: String)][writeLine]: Accepts a string line to be written.
+     * A line break is automatically added to the end of the string argument.
+     * - [writeString(string: String)][writeString]: Accepts a string to be written. No line break is applied.
+     *
+     * Also functions with same function signatures as those available in [BufferedWriter] are present.
+     * They work exactly as their `BufferedWriter` counterparts.
+     *
+     * - `write(c: Int)`: Writes a single character.
+     * - `write(str: String)`: Writes a string.
+     * - `write(cbuf: CharArray)`: Writes an array of characters.
+     * - `write(s: String, off: Int, len: Int)`: Writes a portion of a String.
+     * - `write(cbuf: CharArray, off: Int, len: Int)`: Writes a portion of an array of characters.
+     */
     abstract class Writer{
+
+        /**
+         * BufferedWriter instance to be used for writing.
+         * Initialised in [setFileX].
+         */
         private var writer: BufferedWriter? = null
+
+        /**
+         * Initialises the [writer][Writer.writer] object on a specified FileX object [file], using a specified [charset].
+         * All this takes place automatically inside the [startWriting] method.
+         */
         internal fun setFileX(file: FileX, append: Boolean, charset: Charset) = file.run {
             writer = BufferedWriter(OutputStreamWriter(
                     outputStream(append), charset
             ))
         }
+
+        /**
+         * Method to be overridden. All write functions are to be performed inside.
+         * Please see the example in [startWriting] method.
+         */
         abstract fun writeLines()
+
+        /**
+         * Write one line with line break at the end.
+         * Basically calls [writeString] with an '\n' at the end.
+         */
         fun writeLine(line: String) {
             writeString("$line\n")
         }
-        fun writeString(line: String) = writer?.run {
-            write(line)
+
+        /**
+         * Write a string without line break at the end.
+         */
+        fun writeString(string: String) = writer?.run {
+            write(string)
         }
 
         // add all possible variants of BufferedWriter write()
+
+        /**
+         * Copied from [BufferedWriter.write(int c)][java.io.BufferedWriter#write(int)]
+         *
+         * Writes a single character.
+         *
+         * @exception  IOException  If an I/O error occurs
+         */
         fun write(c: Int) = writer?.write(c)
+
+        /**
+         * Copied from [BufferedWriter.write(String str)][java.io.BufferedWriter#write(java.lang.String)]
+         *
+         * Writes a string.
+         *
+         * @param  str
+         *         String to be written
+         *
+         * @throws  IOException
+         *          If an I/O error occurs
+         */
         fun write(str: String) = writer?.write(str)
+
+        /**
+         * Copied from `BufferedWriter.write(char cbuf[])`
+         *
+         * Writes an array of characters.
+         *
+         * @param  cbuf
+         *         Array of characters to be written
+         *
+         * @throws  IOException
+         *          If an I/O error occurs
+         */
         fun write(cbuf: CharArray) = writer?.write(cbuf)
+
+        /**
+         * Copied from [BufferedWriter.write(String s, int off, int len)][java.io.BufferedWriter#write(java.lang.String, int, int)]
+         *
+         * Writes a portion of a String.
+         *
+         * If the value of the `len` parameter is negative then no
+         * characters are written.  This is contrary to the specification of this
+         * method in the [java.io.Writer#write(java.lang.String,int,int)]
+         * superclass, which requires that an [IndexOutOfBoundsException] be
+         * thrown.
+         *
+         * @param  s     String to be written
+         * @param  off   Offset from which to start reading characters
+         * @param  len   Number of characters to be written
+         *
+         * @exception  IOException  If an I/O error occurs
+         */
         fun write(s: String, off: Int, len: Int) = writer?.write(s, off, len)
+
+        /**
+         * Copied from `BufferedWriter.write(char cbuf[], int off, int len)`
+         *
+         * Ordinarily this method stores characters from the given array into
+         * this stream's buffer, flushing the buffer to the underlying stream as
+         * needed.  If the requested length is at least as large as the buffer,
+         * however, then this method will flush the buffer and write the characters
+         * directly to the underlying stream.  Thus redundant
+         * `BufferedWriter`s will not copy data unnecessarily.
+         *
+         * @param  cbuf  A character array
+         * @param  off   Offset from which to start reading characters
+         * @param  len   Number of characters to write
+         *
+         * @exception  IOException  If an I/O error occurs
+         */
         fun write(cbuf: CharArray, off: Int, len: Int) = writer?.write(cbuf, off, len)
 
+        /**
+         * Function to close the [writer][Writer.writer] object.
+         */
         internal fun close() = writer?.close()
     }
 }
