@@ -1020,7 +1020,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     fun writeOneLine(string: String, append: Boolean = false){
         if (!exists()) createNewFile()
         refreshFile()
-        val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(if (append) "wa" else "rwt")))
+        val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(append)))
         writer.write(string)
         writer.close()
     }
@@ -1081,16 +1081,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         private var writer: BufferedWriter? = null
         internal fun setFileX(file: FileX, append: Boolean) = file.run {
             writer = BufferedWriter(OutputStreamWriter(
-                    outputStream(
-                            if (append) "wa" else "rwt"
-                            // "rwt" wipes the file clean before writing.
-                            // This is seen to be the behaviour in FileWriter.
-
-                            // "rw", "w" they start replacing the lines from top. If the file has
-                            // 3 lines and append = false and only 1 line is written, the first line
-                            // of the file is replaced with the new content. The rest 2 lines which
-                            // were present previously remains unchanged.
-                    )
+                    outputStream(append)
             ))
         }
         abstract fun writeLines()
