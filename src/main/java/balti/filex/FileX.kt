@@ -1016,11 +1016,12 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      *
      * @param string A string to be written in the file
      * @param append Boolean to specify if the string is to be appended to the file.
+     * @param charset Specify a [Charset] to be used. If not specified, default is [Charsets.UTF_8].
      */
-    fun writeOneLine(string: String, append: Boolean = false){
+    fun writeOneLine(string: String, append: Boolean = false, charset: Charset = Charsets.UTF_8){
         if (!exists()) createNewFile()
         refreshFile()
-        val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(append)))
+        val writer: BufferedWriter = BufferedWriter(OutputStreamWriter(outputStream(append), charset))
         writer.write(string)
         writer.close()
     }
