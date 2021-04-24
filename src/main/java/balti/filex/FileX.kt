@@ -951,7 +951,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * @return An [OutputStream] object to write to the file.
      * Returns `null` if stream could not be opened or the method is run on a directory.
      */
-    fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "w")
+    fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "rwt")
 
     /**
      * This function allows for easy write operations to a file.
