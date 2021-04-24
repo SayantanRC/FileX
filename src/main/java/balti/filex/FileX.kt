@@ -932,6 +932,13 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * "rw" for read and write access on any existing data, and "rwt" for read
      * and write access that truncates any existing file.
      *
+     * > "rwt" wipes the file clean before writing. This is seen to be the behaviour in FileWriter.
+     *
+     * > "rw", "w" they start replacing the lines from top.
+     * > If the file has 3 lines and only 1 line is written, the first line
+     * > of the file is replaced with the new content. The rest 2 lines which
+     * > were present previously remains unchanged.
+     *
      * @return An [OutputStream] object to write to the file.
      * Returns `null` if stream could not be opened or the method is run on a directory.
      */
