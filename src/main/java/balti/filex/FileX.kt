@@ -126,7 +126,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * Even in the case of the file being created in a background thread, the Uri of the file does get updated after about 200 ms.
      * But this is not very reliable, hence it is recommended to call [refreshFile].
      *
-     * - For [FileX11] See [FileX11.refreshFileX11()][balti.filex.filex11.operators.refreshFileX11]
+     * - For [FileX11] See [FileX11.refreshFile]
      * - For [FileXT] See [FileXT.refreshFile]
      */
     abstract fun refreshFile()
@@ -617,7 +617,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * This function is made for use as arrow function, without needing to explicitly define the filter object.
-     * This is just an implementation of `listFiles(filter: FileXFilter)`.
+     * This is just an implementation of [listFiles(filter: FileXFilter)][FileX#listFiles(balti.filex.filex11.publicInterfaces.FileXFilter)].
      *
      * - Example:
      * ```
@@ -640,7 +640,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * This function is made for use as arrow function, without needing to explicitly define the filter object.
-     * This is just an implementation of `listFiles(filter: FileXNameFilter)`.
+     * This is just an implementation of [listFiles(filter: FileXNameFilter)][FileX#listFiles(balti.filex.filex11.publicInterfaces.FileXNameFilter)].
      *
      * - Example:
      * ```
@@ -734,7 +734,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * This function is made for use as arrow function, without needing to explicitly define the filter object.
-     * This is just an implementation of `list(filter: FileXFilter)`.
+     * This is just an implementation of [list(filter: FileXFilter)][FileX#list(balti.filex.filex11.publicInterfaces.FileXFilter)].
      *
      * - Example: List all files having "txt" extension.
      * ```
@@ -758,7 +758,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * This function is made for use as arrow function, without needing to explicitly define the filter object.
-     * This is just an implementation of `list(filter: FileXNameFilter)`.
+     * This is just an implementation of [list(filter: FileXNameFilter)][FileX#list(balti.filex.filex11.publicInterfaces.FileXNameFilter)].
      *
      * - Example: List all files having "txt" extension.
      * ```
@@ -782,7 +782,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
             })
 
     /**
-     * Sometimes list() and listFiles() can have huge overhead. This function was created to tackle that situation.
+     * Sometimes [list()][list] and [listFiles()][listFiles] can have huge overhead. This function was created to tackle that situation.
      * This function is comparatively much faster, especially on [FileX11] (SAF way) as it just loops once
      * using content resolver and picks up all the required information using the cursor.
      * See [FileX11 Filter.listEverything()][balti.filex.filex11.operators.Filter.listEverything]
@@ -1000,7 +1000,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     /**
      * This is a specialized function. If ONLY ONE STRING is to be written in the file, then this is very useful.
      * There is no need to care about Writer classes or even the [startWriting] method.
-     * The function takes care of opening an output stream, writing the supplied string and close the output stream.
+     * The function takes care of opening an output stream, writing the supplied string and closing the output stream.
      *
      * This function is HIGHLY NOT RECOMMENDED for repetitive/multiple writes.
      * Example, if multiple writes are required in a file via a loop, then please use [startWriting] function
