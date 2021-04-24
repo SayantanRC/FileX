@@ -946,6 +946,40 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      */
     fun outputStream(append: Boolean = false): OutputStream? = outputStream(if (append) "wa" else "w")
 
+    /**
+     * This function allows for easy write operations to a file.
+     * This is to be only run on a file and not a directory.
+     *
+     * This function eliminates the use of `FileWriter` or `BufferedWriter` or similar.
+     * Thus you also do not need to take care of closing the streams using `close()` method.
+     * This function takes an instance of the [Writer] class which has the
+     * [writeLines()][Writer.writeLines] function inside which write operations can be performed.
+     *
+     * - Example
+     * ```
+     * // create a blank file
+     * val fx = FileX.new(/my_dir/my_file.txt)
+     * fx.createNewFile(makeDirectories = true)
+     *
+     * // start writing to file
+     * fx.startWriting(object : FileX.Writer() {
+     *     override fun writeLines() {
+     *
+     *         // write strings without line breaks.
+     *         writeString("a string. ")
+     *         writeString("another string in the same line.")
+     *
+     *         // write a new line. Similar to writeString() with a line break at the end.
+     *         writeLine("a new line.")
+     *         writeLine("3rd line.")
+     *     }
+     * })
+     * ```
+     * For all the available functions, please see the [Writer] class.
+     *
+     * @param writer Instance of a [Writer] class.
+     * @param append Boolean to specify if new writes are to be appended to the file.
+     */
     fun startWriting(writer: Writer, append: Boolean = false){
         if (!exists()) createNewFile()
         refreshFile()
@@ -954,6 +988,28 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         writer.close()
     }
 
+    /**
+     * This is a specialized function. If ONLY ONE STRING is to be written in the file, then this is very useful.
+     * There is no need to care about Writer classes or even the [startWriting] method.
+     * The function takes care of opening an output stream, writing the supplied string and close the output stream.
+     *
+     * This function is HIGHLY NOT RECOMMENDED for repetitive/multiple writes.
+     * Example, if multiple writes are required in a file via a loop, then please use [startWriting] function
+     * and place the loop logic inside the overridden [Writer.writeLines] function. Please see the example in [startWriting].
+     *
+     * - Example
+     * ```
+     * // create a blank file
+     * val fx = FileX.new(/my_dir/my_one_line_file.txt)
+     * fx.createNewFile(makeDirectories = true)
+     *
+     * // write the string
+     * fx.writeOneLine("Write operation performed on ${System.currentTimeMillis()}. No further write operations to be done.")
+     * ```
+     *
+     * @param string A string to be written in the file
+     * @param append Boolean to specify if the string is to be appended to the file.
+     */
     fun writeOneLine(string: String, append: Boolean = false){
         if (!exists()) createNewFile()
         refreshFile()
@@ -963,16 +1019,44 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     }
 
     // next two functions copied straightaway from kotlin.io
+
+    /**
+     * This function logic is copied from [kotlin.io.readLines].
+     *
+     * Reads contents of the files and returns as a list of strings. To be only used on a file and not directory.
+     * Not to be used for very big files.
+     *
+     * @param charset Specify a [Charset] to be used. If not specified, default is [Charsets.UTF_8].
+     * @return Contents of the file as a List of String
+     */
     fun readLines(charset: Charset = Charsets.UTF_8): List<String> {
         val result = ArrayList<String>()
         forEachLine(charset) { result.add(it); }
         return result
     }
+
+    /**
+     * This function logic is copied from [kotlin.io.forEachLine].
+     *
+     * Reads this file line by line using the specified [charset] and calls [action] for each line.
+     * You may use this function on huge files.
+     *
+     * @param charset character set to use.
+     * @param action function to process file lines.
+     */
     fun forEachLine(charset: Charset = Charsets.UTF_8, action: (line: String) -> Unit): Unit {
         // Note: close is called at forEachLine
         BufferedReader(InputStreamReader(inputStream(), charset)).forEachLine(action)
     }
 
+    /**
+     * Get actual size of a directory. This function recursively crawls over all the files inside a directory and all its subdirectories.
+     * It sums up all the file sizes and returns the sum.
+     *
+     * This is to be run only on a directory. If run on a file / document, it works like [length].
+     *
+     * @return Total size of all the files, files inside sub-directories etc under the current FileX object.
+     */
     fun getDirLength(): Long {
         return if (exists()) {
             if (!isDirectory) length()
