@@ -986,11 +986,12 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      *
      * @param writer Instance of a [Writer] class.
      * @param append Boolean to specify if new writes are to be appended to the file.
+     * @param charset Specify a [Charset] to be used. If not specified, default is [Charsets.UTF_8].
      */
-    fun startWriting(writer: Writer, append: Boolean = false){
+    fun startWriting(writer: Writer, append: Boolean = false, charset: Charset = Charsets.UTF_8){
         if (!exists()) createNewFile()
         refreshFile()
-        writer.setFileX(this, append)
+        writer.setFileX(this, append, charset)
         writer.writeLines()
         writer.close()
     }
@@ -1080,9 +1081,9 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     abstract class Writer{
         private var writer: BufferedWriter? = null
-        internal fun setFileX(file: FileX, append: Boolean) = file.run {
+        internal fun setFileX(file: FileX, append: Boolean, charset: Charset) = file.run {
             writer = BufferedWriter(OutputStreamWriter(
-                    outputStream(append)
+                    outputStream(append), charset
             ))
         }
         abstract fun writeLines()
