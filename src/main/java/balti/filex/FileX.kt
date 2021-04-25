@@ -2,14 +2,11 @@ package balti.filex
 
 import android.content.Intent
 import android.net.Uri
+import balti.filex.exceptions.*
 import balti.filex.filex11.FileX11
 import balti.filex.filex11.publicInterfaces.FileXFilter
 import balti.filex.filex11.publicInterfaces.FileXNameFilter
 import balti.filex.filexTraditional.FileXT
-import balti.filex.exceptions.DirectoryHierarchyBroken
-import balti.filex.exceptions.FileXAlreadyExists
-import balti.filex.exceptions.FileXNotFoundException
-import balti.filex.exceptions.FileXSystemException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.InputStreamReader
@@ -516,10 +513,12 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * @return The target FileX object, basically same as the parameter [target].
      * This occurs only if the operation is successful, else one of the below exceptions sre thrown.
      *
-     * @throws FileXNotFoundException If the source file does not exist.
-     * @throws FileXAlreadyExists If the target file exists and [overwrite] = `false`, OR the destination file could not be deleted.
-     * This can happen the the destination is a non-empty directory.
-     * @throws FileXSystemException If the source (this FileX object) is a directory, and an empty directory could not be created in the target location.
+     * @throws NoSuchFileXException If the source file doesn't exist.
+     * @throws FileXAlreadyExistsException If the destination file already exists and [overwrite] argument is set to `false`.
+     * @throws FileXSystemException If the source is a directory, this function only creates and empty directory at [target].
+     * This exception is thrown if creating the empty directory fails.
+     * @throws NullPointerException If the input stream (from source) or output stream (to target) is null.
+     * @throws IOException If any errors occur while copying.
      */
     fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX = Copy.copyTo(target, overwrite, bufferSize)
 
