@@ -78,18 +78,19 @@ internal class Copy(private val f: FileX) {
      * to `onError(File, IOException)` function, that will be called with arguments,
      * specifying the file that caused the error and the exception itself.
      * By default this function rethrows exceptions.
+     * This function is also expected to return one of [OnErrorAction].
+     * @param deleteAfterCopy This is an internal flag and not available outside the library.
+     * If set to `true`, the source file is deleted after copying to target location. This acts as moving the file.
      *
      * Exceptions that can be passed to the `onError` function:
      *
      * - [NoSuchFileXException] - if there was an attempt to copy a non-existent file
-     * - [FileAlreadyExistsException] - if there is a conflict
+     * - [FileXAlreadyExistsException] - if there is a conflict
      * - [AccessDeniedException] - if there was an attempt to open a directory that didn't succeed.
      * - [IOException] - if some problems occur when copying.
      *
-     * @return the [target] file.
-     * @throws NoSuchFileXException if the source file doesn't exist.
-     * @throws FileAlreadyExistsException if the destination file already exists and [overwrite] argument is set to `false`.
-     * @throws IOException if any errors occur while copying.
+     * @throws FileXTerminateException if [onError] returns [OnErrorAction.TERMINATE]
+     * @return `false` if the copying was terminated, `true` otherwise.
      */
     fun copyRecursively(
             target: FileX,
@@ -107,7 +108,7 @@ internal class Copy(private val f: FileX) {
         }
         try {
             // We cannot break for loop from inside a lambda, so we have to use an exception here
-            for (src in walkTopDown().onFail { f, e -> if (onError(f, e) == OnErrorAction.TERMINATE) throw FileXSystemException(f) }) {
+            for (src in walkTopDown().onFail { f, e -> if (onError(f, e) == OnErrorAction.TERMINATE) throw FileXTerminateException(f) }) {
                 if (!src.exists()) {
                     if (onError(src, NoSuchFileXException(file = src, reason = "The source file doesn't exist.")) ==
                             OnErrorAction.TERMINATE)
