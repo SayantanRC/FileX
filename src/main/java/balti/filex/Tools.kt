@@ -26,8 +26,15 @@ public data class Quad<out A, out B, out C, out D>(
         public val fourth: D
 )
 
+/**
+ * Some useful functions, mainly used to format file paths.
+ */
 internal object Tools {
 
+    /**
+     * Adds a slash ('/') at front of the file path if not already present.
+     * Removes trailing slash ('/') of present at the end.
+     */
     @Suppress("NAME_SHADOWING")
     internal fun removeTrailingSlashOrColonAddFrontSlash(path: String): String {
         path.trim().let { path ->
@@ -41,6 +48,9 @@ internal object Tools {
         }
     }
 
+    /**
+     * Removes slash ('/') at end of the file path if present.
+     */
     @Suppress("NAME_SHADOWING")
     internal fun removeRearSlash(path: String): String {
         path.trim().let { path ->
@@ -52,6 +62,14 @@ internal object Tools {
         }
     }
 
+    /**
+     * Removes multiple slashes ('/') if present in the path.
+     * Whenever a new [FileX] object is created, the path is passed through this function.
+     *
+     * Examples:
+     * - "//aaa////bbb/ccc//ddd/" will be converted to "/aaa/bbb/ccc/ddd/"
+     * - "a/b/bbb//c///dd/dde///" will be converted to "a/b/bbb/c/dd/dde/"
+     */
     @Suppress("NAME_SHADOWING")
     internal fun removeDuplicateSlashes(path: String): String {
         try {
@@ -61,7 +79,7 @@ internal object Tools {
                 "$it "
             }.let { path ->
 
-                var lastDuplicatePtr: Char = path[0]
+                var lastConsideredPtr: Char = path[0]
                 var ptr: Char = path[1]
 
                 fun qualifyForRemoval(startPtr: Char, endPtr: Char): Boolean {
@@ -76,14 +94,15 @@ internal object Tools {
                     ptr = path[i]
                     val behindPtr = path[i-1]
                     // behindPtr is one place behind ptr.
-                    // Add lastDuplicatePtr char to modifiedString if ptr and behindPtr are not duplicate.
-                    // If duplicate, freeze lastDuplicatePtr in its place, do not add anything to modifiedString.
-                    // Once duplication is over, again move lastDuplicatePtr behind ptr and
-                    // add lastDuplicatePtr char to modifiedString. This will add only one instance of
+                    // Normally, lastConsideredPtr = behindPtr and added to modifiedString.
+                    // Add lastConsideredPtr char to modifiedString if ptr and behindPtr are not duplicate.
+                    // If duplicate, freeze lastConsideredPtr in its place, do not add anything to modifiedString.
+                    // Once duplication is over, again move lastConsideredPtr at behindPtr and
+                    // add lastConsideredPtr char to modifiedString. This will add only one instance of
                     // all the adjacent duplicate characters.
                     if (!qualifyForRemoval(ptr, behindPtr)) {
-                        lastDuplicatePtr = behindPtr
-                        modifiedString.append(lastDuplicatePtr)
+                        lastConsideredPtr = behindPtr
+                        modifiedString.append(lastConsideredPtr)
                     }
                 }
                 return modifiedString.toString()
