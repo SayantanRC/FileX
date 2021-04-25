@@ -524,13 +524,13 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
     /**
      * Directory copy recursively, return true if success else false. Logic is completely copied from kotlin.io copyRecursively().
-     * For better documentation of the logic, please refer to [kotlin.io.copyRecursively].
+     * For better documentation of the logic, please refer to [Copy.copyRecursively] or [kotlin.io.copyRecursively].
      *
      * Note that if this function fails, then partial copying may have taken place.
      *
      * @param target FileX object referring to destination location, immaterial whether `FileX11` or `FileXT` type.
      * @param overwrite If `true` deletes conflicting files / directories if exists inside the target.
-     * @param onError Function to execute in case of errors.
+     * @param onError Function to execute in case of errors. Expected to return one of [OnErrorAction].
      * @return `false` if the copying was terminated, `true` otherwise.
      */
     fun copyRecursively(
