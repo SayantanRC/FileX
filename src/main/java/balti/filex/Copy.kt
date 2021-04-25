@@ -5,25 +5,25 @@ import java.io.IOException
 
 internal class Copy(private val f: FileX) {
 
-    fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX {
+    fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX = f.run {
 
-        f.refreshFile()
+        refreshFile()
         target.refreshFile()
 
-        if (!f.exists()) {
-            throw FileXNotFoundException("The source file doesn't exist.")
+        if (!exists()) {
+            throw NoSuchFileXException(file = this, reason = "The source file doesn't exist.")
         }
 
         if (target.exists()){
             if (!overwrite)
-                throw FileXAlreadyExists("The destination file already exists.")
+                throw FileXAlreadyExistsException(file = this, other = target, "The destination file already exists.")
             else if (!target.delete())
-                throw FileXAlreadyExists("Tried to overwrite the destination, but failed to delete it.")
+                throw FileXAlreadyExistsException(file = this, other = target, "Tried to overwrite the destination, but failed to delete it.")
         }
 
-        if (f.isDirectory) {
+        if (isDirectory) {
             if (!target.mkdirs())
-                throw FileXSystemException(f, target, "Failed to create target directory.")
+                throw FileXSystemException(this, target, "Failed to create target directory.")
         } else {
 
             target.createNewFile(makeDirectories = true)
@@ -44,6 +44,32 @@ internal class Copy(private val f: FileX) {
         return target
     }
 
+    /**
+     * Logic completely copied from [kotlin.io.copyRecursively]
+     *
+     * This function is used to recursively copy a directory with files and subdirectories inside.
+     *
+     * @param target Location where the current directory is to be copied.
+     * @param overwrite If `true`, then if conflicting files and directories exists inside [target] location,
+     * then they are deleted and the source file / subdirectories are copied.
+     * Default value is `false`.
+     * @param onError If any errors occur during the copying, then further actions will depend on the result of the call
+     * to `onError(File, IOException)` function, that will be called with arguments,
+     * specifying the file that caused the error and the exception itself.
+     * By default this function rethrows exceptions.
+     *
+     * Exceptions that can be passed to the `onError` function:
+     *
+     * - [NoSuchFileXException] - if there was an attempt to copy a non-existent file
+     * - [FileAlreadyExistsException] - if there is a conflict
+     * - [AccessDeniedException] - if there was an attempt to open a directory that didn't succeed.
+     * - [IOException] - if some problems occur when copying.
+     *
+     * @return the [target] file.
+     * @throws NoSuchFileXException if the source file doesn't exist.
+     * @throws FileAlreadyExistsException if the destination file already exists and [overwrite] argument is set to `false`.
+     * @throws IOException if any errors occur while copying.
+     */
     fun copyRecursively(
             target: FileX,
             overwrite: Boolean = false,
