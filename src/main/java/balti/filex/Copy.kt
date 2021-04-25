@@ -5,6 +5,27 @@ import java.io.IOException
 
 internal class Copy(private val f: FileX) {
 
+    /**
+     * Logic completely copied from [kotlin.io.copyTo]
+     *
+     * This function is used to copy a single file / document.
+     * If run on a directory, then only a blank directory is created at the [target].
+     *
+     * @param target Location where the current file / document is to be copied.
+     * @param overwrite If `true`, if a file exists at the [target] location,
+     * then that file / document is deleted and the current file is copied in the target location.
+     * Default value is `false`.
+     * @param bufferSize Int specifying the buffer size to be used while copying. Default value is [DEFAULT_BUFFER_SIZE].
+     *
+     * @return the [target] file.
+     *
+     * @throws NoSuchFileXException If the source file doesn't exist.
+     * @throws FileXAlreadyExistsException If the destination file already exists and [overwrite] argument is set to `false`.
+     * @throws FileXSystemException If the source is a directory, this function only creates and empty directory at [target].
+     * This exception is thrown if creating the empty directory fails.
+     * @throws NullPointerException If the input stream (from source) or output stream (to target) is null.
+     * @throws IOException If any errors occur while copying.
+     */
     fun copyTo(target: FileX, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): FileX = f.run {
 
         refreshFile()
