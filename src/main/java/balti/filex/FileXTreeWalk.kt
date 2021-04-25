@@ -4,7 +4,9 @@ import balti.filex.exceptions.FileXAccessDeniedException
 import java.io.IOException
 import java.util.*
 
-
+/**
+ * This is copied from [kotlin._Assertions].
+ */
 @PublishedApi
 internal object _Assertions {
     @JvmField
@@ -12,6 +14,19 @@ internal object _Assertions {
     internal val ENABLED: Boolean = javaClass.desiredAssertionStatus()
 }
 
+/**
+ * This function is copied from [kotlin.io.FileTreeWalk].
+ * > Please note that the Assertions used are from [_Assertions] and not [kotlin._Assertions].
+ * > However the walk directions are same from [kotlin.io.FileWalkDirection].
+ *
+ * This class is intended to implement different file traversal methods.
+ * It allows to iterate through all files inside a given directory.
+ *
+ * Use [FileX.walk], [FileX.walkTopDown] or [FileX.walkBottomUp] extension functions to instantiate a `FileTreeWalk` instance.
+
+ * If the file path given is just a file, walker iterates only it.
+ * If the file path given does not exist, walker iterates nothing, i.e. it's equivalent to an empty sequence.
+ */
 public class FileXTreeWalk private constructor(
         private val start: FileX,
         private val direction: FileWalkDirection = FileWalkDirection.TOP_DOWN,
