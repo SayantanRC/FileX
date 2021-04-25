@@ -41,3 +41,6 @@ public class NoSuchFileXException(
         other: FileX? = null,
         reason: String? = null
 ) : FileXSystemException(file, other, reason)
+
+/** Private exception class, used to terminate recursive copying. */
+public class FileXTerminateException(file: FileX) : FileXSystemException(file) {}
