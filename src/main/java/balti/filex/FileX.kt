@@ -1212,6 +1212,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
 
         /**
          * Function to close the [writer][Writer.writer] object.
+         * This is automatically handled by [startWriting].
          */
         internal fun close() = writer?.close()
     }
