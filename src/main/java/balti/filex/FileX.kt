@@ -1139,7 +1139,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         // add all possible variants of BufferedWriter write()
 
         /**
-         * Copied from [BufferedWriter.write(int c)][java.io.BufferedWriter#write(int)]
+         * Copied from [`BufferedWriter.write(int c)`][java.io.BufferedWriter#write(int)]
          *
          * Writes a single character.
          *
@@ -1148,7 +1148,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         fun write(c: Int) = writer?.write(c)
 
         /**
-         * Copied from [BufferedWriter.write(String str)][java.io.BufferedWriter#write(java.lang.String)]
+         * Copied from [`BufferedWriter.write(String str)`][java.io.BufferedWriter#write(java.lang.String)]
          *
          * Writes a string.
          *
@@ -1174,7 +1174,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
         fun write(cbuf: CharArray) = writer?.write(cbuf)
 
         /**
-         * Copied from [BufferedWriter.write(String s, int off, int len)][java.io.BufferedWriter#write(java.lang.String, int, int)]
+         * Copied from [`BufferedWriter.write(String s, int off, int len)`][java.io.BufferedWriter#write(java.lang.String, int, int)]
          *
          * Writes a portion of a String.
          *
