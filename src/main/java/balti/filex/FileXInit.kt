@@ -129,14 +129,47 @@ class FileXInit(context: Context, isTraditional: Boolean) {
          */
         val storageVolumes = HashMap<String, String?>(0)
 
+        /**
+         * Checks if permission to read-write to storage is available.
+         * - For traditional type ([isTraditional] = `true`), checks if the permissions
+         * [Manifest.permission.READ_EXTERNAL_STORAGE] and [Manifest.permission.WRITE_EXTERNAL_STORAGE] are granted.
+         * - For SAF type ([isTraditional] = `false`), checks if a global root uri is previously set (using [sharedPreferences]),
+         * i.e if the user has previously selected a root directory. Also checks if that directory exists and is not deleted.
+         */
         fun isUserPermissionGranted(): Boolean{
-            return if (!globalIsTraditional) RootUri.getGlobalRootUri().let { it != null && Tools.checkUriExists(it, true) }
+            return if (!globalIsTraditional) RootUri.getGlobalRootUri().let {
+                it != null && Tools.checkUriExists(it, true)
+                // The last condition checks of the root exists.
+                // Say, the user selects a root directory as [USB-OTG]/PDFs,
+                // but in a later point, the "PDFs" directory is deleted, or the USB-OTG drive is ejected.
+                // In this case this method will return `false`.
+            }
             else {
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(fContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
             }
         }
 
+        /**
+         * Request for "permission" to read-write to a location.
+         * - Please note: This method uses a transparent auxiliary activities to call appropriate android APIs,
+         * which can be only called from an [Activity]. As such in your current activity's `onPause()` method may be called.
+         * - For traditional way ([isTraditional] = `true`): Uses [requestTraditionalPermission] function.
+         * - For SAF way ([isTraditional] = `false`): Uses the [RootUri.resetGlobalRootUri] to initiate the system picker UI
+         * for the user to select a root location.
+         *
+         * @param reRequest Useful only for SAF way. If `true` then even if a global root is previously set,
+         * again the system picker will be started to select a new root location; signifying "requesting the permission again".
+         * @param onResult Optional callback function called once permission is granted or denied.
+         * This function will always be called even if permission is denied.
+         * - `resultCode`: If success, it is `Activity.RESULT_OK` else usually `Activity.RESULT_CANCELED`.
+         * - `data`: Intent with some information.
+         *     - For FileXT
+         *         `data.getStringArrayExtra("permissions")` = Array is requested permissions. Equal to array consisting `Manifest.permission.READ_EXTERNAL_STORAGE`, `Manifest.permission.WRITE_EXTERNAL_STORAGE`
+         *         `data.getStringArrayExtra("grantResults")` = Array is granted permissions. If granted, should be equal to array of `PackageManager.PERMISSION_GRANTED`, `PackageManager.PERMISSION_GRANTED`
+         *     - For FileX11
+         *         `data.data` = Uri of the selected root directory.
+         */
         fun requestUserPermission(reRequest: Boolean = false, onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) {
             if (!globalIsTraditional) {
                 val globalRoot = RootUri.getGlobalRootUri()
@@ -152,6 +185,14 @@ class FileXInit(context: Context, isTraditional: Boolean) {
             }
         }
 
+        /**
+         * Request for traditional File read-write access. Note that from Android 11+,
+         * this only grants READ access i.e. [Manifest.permission.READ_EXTERNAL_STORAGE].
+         * [Manifest.permission.WRITE_EXTERNAL_STORAGE] is only granted in Android 10 and below.
+         *
+         * This function need not be explicitly called. The [requestUserPermission] method automatically
+         * takes care of the appropriate method to call based on the value of [isTraditional].
+         */
         fun requestTraditionalPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ActivityFunctionDelegate({}, { _, resultCode, data ->
@@ -163,6 +204,20 @@ class FileXInit(context: Context, isTraditional: Boolean) {
             }
         }
 
+        /**
+         * Similar to [requestUserPermission], without the `reRequest` argument.
+         * The value of `reRequest` = `false`.
+         *
+         * @param onResult Optional callback function called once permission is granted or denied.
+         * This function will always be called even if permission is denied.
+         * - `resultCode`: If success, it is `Activity.RESULT_OK` else usually `Activity.RESULT_CANCELED`.
+         * - `data`: Intent with some information.
+         *     - For FileXT
+         *         `data.getStringArrayExtra("permissions")` = Array is requested permissions. Equal to array consisting `Manifest.permission.READ_EXTERNAL_STORAGE`, `Manifest.permission.WRITE_EXTERNAL_STORAGE`
+         *         `data.getStringArrayExtra("grantResults")` = Array is granted permissions. If granted, should be equal to array of `PackageManager.PERMISSION_GRANTED`, `PackageManager.PERMISSION_GRANTED`
+         *     - For FileX11
+         *         `data.data` = Uri of the selected root directory.
+         */
         fun requestUserPermission(onResult: ((resultCode: Int, data: Intent?) -> Unit)? = null) =
             Companion.requestUserPermission(false, onResult)
 
