@@ -10,7 +10,3 @@ interface ToActivity {
         optionalJobCode: Int = 111
     )
 }
-
-interface FromActivity {
-    fun onActivityInit(activity: ToActivity)
-}

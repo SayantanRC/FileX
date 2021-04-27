@@ -10,11 +10,11 @@ class ActivityFunctionDelegate(
     launchingActivity: Class<*> = SysFilePickerActivity::class.java
 ){
 
-    companion object: FromActivity {
+    companion object {
         private var optionalJobcode: Int = 111
         private lateinit var triggerFunction: (context: Activity) -> Unit
         private lateinit var onResultFunction: (context: Activity, resultCode: Int, data: Intent?) -> Unit
-        override fun onActivityInit(activity: ToActivity) {
+        fun onActivityInit(activity: ToActivity) {
             activity.toActivity(triggerFunction, onResultFunction, optionalJobcode)
         }
     }
