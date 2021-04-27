@@ -10,7 +10,6 @@ import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
-import balti.filex.filex11.utils.Tools.checkUriExists
 import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import balti.filex.filex11.utils.Tools.deduceVolumePathForLollipop
 import balti.filex.filex11.utils.Tools.getStringQuery
@@ -66,10 +65,6 @@ internal class Info(private val f: FileX11) {
                 existsWithoutRefresh()
             }
         }
-    }
-
-    internal fun existsWithoutRefresh(): Boolean = f.run {
-        return uri?.let { checkUriExists(it) } ?: false
     }
 
     val isDirectory: Boolean

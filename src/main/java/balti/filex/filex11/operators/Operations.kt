@@ -3,6 +3,7 @@ package balti.filex.filex11.operators
 import android.provider.DocumentsContract
 import balti.filex.FileXInit.Companion.fCResolver
 import balti.filex.filex11.FileX11
+import balti.filex.filex11.utils.Tools
 import balti.filex.filex11.utils.Tools.buildTreeDocumentUriFromId
 import balti.filex.filex11.utils.Tools.getChildrenUri
 import java.io.InputStream
@@ -34,6 +35,10 @@ internal fun FileX11.refreshFileX11(){
             balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, buildTreeDocumentUriFromId(nextDocId))
         }
     }
+}
+
+internal fun FileX11.existsWithoutRefresh(): Boolean {
+    return uri?.let { Tools.checkUriExists(it) } ?: false
 }
 
 internal class Operations(private val f: FileX11) {
