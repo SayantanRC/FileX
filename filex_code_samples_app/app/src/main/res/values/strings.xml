@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">FileX code samples</string>
+
+    <!--activity_main.xml-->
+    <string name="request_permission">Request Permission</string>
+    <string name="request_result">Request result</string>
+
+    <!--MainActivity.kt-->
+    <string name="granted">Granted.</string>
+    <string name="access_denied">Access denied.</string>
+    <string name="already_granted">Already granted.</string>
 </resources>
