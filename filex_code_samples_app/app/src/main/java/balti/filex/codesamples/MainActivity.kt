@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                         request_result.append("Root location: ${getRootLocation()}")
                     }
                     else {
-                        // On system picker, if the user keeps pressing back and exits out of it, then this block works.
+                        // On system file picker, if the user keeps pressing back and exits out of it, then this block works.
                         request_result.text = "${getString(R.string.access_denied)}\n"
                     }
                 }
