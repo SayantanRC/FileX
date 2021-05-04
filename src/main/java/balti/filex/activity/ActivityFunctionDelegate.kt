@@ -10,6 +10,9 @@ import balti.filex.FileXInit.Companion.fContext
  * It works on Interface based callback methods.
  * This class works as a middle-man because functions cannot be directly sent to Activities by Intent extras.
  *
+ * - `trigger()`: It is a block of code (as a function) which is to be run on an activity context
+ * - `onResult()`: Another block of code (as a function), which is to be run after executing the `trigger` function.
+ *
  * How the flow of control works:
  * 1. A different caller class (say for example, in [resetGlobalRootUri()][balti.filex.filex11.utils.RootUri.resetGlobalRootUri])
  *   instantiates this class with a [trigger] function, an [onResult] function and a [launchingActivity].
