@@ -2,6 +2,8 @@ package balti.filex.exceptions
 
 import balti.filex.FileX
 
+// All are copied from [kotlin.io.Exceptions]
+
 /**
  * A base exception class for file system exceptions.
  * @property fileX the file on which the failed operation was performed.
@@ -9,7 +11,7 @@ import balti.filex.FileX
  * @property reasonString the description of the error
  */
 
-open public class FileXSystemException(
+public open class FileXSystemException(
         val fileX: FileX,
         val otherFileX: FileX? = null,
         val reasonString: String? = null
