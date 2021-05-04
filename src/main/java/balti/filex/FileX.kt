@@ -40,7 +40,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     /**
      * Refers to the path of the document / file.
      * For traditional cases ([isTraditional] = true), this variable should contain full canonical path of the File reference.
-     * Else this variable will contain relative path from the user selected root location (from system picker).
+     * Else this variable will contain relative path from the user selected root location (from system file picker).
      * This is also formatted with leading slash (`/`) and no trailing slash. Duplicate slashes in the middle are also removed.
      *
      * - Examples:
@@ -131,7 +131,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     /**
      * `FileX11 exclusive` (SAF way)
      *
-     * Opens system picker UI allow user select a new root for this FileX object. The method [FileXInit.requestUserPermission] is used to set a global root.
+     * Opens system file picker UI allow user select a new root for this FileX object. The method [FileXInit.requestUserPermission] is used to set a global root.
      * This method is similar, but it only changes the root of this object, not the global root of all other FileX objects.
      */
     fun resetRoot(onResult: ((resultCode: Int, data: Intent?) -> Unit)){
@@ -304,7 +304,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * `FileX11 exclusive` (SAF way)
      *
      * Returns the canonical path of the of the storage medium. Useful to find the mount point of SD cards and USB-OTG drives.
-     * This path, in most cases, is not readable or writable unless the user picks selects it from the system picker.
+     * This path, in most cases, is not readable or writable unless the user selects it from the system file picker.
      * Returns null for `FileXT`.
      *
      * See [Info.volumePath][balti.filex.filex11.operators.Info.volumePath],
@@ -323,7 +323,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
     /**
      * `FileX11 exclusive` (SAF way)
      *
-     * Returns the canonical path upto the root selected by the user from the system picker. Returns null for `FileXT`.
+     * Returns the canonical path upto the root selected by the user from the system file picker. Returns null for `FileXT`.
      * See [Info.rootPath][balti.filex.filex11.operators.Info.rootPath].
      *
      * - Example 1 : For a document with user selected root = `[Internal storage]/dir1/dir2` and
@@ -458,7 +458,7 @@ abstract class FileX internal constructor(val isTraditional: Boolean) {
      * `FileX11 exclusive`
      *
      * Invoke the System file picker to create the file. Only applicable on `FileX11`.
-     * After the system picker opens, the user selects a location and the file is created in that loaction.
+     * After the system file picker opens, the user selects a location and the file is created in that loaction.
      *
      * @param optionalMimeType mime type can be spcified as a string.
      * @param afterJob callback function can be passed to execute after document is created.

@@ -107,7 +107,7 @@ class FileXInit(context: Context, isTraditional: Boolean) {
 
         /**
          * A [SharedPreference][android.content.SharedPreferences] instance used to store information
-         * like the global root uri (selected by the user from system picker). Used when [isTraditional] = `false`,
+         * like the global root uri (selected by the user from system file picker). Used when [isTraditional] = `false`,
          * i.e. SAF way is being used ([FileX11]).
          */
         internal val sharedPreferences by lazy { fContext.getSharedPreferences(PREF_NAME, MODE_PRIVATE) }
@@ -155,11 +155,11 @@ class FileXInit(context: Context, isTraditional: Boolean) {
          * - Please note: This method uses a transparent auxiliary activities to call appropriate android APIs,
          * which can be only called from an [Activity]. As such in your current activity's `onPause()` method may be called.
          * - For traditional way ([isTraditional] = `true`): Uses [requestTraditionalPermission] function.
-         * - For SAF way ([isTraditional] = `false`): Uses the [RootUri.resetGlobalRootUri] to initiate the system picker UI
+         * - For SAF way ([isTraditional] = `false`): Uses the [RootUri.resetGlobalRootUri] to initiate the system file picker UI
          * for the user to select a root location.
          *
          * @param reRequest Useful only for SAF way. If `true` then even if a global root is previously set,
-         * again the system picker will be started to select a new root location; signifying "requesting the permission again".
+         * again the system file picker will be started to select a new root location; signifying "requesting the permission again".
          * @param onResult Optional callback function called once permission is granted or denied.
          * This function will always be called even if permission is denied.
          * - `resultCode`: If success, it is `Activity.RESULT_OK` else usually `Activity.RESULT_CANCELED`.

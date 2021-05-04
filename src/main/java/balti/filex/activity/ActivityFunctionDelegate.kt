@@ -60,7 +60,7 @@ class ActivityFunctionDelegate(
          * The logic is embedded in the different activities set in [launchingActivity].
          *
          * For example:
-         * - [SysFilePickerActivity] is mainly written to launch System picker UI (an activity) for selecting a root location for SAF storage.
+         * - [SysFilePickerActivity] is mainly written to launch System file picker UI (an activity) for selecting a root location for SAF storage.
          * Hence it is associated with [Activity.startActivityForResult], and uses this parameter.
          * - But [TraditionalFileRequest] is created to ask for file permissions in the old way, prior to how it was done in Android 9.
          * This is not related to any activity. Hence this parameter is useless.
@@ -93,7 +93,7 @@ class ActivityFunctionDelegate(
      * Hence this constructor is focused to receive an intent and launch in the [launchingActivity] with the provided [jobCode].
      *
      * @param jobCode Integer code, functions as `requestCode` for [Activity.startActivityForResult].
-     * @param intent Intent (to launch system picker ui) to be launched from the activity using [Activity.startActivityForResult].
+     * @param intent Intent (to launch system file picker ui) to be launched from the activity using [Activity.startActivityForResult].
      * This intent can have different flags and extras depending on the type of SAF based work to be performed.
      * @param onResult Function to be executed after receiving the result in the activity's [Activity.onActivityResult] method.
      */
