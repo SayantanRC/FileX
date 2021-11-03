@@ -10,6 +10,7 @@ import balti.filex.FileXInit.Companion.storageVolumes
 import balti.filex.FileXInit.Companion.tryIt
 import balti.filex.Tools.removeRearSlash
 import balti.filex.filex11.FileX11
+import balti.filex.filex11.utils.Tools
 import balti.filex.filex11.utils.Tools.convertToDocumentUri
 import balti.filex.filex11.utils.Tools.deduceVolumePathForLollipop
 import balti.filex.filex11.utils.Tools.getStringQuery
@@ -54,15 +55,18 @@ internal class Info(private val f: FileX11) {
         }
 
     fun exists(): Boolean = f.run{
+
+        fun checkUriExists() = uri?.let { Tools.checkUriExists(it) } ?: false
+
         return when {
             uri == null -> {
                 refreshFileX11()
-                existsWithoutRefresh()
+                checkUriExists()
             }
-            existsWithoutRefresh() -> true
+            checkUriExists() -> true
             else -> {
                 refreshFileX11()
-                existsWithoutRefresh()
+                checkUriExists()
             }
         }
     }
