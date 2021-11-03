@@ -136,9 +136,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     private val Info = Info(this)
 
     override val file: File get() = File(Info.canonicalPath)
-    override fun refreshFile() {
-        if (existsWithoutRefresh()) refreshFileX11()
-    }
+    override fun refreshFile() = refreshFileX11()
 
     override val canonicalPath: String get() = Info.canonicalPath
     override val absolutePath: String get() = Info.absolutePath
