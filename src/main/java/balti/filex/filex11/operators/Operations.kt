@@ -37,10 +37,6 @@ internal fun FileX11.refreshFileX11(){
     }
 }
 
-internal fun FileX11.existsWithoutRefresh(): Boolean {
-    return uri?.let { Tools.checkUriExists(it) } ?: false
-}
-
 internal class Operations(private val f: FileX11) {
 
     fun inputStream(): InputStream? = f.run {
