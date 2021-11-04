@@ -25,6 +25,7 @@ internal class Create(private val f: FileX11) {
             mimeType = optionalMimeType
             putExtra(Intent.EXTRA_TITLE, name)
         }) { _, resultCode, data ->
+            directlySetUriAndPath(data?.data, null)
             FileXServer.setPathAndUri(rootUri!!, path, data?.data)
             afterJob?.invoke(resultCode, data)
         }
@@ -51,7 +52,8 @@ internal class Create(private val f: FileX11) {
                     DocumentsContract.deleteDocument(cResolver, existingUri)
                     createBlankDoc(childrenUri, fileName)
                 } else {
-                    balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, existingUri)
+                    directlySetUriAndPath(existingUri, null)
+                    FileXServer.setPathAndUri(rootUri!!, path, existingUri)
                     false
                 }
             } else {
@@ -93,7 +95,8 @@ internal class Create(private val f: FileX11) {
         if (!parentUri.toString().endsWith("/children") && !checkUriExists(parentUri)) throw DirectoryHierarchyBroken("Complete parent uri not present: $parentUri")
         return DocumentsContract.createDocument(cResolver, parentUri, optionalMimeType, fileName).let {
             if (it != null) {
-                balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, it)
+                directlySetUriAndPath(it, null)
+                FileXServer.setPathAndUri(rootUri!!, path, it)
                 true
             } else false
         }
