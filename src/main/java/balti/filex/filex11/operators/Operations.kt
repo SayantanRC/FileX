@@ -33,7 +33,7 @@ internal fun FileX11.refreshFileX11(){
         if (i < dirs.indices.last) childrenUri = getChildrenUri(nextDocId)
         else if (nextDocId != "") {
             val toSetUri = buildTreeDocumentUriFromId(nextDocId)
-            directlySetUriAndPath(toSetUri, path)
+            directlySetUriAndPath(toSetUri, null)
             balti.filex.filex11.FileXServer.setPathAndUri(rootUri!!, path, toSetUri)
         }
     }
