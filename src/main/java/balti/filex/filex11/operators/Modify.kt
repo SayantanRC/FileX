@@ -60,6 +60,7 @@ internal class Modify(private val f: FileX11) {
         val newFilePath = "$parent/$newFileName"
         return FileX11(newFilePath, rootUri).let {
             if (exists()) {
+                directlySetUriAndPath(it.uri, newFilePath)
                 FileXServer.setPathAndUri(rootUri!!, path, it.uri, newFilePath)
                 true
             } else false
