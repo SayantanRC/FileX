@@ -15,7 +15,6 @@ import balti.filex.FileXInit.Companion.refreshFileOnCreation
 import balti.filex.Quad
 import balti.filex.Tools.removeTrailingSlashOrColonAddFrontSlash
 import balti.filex.activity.ActivityFunctionDelegate
-import balti.filex.exceptions.ImproperFileXType
 import balti.filex.exceptions.RootNotInitializedException
 import balti.filex.filex11.operators.*
 import balti.filex.filex11.publicInterfaces.FileXFilter
@@ -114,8 +113,7 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
             lifecycleRegistry = LifecycleRegistry(this)
             FileXServer.pathAndUri.observe(this) {
                 if (it.first == rootUri && it.second == this.path && it.third != null) {
-                    uri = it.third
-                    if (it.fourth != null) this.path = removeTrailingSlashOrColonAddFrontSlash(it.fourth)
+                    directlySetUriAndPath(it.third, it.fourth)
                 }
             }
             lifecycleRegistry.currentState = Lifecycle.State.STARTED
@@ -128,6 +126,11 @@ internal class FileX11(path: String, currentRootUri: Uri? = null): FileX(false),
     /*enum class FileXCodes {
         OK, OVERWRITE, SKIP, TERMINATE, MERGE, NEW_IF_EXISTS
     }*/
+
+    internal fun directlySetUriAndPath(uri: Uri?, path: String?){
+        uri?.let { this.uri = it }
+        path?.let { this.path = removeTrailingSlashOrColonAddFrontSlash(it) }
+    }
 
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
