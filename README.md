@@ -91,27 +91,12 @@ Perform a gradle sync. Now you can use the library in the project.
 1. Get the latest released AAR file from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
 2. In your `app` module directory of the project, there should exist a directory named `libs`. If not, create it.  
 3. Place the downloaded AAR file inside the `libs` directory.
-4. In top-level `build.gradle` file, in `allprojects` section, add the below lines.
-<pre>
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        ...
-        <b>
-        flatDir {
-            dirs 'libs'
-        }
-        </b>
-    }
-}
-</pre>
-5. In the "app" level `build.gradle` file, add the dependency.
+4. In the "app" level `build.gradle` file, add the following lines under dependencies.
 <pre>
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     ...
-    <b>implementation(name:'FileX-release', ext:'aar')</b>
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation files('libs/FileX-release.aar')
 }
 </pre>
 
