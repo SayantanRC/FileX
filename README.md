@@ -1,5 +1,5 @@
 # FileX
-[![JitPack](https://img.shields.io/jitpack/v/github/SayantanRC/FileX?color=green)](https://jitpack.io/#SayantanRC/FileX)  
+[![JitPack](https://img.shields.io/jitpack/v/github/BaltiApps/FileX?color=green)](https://jitpack.io/#BaltiApps/FileX)  
 [Build instructions](build_instructions.md)  
 
 Quick links  
@@ -64,7 +64,7 @@ However, based on this classification, some specific methods and attributes are 
 # Getting started
 You can import the library in your project in any of the below ways.
 
-## Get the library from [jitpack.io](https://jitpack.io/#SayantanRC/FileX/)  
+## Get the library from [jitpack.io](https://jitpack.io/#BaltiApps/FileX/)  
 1. In top-level `build.gradle` file, in `allprojects` section, add jitpack as shown below.
 <pre>
 allprojects {
@@ -81,14 +81,14 @@ allprojects {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     ...
-    <b>implementation 'com.github.SayantanRC:FileX:<i>alpha-6</i>'</b>
+    <b>implementation 'com.github.BaltiApps:FileX:<i>alpha-7</i>'</b>
 }
 </pre>
 
 Perform a gradle sync. Now you can use the library in the project.
 
 ## Use the AAR file from this repository.
-1. Get the latest released AAR file from the [Releases](https://github.com/SayantanRC/FileX/releases) page.  
+1. Get the latest released AAR file from the [Releases](https://github.com/BaltiApps/FileX/releases) page.  
 2. In your `app` module directory of the project, there should exist a directory named `libs`. If not, create it.  
 3. Place the downloaded AAR file inside the `libs` directory.
 4. In the "app" level `build.gradle` file, add the following lines under dependencies.

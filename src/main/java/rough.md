@@ -1,7 +1,7 @@
 ### NOTE TO MYSELF:
 - To regenerate tables from `doc_assets`: https://www.tablesgenerator.com/markdown_tables#
 - Generate new jitpack badge: https://shields.io/category/version
-- Regenerate jitpack badge: https://shields.io/jitpack/v/github/SayantanRC/FileX
+- Regenerate jitpack badge: https://shields.io/jitpack/v/github/BaltiApps/FileX
 - Markdown preview: https://jbt.github.io/markdown-editor/
 
 ### VERSION UPDATE

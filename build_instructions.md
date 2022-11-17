@@ -7,7 +7,7 @@
    ```
 3. Clone this repository. Then change directory into the repository.
    ```
-   git clone https://github.com/SayantanRC/FileX.git
+   git clone https://github.com/BaltiApps/FileX.git
    cd FileX
    ```
 4. You can now directly use this directory in your projects.  
