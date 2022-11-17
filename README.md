@@ -81,7 +81,7 @@ allprojects {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     ...
-    <b>implementation 'com.github.SayantanRC:FileX:<i>alpha-6</i>'</b>
+    <b>implementation 'com.github.SayantanRC:FileX:<i>alpha-7</i>'</b>
 }
 </pre>
 
